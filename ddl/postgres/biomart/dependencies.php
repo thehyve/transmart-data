@@ -14,6 +14,12 @@ $dependencies = array (
     2 => 'bio_assay_platform',
     3 => 'bio_assay_feature_group',
   ),
+  'bio_assay_analysis_ext' => 
+  array (
+    0 => 'bio_assay_analysis',
+    1 => 'bio_assay_platform',
+    2 => 'bio_assay_platform',
+  ),
   'bio_assay_analysis' => 
   array (
     0 => 'bio_asy_analysis_pltfm',
@@ -22,6 +28,10 @@ $dependencies = array (
   array (
     0 => 'bio_assay',
     1 => 'bio_sample',
+  ),
+  'bio_asy_analysis_data_ext' => 
+  array (
+    0 => 'bio_assay_analysis_gwas',
   ),
   'bio_assay' => 
   array (
@@ -151,6 +161,10 @@ $dependencies = array (
   'bio_content' => 
   array (
     0 => 'bio_content_repository',
+  ),
+  'bio_analysis_attribute_lineage' => 
+  array (
+    0 => 'bio_analysis_attribute',
   ),
 )
 ;

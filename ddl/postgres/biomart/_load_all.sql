@@ -26,6 +26,9 @@
 \i biomart/bio_assay_feature_group.sql
 \i biomart/bio_assay_analysis_data.sql
 \i biomart/bio_assay_analysis_data_tea.sql
+\i biomart/bio_assay_analysis_eqtl.sql
+\i biomart/bio_assay_analysis_ext.sql
+\i biomart/bio_assay_analysis_gwas.sql
 \i biomart/bio_assay_cohort.sql
 \i biomart/bio_assay_dataset.sql
 \i biomart/bio_subject.sql
@@ -41,6 +44,8 @@
 \i biomart/bio_assay_data_annotation.sql
 \i biomart/bio_assay_data_stats.sql
 \i biomart/bio_assay_sample.sql
+\i biomart/bio_asy_analysis_data_ext.sql
+\i biomart/bio_asy_analysis_data_idx.sql
 \i biomart/bio_asy_analysis_dataset.sql
 \i biomart/bio_asy_data_stats_all.sql
 \i biomart/bio_cgdcp_data.sql
@@ -61,7 +66,9 @@
 \i biomart/bio_data_disease.sql
 \i biomart/bio_data_ext_code.sql
 \i biomart/bio_data_literature.sql
+\i biomart/bio_data_observation.sql
 \i biomart/bio_data_omic_marker.sql
+\i biomart/bio_data_platform.sql
 \i biomart/bio_taxonomy.sql
 \i biomart/bio_data_taxonomy.sql
 \i biomart/bio_data_uid.sql
@@ -75,6 +82,7 @@
 \i biomart/bio_lit_pe_data.sql
 \i biomart/bio_lit_sum_data.sql
 \i biomart/bio_marker.sql
+\i biomart/bio_observation.sql
 \i biomart/bio_patient_event_attr.sql
 \i biomart/bio_stats_exp_marker.sql
 \i biomart/cta_results.sql

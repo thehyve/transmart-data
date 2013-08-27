@@ -1,7 +1,7 @@
 --
--- Name: lt_src_study_metadata; Type: TABLE; Schema: tm_lz; Owner: -
+-- Name: lz_src_study_metadata; Type: TABLE; Schema: tm_lz; Owner: -
 --
-CREATE TABLE lt_src_study_metadata (
+CREATE TABLE lz_src_study_metadata (
     study_id character varying(100),
     title character varying(1000),
     description character varying(2000),
@@ -44,6 +44,7 @@ CREATE TABLE lt_src_study_metadata (
     compound character varying(1000),
     disease character varying(1000),
     pubmed_ids character varying(1000),
-    organism character varying(200)
+    organism character varying(200),
+    upload_date timestamp without time zone
 );
 

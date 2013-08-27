@@ -9,10 +9,14 @@
 \i tm_lz/lt_src_mrna_subj_samp_map.sql
 \i tm_lz/lt_src_sample_categories.sql
 \i tm_lz/lt_src_study_metadata.sql
+\i tm_lz/lt_src_study_metadata_ad_hoc.sql
+\i tm_lz/lz_src_analysis_metadata.sql
 \i tm_lz/lz_src_clinical_data.sql
 \i tm_lz/lz_src_mrna_data.sql
 \i tm_lz/lz_src_mrna_subj_samp_map.sql
 \i tm_lz/lz_src_sample_categories_bkup.sql
+\i tm_lz/lz_src_study_metadata.sql
+\i tm_lz/lz_src_study_metadata_ad_hoc.sql
 \i tm_lz/rwg_analysis.sql
 \i tm_lz/rwg_analysis_data.sql
 \i tm_lz/rwg_analysis_data_ext.sql

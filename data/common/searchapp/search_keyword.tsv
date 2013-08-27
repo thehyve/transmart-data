@@ -42130,3 +42130,5 @@
 "Colitis Ulcerative"		"RWGTEST:DIS:COLITIS ULCERATIVE"	"-1049"	"DISEASE"		"Disease"	
 "Immunology Respiratory"		"RWGTEST:DIS:IMMUNOLOGY RESPIRATORY"	"-1053"	"DISEASE"		"Disease"	
 "Psoriasis"	"8021855"	"DIS:D011565"	"-1680388"	"DISEASE"		"Disease"	
+"GWAS"		"FACETED:DAT:GWAS"	"1789476"	"DATA_TYPE"		"Data Type"	
+"EQTL"		"FACETED:DAT:EQTL"	"1789477"	"DATA_TYPE"		"Data Type"	

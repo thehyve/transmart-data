@@ -34,3 +34,9 @@ $$;
 --
 CREATE TRIGGER trg_bio_anly_att_lineage_id BEFORE INSERT ON bio_analysis_attribute_lineage FOR EACH ROW EXECUTE PROCEDURE trg_bio_anly_att_lineage_id_fun();
 
+--
+-- Name: fk_baal_baa; Type: FK CONSTRAINT; Schema: biomart; Owner: -
+--
+ALTER TABLE ONLY bio_analysis_attribute_lineage
+    ADD CONSTRAINT fk_baal_baa FOREIGN KEY (bio_analysis_attribute_id) REFERENCES bio_analysis_attribute(bio_analysis_attribute_id);
+
