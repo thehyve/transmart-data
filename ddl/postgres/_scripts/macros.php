@@ -1,36 +1,36 @@
 <?php
 function standard_vars() {
-	echo <<<EOD
+    echo <<<EOD
 newJobFlag    smallint;
-	databaseName  varchar(100);
-	procedureName varchar(100);
-	jobID         bigint;
-	stepCt        bigint;
-	rowCt         bigint;
-	errorNumber   varchar;
-	errorMessage  varchar;
+    databaseName  varchar(100);
+    procedureName varchar(100);
+    jobID         bigint;
+    stepCt        bigint;
+    rowCt         bigint;
+    errorNumber   varchar;
+    errorMessage  varchar;
 
 EOD;
 }
 
 function func_start($procName) {
-	echo <<<EOD
+    echo <<<EOD
 --Set Audit Parameters
-	newJobFlag := 0; -- False (Default)
-	jobID := currentJobID;
-	SELECT current_user INTO databaseName; --(sic)
-	procedureName := '$procName';
+    newJobFlag := 0; -- False (Default)
+    jobID := currentJobID;
+    SELECT current_user INTO databaseName; --(sic)
+    procedureName := '$procName';
 
-	--Audit JOB Initialization
-	--If Job ID does not exist, then this is a single procedure run and we need to create it
-	IF (coalesce(jobID::text, '') = '' OR jobID < 1)
-		THEN
-		newJobFlag := 1; -- True
-		SELECT cz_start_audit(procedureName, databaseName) INTO jobID;
-	END IF;
-	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Start FUNCTION', 0, stepCt, 'Done');
-	stepCt := 1;
+    --Audit JOB Initialization
+    --If Job ID does not exist, then this is a single procedure run and we need to create it
+    IF (coalesce(jobID::text, '') = '' OR jobID < 1)
+        THEN
+        newJobFlag := 1; -- True
+        SELECT cz_start_audit(procedureName, databaseName) INTO jobID;
+    END IF;
+    PERFORM cz_write_audit(jobId, databaseName, procedureName,
+        'Start FUNCTION', 0, stepCt, 'Done');
+    stepCt := 1;
 
 EOD;
 }
@@ -43,56 +43,56 @@ function func_end() {
     }
     echo <<<EOD
 -- Cleanup OVERALL JOB if this proc is being run standalone
-	IF newJobFlag = 1 THEN
-		PERFORM cz_end_audit(jobID, 'SUCCESS');
-	END IF;
+    IF newJobFlag = 1 THEN
+        PERFORM cz_end_audit(jobID, 'SUCCESS');
+    END IF;
 
-	$retPart;
+    $retPart;
 EXCEPTION
-	WHEN OTHERS THEN
-	
+    WHEN OTHERS THEN
+        
 EOD;
     error_handle_body();
 }
 
 function step_begin() {
-	echo "BEGIN\n";
+    echo "BEGIN\n";
 }
 
-$ret_part =	$RETURN_METHOD == 'RETURN'
-			? 'RETURN -16;'
-			: "rtn_code := -16;\n\t\tRETURN;";
+$ret_part =    $RETURN_METHOD == 'RETURN'
+            ? 'RETURN -16;'
+            : "rtn_code := -16;\n\t\tRETURN;";
 
 $error_handle_body = <<<EOD
 errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		$ret_part
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        $ret_part
 EOD;
 
 function  error_handle_body() {
-	echo $GLOBALS['error_handle_body'], "\n";
+    echo $GLOBALS['error_handle_body'], "\n";
 }
 
 function step_end($message, $count=null) {
-	if (strchr($message, "'") === false) {
-		$message = "'$message'";
-	}
-	$countStr = $count !== null ? $count : "rowCt";
+    if (strchr($message, "'") === false) {
+        $message = "'$message'";
+    }
+    $countStr = $count !== null ? $count : "rowCt";
 
-	if ($count === null) {
-		echo "GET DIAGNOSTICS rowCt := ROW_COUNT;\n\t";
-	}
+    if ($count === null) {
+        echo "GET DIAGNOSTICS rowCt := ROW_COUNT;\n\t";
+    }
 
-	echo <<<EOD
+    echo <<<EOD
 PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		$message, $countStr, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		$GLOBALS[error_handle_body]
-	END;
+        $message, $countStr, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        $GLOBALS[error_handle_body]
+    END;
 
 EOD;
 
@@ -106,3 +106,5 @@ echo <<<EOD
 -----------------------------------------------------------------------
 
 EOD;
+
+// vim: ts=4 sts=4 et:
