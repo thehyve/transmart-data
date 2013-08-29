@@ -1,7 +1,64 @@
 --
+-- Name: instr(character varying, character varying); Type: FUNCTION; Schema: tm_cz; Owner: -
+--
+CREATE FUNCTION instr(character varying, character varying) RETURNS integer
+    LANGUAGE plpgsql IMMUTABLE STRICT
+    AS $_$
+DECLARE
+    pos integer;
+BEGIN
+    pos:= tm_cz.instr($1, $2, 1);
+    RETURN pos;
+END;
+$_$;
+
+--
+-- Name: instr(character varying, character varying, integer); Type: FUNCTION; Schema: tm_cz; Owner: -
+--
+CREATE FUNCTION instr(string character varying, string_to_search character varying, beg_index integer) RETURNS integer
+    LANGUAGE plpgsql IMMUTABLE STRICT
+    AS $$
+DECLARE
+    pos integer NOT NULL DEFAULT 0;
+    temp_str varchar;
+    beg integer;
+    length integer;
+    ss_length integer;
+BEGIN
+    IF beg_index > 0 THEN
+        temp_str := substring(string FROM beg_index);
+        pos := position(string_to_search IN temp_str);
+
+        IF pos = 0 THEN
+            RETURN 0;
+        ELSE
+            RETURN pos + beg_index - 1;
+        END IF;
+    ELSE
+        ss_length := char_length(string_to_search);
+        length := char_length(string);
+        beg := length + beg_index - ss_length + 2;
+
+        WHILE beg > 0 LOOP
+            temp_str := substring(string FROM beg FOR ss_length);
+            pos := position(string_to_search IN temp_str);
+
+            IF pos > 0 THEN
+                RETURN beg;
+            END IF;
+
+            beg := beg - 1;
+        END LOOP;
+
+        RETURN 0;
+    END IF;
+END;
+$$;
+
+--
 -- Name: instr(character varying, character varying, integer, integer); Type: FUNCTION; Schema: tm_cz; Owner: -
 --
-CREATE FUNCTION instr(string character varying, string_to_search character varying, beg_index integer DEFAULT 1, occur_index integer DEFAULT 1) RETURNS integer
+CREATE FUNCTION instr(string character varying, string_to_search character varying, beg_index integer, occur_index integer) RETURNS integer
     LANGUAGE plpgsql IMMUTABLE STRICT
     AS $$
 DECLARE
