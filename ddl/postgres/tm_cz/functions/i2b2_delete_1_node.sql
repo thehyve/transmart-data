@@ -48,7 +48,7 @@ BEGIN
 	stepCt := stepCt + 1;
 	select tm_cz.cz_write_audit(jobId,databaseName,procedureName,'Start i2b2_delete_1_node: ' || path,0,stepCt,'Done') into rtnCd;
 
-	if coalesce(path,'') = ''  or path = '%'
+	if coalesce(path,'') = '' or path = '%'
 	then
 		select tm_cz.cz_write_audit(jobId,databaseName,procedureName,'Path missing, no action taken',0,stepCt,'Done') into rtnCd;
 		return 1;
