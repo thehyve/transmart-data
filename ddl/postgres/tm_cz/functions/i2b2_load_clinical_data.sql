@@ -1214,6 +1214,39 @@ BEGIN
 
 	END LOOP;
 
+   -- add the study to bio_experiment
+
+    select count(*) into pExists
+            from biomart.bio_experiment
+            where accession = TrialId;
+
+	if pExists = 0 then
+		BEGIN
+			INSERT INTO biomart.bio_experiment ( title,
+				bio_experiment_type,
+				accession,
+				etl_id )
+			SELECT
+				'Metadata not available',
+				'BIO_CLINICAL_TRIAL',
+				TrialId,
+				'METADATA:' || TrialId;
+		get diagnostics rowCt := ROW_COUNT;
+		EXCEPTION
+		WHEN OTHERS THEN
+			errorNumber := SQLSTATE;
+			errorMessage := SQLERRM;
+			--Handle errors.
+			select tm_cz.cz_error_handler (jobID, procedureName, errorNumber, errorMessage) into rtnCd;
+			--End Proc
+			select tm_cz.cz_end_audit (jobID, 'FAIL') into rtnCd;
+			return -16;
+		END;
+
+		stepCt := stepCt + 1;
+		PERFORM tm_cz.cz_write_audit(jobId,databaseName,procedureName,'Insert trial/study into biomart.bio_experiment',rowCt,stepCt,'Done');
+    end if;
+
 	select tm_cz.i2b2_create_security_for_trial(TrialId, secureStudy, jobID) into rtnCd;
 	select tm_cz.i2b2_load_security_data(jobID) into rtnCd;
 
