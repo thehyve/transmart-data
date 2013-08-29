@@ -687,7 +687,7 @@ BEGIN
 			  when a.category_path like '%DATALABEL%'
 			  then regexp_replace(topNode || replace(coalesce(a.category_path,''),'DATALABEL',coalesce(a.data_label,'')) || '\' || coalesce(a.data_value,'') || '\','(\\){2,}', '\', 'g')
 			  else REGEXP_REPLACE(topNode || coalesce(a.category_path,'') ||
-                   '\'  || coalesce(a.data_label,'') || '\' || coalesce(a.data_value,'') || '\' || coalesce(a.visit_name,'') || '\',
+                   '\'  || coalesce(a.data_label,'') || '\' || coalesce(a.visit_name,'') || '\' || coalesce(a.data_value,'') || '\',
                    '(\\){2,}', '\', 'g')
 			  end
 	--	else is numeric data_type and default_node
