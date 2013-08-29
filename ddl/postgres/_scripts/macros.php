@@ -35,6 +35,26 @@ function func_start($procName) {
 EOD;
 }
 
+function func_end() {
+    if ($GLOBALS['RETURN_METHOD'] == 'RETURN') {
+        $retPart  = 'RETURN 0';
+    } else {
+        $retPart = "rtn_code := 0;\n\tRETURN";
+    }
+    echo <<<EOD
+-- Cleanup OVERALL JOB if this proc is being run standalone
+	IF newJobFlag = 1 THEN
+		PERFORM cz_end_audit(jobID, 'SUCCESS');
+	END IF;
+
+	$retPart;
+EXCEPTION
+	WHEN OTHERS THEN
+	
+EOD;
+    error_handle_body();
+}
+
 function step_begin() {
 	echo "BEGIN\n";
 }
