@@ -108,6 +108,9 @@ BEGIN
 
 	--SET ANY NODE WITH MISSING OR ZERO COUNTS TO HIDDEN
 
+	EXECUTE('CREATE INDEX cc_path_count_idx ON '
+			|| 'i2b2demodata.concept_counts(concept_path, patient_count) TABLESPACE indx');
+
 	begin
 	update i2b2metadata.i2b2
 	set c_visualattributes = substr(c_visualattributes,1,1) || 'H' || substr(c_visualattributes,3,1)
@@ -135,6 +138,8 @@ BEGIN
 	end;
 	stepCt := stepCt + 1;
 	select tm_cz.cz_write_audit(jobId,databaseName,procedureName,'Nodes hidden with missing/zero counts for trial into I2B2DEMODATA concept_counts',rowCt,stepCt,'Done') into rtnCd;
+
+	EXECUTE('DROP INDEX i2b2demodata.cc_path_count_idx');
 
 	---Cleanup OVERALL JOB if this proc is being run standalone
 	IF newJobFlag = 1
