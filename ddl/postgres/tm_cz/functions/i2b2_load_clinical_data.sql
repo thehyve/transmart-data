@@ -1109,7 +1109,7 @@ BEGIN
 		   '@',
 		   '@',
 		   '@',
-                   0
+			1
 	from tm_wz.wrk_clinical_data a
 		,i2b2demodata.patient_dimension c
 		,tm_wz.wt_trial_nodes t
