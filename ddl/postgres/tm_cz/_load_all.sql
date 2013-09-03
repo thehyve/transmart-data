@@ -17,10 +17,16 @@
 \i tm_cz/functions/i2b2_fill_in_tree.sql
 \i tm_cz/functions/i2b2_load_annotation_deapp.sql
 \i tm_cz/functions/i2b2_load_clinical_data.sql
+\i tm_cz/functions/i2b2_load_eqtl_top50.sql
+\i tm_cz/functions/i2b2_load_gwas_top50.sql
 \i tm_cz/functions/i2b2_load_security_data.sql
+\i tm_cz/functions/i2b2_load_study_metadata.sql
+\i tm_cz/functions/i2b2_move_analysis_to_prod_new.sql
 \i tm_cz/functions/i2b2_move_study.sql
 \i tm_cz/functions/i2b2_process_acgh_data.sql
 \i tm_cz/functions/i2b2_process_mrna_data.sql
+\i tm_cz/functions/i2b2_remove_analysis.sql
+\i tm_cz/functions/i2b2_remove_study.sql
 \i tm_cz/functions/instr.sql
 \i tm_cz/functions/is_date.sql
 \i tm_cz/functions/is_numeric.sql
