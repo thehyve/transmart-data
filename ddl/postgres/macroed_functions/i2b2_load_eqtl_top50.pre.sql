@@ -80,8 +80,8 @@ BEGIN
 
     -- Create indexes on temporary table
     <?php step_begin() ?>
-    CREATE INDEX CONCURRENTLY t_a_ge_t500_idx ON tmp_analysis_eqtl_top500(rs_id);
-    CREATE INDEX CONCURRENTLY t_a_gae_t500_idx ON tmp_analysis_eqtl_top500(bio_assay_analysis_id);
+    CREATE INDEX t_a_ge_t500_idx ON tmp_analysis_eqtl_top500(rs_id);
+    CREATE INDEX t_a_gae_t500_idx ON tmp_analysis_eqtl_top500(bio_assay_analysis_id);
     <?php step_end('Create indexes on temporary table', 0) ?>
 
 
@@ -117,9 +117,9 @@ BEGIN
 
     -- Recreate indexes on biomart.bio_asy_analysis_eqtl_top50
     <?php step_begin() ?>
-    CREATE INDEX CONCURRENTLY b_asy_eqtl_t50_idx1
+    CREATE INDEX b_asy_eqtl_t50_idx1
         ON biomart.bio_asy_analysis_eqtl_top50(bio_assay_analysis_id) TABLESPACE indx;
-    CREATE INDEX CONCURRENTLY b_asy_eqtl_t50_idx2
+    CREATE INDEX b_asy_eqtl_t50_idx2
         ON biomart.bio_asy_analysis_eqtl_top50(analysis) TABLESPACE indx;
     <?php step_end('Create indexes on biomart.bio_asy_analysis_eqtl_top50', 0) ?>
 

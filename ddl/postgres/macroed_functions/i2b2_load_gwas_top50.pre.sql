@@ -42,8 +42,8 @@ BEGIN
 
     -- Create indexes on tmp_analysis_gwas_top500
     <?php step_begin() ?>
-    CREATE INDEX CONCURRENTLY t_a_g_t500_idx ON tmp_analysis_gwas_top500(rs_id);
-    CREATE INDEX CONCURRENTLY t_a_ga_t500_idx ON tmp_analysis_gwas_top500(bio_assay_analysis_id);
+    CREATE INDEX t_a_g_t500_idx ON tmp_analysis_gwas_top500(rs_id);
+    CREATE INDEX t_a_ga_t500_idx ON tmp_analysis_gwas_top500(bio_assay_analysis_id);
     <?php step_end('Create indexes on tmp_analysis_gwas_top500', 0) ?>
 
     -- Drop table biomart.bio_asy_analysis_gwas_top50
