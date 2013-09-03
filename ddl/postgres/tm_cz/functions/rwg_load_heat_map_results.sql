@@ -30,13 +30,13 @@ DECLARE
 
 	--Audit variables
 	newJobFlag    smallint;
-	databaseName  varchar(100);
-	procedureName varchar(100);
-	jobID         bigint;
-	stepCt        bigint;
-	rowCt         bigint;
-	errorNumber   varchar;
-	errorMessage  varchar;
+    databaseName  varchar(100);
+    procedureName varchar(100);
+    jobID         bigint;
+    stepCt        bigint;
+    rowCt         bigint;
+    errorNumber   varchar;
+    errorMessage  varchar;
 
 	sqlText    varchar(500);
 	partExists boolean;
@@ -63,21 +63,21 @@ DECLARE
 
 BEGIN
 	--Set Audit Parameters
-	newJobFlag := 0; -- False (Default)
-	jobID := currentJobID;
-	SELECT current_user INTO databaseName; --(sic)
-	procedureName := 'RWG_LOAD_HEAT_MAP_RESULTS';
+    newJobFlag := 0; -- False (Default)
+    jobID := currentJobID;
+    SELECT current_user INTO databaseName; --(sic)
+    procedureName := 'RWG_LOAD_HEAT_MAP_RESULTS';
 
-	--Audit JOB Initialization
-	--If Job ID does not exist, then this is a single procedure run and we need to create it
-	IF (coalesce(jobID::text, '') = '' OR jobID < 1)
-		THEN
-		newJobFlag := 1; -- True
-		SELECT cz_start_audit(procedureName, databaseName) INTO jobID;
-	END IF;
-	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Start FUNCTION', 0, stepCt, 'Done');
-	stepCt := 1;
+    --Audit JOB Initialization
+    --If Job ID does not exist, then this is a single procedure run and we need to create it
+    IF (coalesce(jobID::text, '') = '' OR jobID < 1)
+        THEN
+        newJobFlag := 1; -- True
+        SELECT cz_start_audit(procedureName, databaseName) INTO jobID;
+    END IF;
+    PERFORM cz_write_audit(jobId, databaseName, procedureName,
+        'Start FUNCTION', 0, stepCt, 'Done');
+    stepCt := 1;
 
 	partTable := 'heat_map_results_' || lower(in_study_id);
 
@@ -104,16 +104,16 @@ BEGIN
 		BEGIN
 		EXECUTE(sqlText);
 		PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Adding partition to BIOMART.HEAT_MAP_RESULTS', 0, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Adding partition to BIOMART.HEAT_MAP_RESULTS', 0, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 
 		sqlText := 'CREATE OR REPLACE RULE ' || partTable || '_insert AS ' ||
 			'ON INSERT TO biomart.heat_map_results WHERE ' ||
@@ -123,16 +123,16 @@ BEGIN
 		BEGIN
 		EXECUTE(sqlText);
 		PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Adding rule to main table', 0, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Adding rule to main table', 0, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 
 		-- this index is small and very effective for making the UI responsive
 		sqlText := 'CREATE INDEX ' || partTable || '_sign_index ' ||
@@ -141,16 +141,16 @@ BEGIN
 		BEGIN
 		EXECUTE(sqlText);
 		PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Adding index to partition', 0, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Adding index to partition', 0, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 	ELSE
 		--truncate partition
 		sqlText := 'TRUNCATE TABLE biomart.' || partTable;
@@ -159,16 +159,16 @@ BEGIN
 		EXECUTE(sqlText);
 		GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Truncate partition in BIOMART.HEAT_MAP_RESULTS', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Truncate partition in BIOMART.HEAT_MAP_RESULTS', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 	END IF;
 
 	--	Delete existing data for study from cta_results
@@ -187,16 +187,16 @@ BEGIN
 
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Delete records for study from cta_results', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Delete records for study from cta_results', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 
 	--	changed to use sql instead of view, view pulled back all studies   20121203 JEA
 	BEGIN
@@ -279,16 +279,16 @@ BEGIN
 
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Insert study to heat_map_results', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Insert study to heat_map_results', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 
 	BEGIN
 	UPDATE BIOMART.bio_assay_analysis baa
@@ -305,16 +305,16 @@ BEGIN
 
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Updated analysis_update_date for analyses of study', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Updated analysis_update_date for analyses of study', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 
 	BEGIN
 	INSERT INTO biomart.cta_results (
@@ -350,16 +350,16 @@ BEGIN
 
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Insert records for study into cta_results', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Insert records for study into cta_results', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 
 	PERFORM cz_write_audit(jobId,databaseName,procedureName,'FUNCTION Complete',0,stepCt,'Done');
 	RETURN 0;
@@ -372,10 +372,10 @@ BEGIN
 EXCEPTION
 	WHEN OTHERS THEN
 	errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
 END;
 $body$
 LANGUAGE PLPGSQL;

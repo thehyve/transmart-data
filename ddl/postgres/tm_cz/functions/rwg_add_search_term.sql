@@ -33,13 +33,13 @@ DECLARE
 ******************************************************************/
 	--Audit variables
 	newJobFlag    smallint;
-	databaseName  varchar(100);
-	procedureName varchar(100);
-	jobID         bigint;
-	stepCt        bigint;
-	rowCt         bigint;
-	errorNumber   varchar;
-	errorMessage  varchar;
+    databaseName  varchar(100);
+    procedureName varchar(100);
+    jobID         bigint;
+    stepCt        bigint;
+    rowCt         bigint;
+    errorNumber   varchar;
+    errorMessage  varchar;
 
 	Parent_Id          integer;
 	new_Term_Id        integer;
@@ -51,21 +51,21 @@ DECLARE
 
 BEGIN
 	--Set Audit Parameters
-	newJobFlag := 0; -- False (Default)
-	jobID := currentJobID;
-	SELECT current_user INTO databaseName; --(sic)
-	procedureName := 'RWG_ADD_SEARCH_TERM';
+    newJobFlag := 0; -- False (Default)
+    jobID := currentJobID;
+    SELECT current_user INTO databaseName; --(sic)
+    procedureName := 'RWG_ADD_SEARCH_TERM';
 
-	--Audit JOB Initialization
-	--If Job ID does not exist, then this is a single procedure run and we need to create it
-	IF (coalesce(jobID::text, '') = '' OR jobID < 1)
-		THEN
-		newJobFlag := 1; -- True
-		SELECT cz_start_audit(procedureName, databaseName) INTO jobID;
-	END IF;
-	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Start FUNCTION', 0, stepCt, 'Done');
-	stepCt := 1;
+    --Audit JOB Initialization
+    --If Job ID does not exist, then this is a single procedure run and we need to create it
+    IF (coalesce(jobID::text, '') = '' OR jobID < 1)
+        THEN
+        newJobFlag := 1; -- True
+        SELECT cz_start_audit(procedureName, databaseName) INTO jobID;
+    END IF;
+    PERFORM cz_write_audit(jobId, databaseName, procedureName,
+        'Start FUNCTION', 0, stepCt, 'Done');
+    stepCt := 1;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
 		'Term to add is ''' || new_term || ''', category is ''' ||
 		category_name || '''', 0, stepCt, 'Done');
@@ -116,16 +116,16 @@ BEGIN
 
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Term added to Searchapp.Search_Keyword', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Term added to Searchapp.Search_Keyword', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 
 	-- Get the ID of the new term in Search_Keyword
 	BEGIN
@@ -136,16 +136,16 @@ BEGIN
 
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'New search keyword ID stored in Keyword_Id', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'New search keyword ID stored in Keyword_Id', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 
 	-- Insert the new term into Searchapp.Search_Keyword_Term 
 	BEGIN
@@ -171,16 +171,16 @@ BEGIN
 
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Term added to Searchapp.Search_Keyword_Term', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
-	END;
+        'Term added to Searchapp.Search_Keyword_Term', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
+    END;
 
      ---Cleanup OVERALL JOB if this proc is being run standalone    
 	IF newJobFlag = 1
@@ -192,10 +192,10 @@ BEGIN
 EXCEPTION
 	WHEN OTHERS THEN
 	errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		RETURN -16;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        RETURN -16;
 END;
 
 $body$

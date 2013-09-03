@@ -33,13 +33,13 @@ DECLARE
 ******************************************************************/
 --Audit variables
 	newJobFlag    smallint;
-	databaseName  varchar(100);
-	procedureName varchar(100);
-	jobID         bigint;
-	stepCt        bigint;
-	rowCt         bigint;
-	errorNumber   varchar;
-	errorMessage  varchar;
+    databaseName  varchar(100);
+    procedureName varchar(100);
+    jobID         bigint;
+    stepCt        bigint;
+    rowCt         bigint;
+    errorNumber   varchar;
+    errorMessage  varchar;
 
 	vWZcount      integer;
 	vLZcount      integer;
@@ -56,21 +56,21 @@ DECLARE
 
 BEGIN
 	--Set Audit Parameters
-	newJobFlag := 0; -- False (Default)
-	jobID := currentJobID;
-	SELECT current_user INTO databaseName; --(sic)
-	procedureName := 'RWG_LOAD_ANALYSIS_DATA';
+    newJobFlag := 0; -- False (Default)
+    jobID := currentJobID;
+    SELECT current_user INTO databaseName; --(sic)
+    procedureName := 'RWG_LOAD_ANALYSIS_DATA';
 
-	--Audit JOB Initialization
-	--If Job ID does not exist, then this is a single procedure run and we need to create it
-	IF (coalesce(jobID::text, '') = '' OR jobID < 1)
-		THEN
-		newJobFlag := 1; -- True
-		SELECT cz_start_audit(procedureName, databaseName) INTO jobID;
-	END IF;
-	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Start FUNCTION', 0, stepCt, 'Done');
-	stepCt := 1;
+    --Audit JOB Initialization
+    --If Job ID does not exist, then this is a single procedure run and we need to create it
+    IF (coalesce(jobID::text, '') = '' OR jobID < 1)
+        THEN
+        newJobFlag := 1; -- True
+        SELECT cz_start_audit(procedureName, databaseName) INTO jobID;
+    END IF;
+    PERFORM cz_write_audit(jobId, databaseName, procedureName,
+        'Start FUNCTION', 0, stepCt, 'Done');
+    stepCt := 1;
 
 	FOR cDeleteRow IN cDelete
 	LOOP
@@ -79,67 +79,67 @@ BEGIN
 		WHERE bio_assay_analysis_id = cDeleteRow.bio_assay_analysis_id;
 		GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Delete records from BIOMART.bio_assay_analysis_data for analysis:  ' || cDeleteRow.bio_assay_analysis_id, rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Delete records from BIOMART.bio_assay_analysis_data for analysis:  ' || cDeleteRow.bio_assay_analysis_id, rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 		BEGIN
 		DELETE FROM tm_lz.rwg_analysis_data
 		WHERE bio_assay_analysis_id = cDeleteRow.bio_assay_analysis_id;
 		GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Delete records from BIOMART.bio_assay_analysis_data for analysis:  ' || cDeleteRow.bio_assay_analysis_id, rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Delete records from BIOMART.bio_assay_analysis_data for analysis:  ' || cDeleteRow.bio_assay_analysis_id, rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 	END LOOP;
 
 	BEGIN
 	TRUNCATE TABLE tm_wz.bio_assay_analysis_data_new;
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Truncate tm_wz.bio_assay_analysis_data_new', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Truncate tm_wz.bio_assay_analysis_data_new', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 	BEGIN
 	TRUNCATE TABLE tm_wz.tmp_assay_analysis_metrics;
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Truncate tm_wz.tmp_assay_analysis_metrics', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Truncate tm_wz.tmp_assay_analysis_metrics', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 	-- not used ???
 	--delete from tm_lz.RWG_BAAD_ID where upper(study_id) =upper(trialID);
@@ -157,17 +157,17 @@ BEGIN
 			AND upper(bap.platform_accession) LIKE '%'|| upper(gpl.platform) || '%';
 		GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Get bio_assay_platform_ID: ' || vPlatformID, rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Get bio_assay_platform_ID: ' || vPlatformID, rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 	ELSE
 		vPlatformID := inPlatformID;
 	END IF;
@@ -178,32 +178,32 @@ BEGIN
 	WHERE upper(accession) = upper(trialID);
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Get bio_experiment_id: ' || vExpID, rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Get bio_experiment_id: ' || vExpID, rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 	BEGIN
 	SELECT count(*) INTO vLZcount FROM TM_LZ.RWG_ANALYSIS_DATA_EXT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Count for TM_LZ.RWG_ANALYSIS_DATA_EXT = ' || vLZcount, 0, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Count for TM_LZ.RWG_ANALYSIS_DATA_EXT = ' || vLZcount, 0, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 	--	count number of data records with non-numeric data in preferred_pvalue or fold_change and log
 	BEGIN
@@ -214,17 +214,17 @@ BEGIN
 		is_numeric(preferred_pvalue) = 1
 		OR is_numeric(fold_change) = 1;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Data records dropped for non-numeric preferred_pvalue or fold_change', vLZcount, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Data records dropped for non-numeric preferred_pvalue or fold_change', vLZcount, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 	--	insert data into rwg_analysis_data, skip records with non-numeric data in preferred_pvalue or fold_change
 	--	change all other non-numeric data to null
@@ -280,33 +280,33 @@ BEGIN
 		AND is_numeric ( ext.fold_change ) = 0;
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Insert records into rwg_analysis_data', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Insert records into rwg_analysis_data', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 	BEGIN
 	SELECT COUNT(*) INTO vWZcount FROM tm_lz.rwg_analysis_data
 	WHERE study_id = upper(trialID);
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Count for tm_lz.rwg_analysis_data = ' || vWZcount, 0, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Count for tm_lz.rwg_analysis_data = ' || vWZcount, 0, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 
 	BEGIN
@@ -343,17 +343,17 @@ BEGIN
 		rad.study_id = UPPER ( trialID ); -- 20121212 JEA
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Insert records into BIO_ASSAY_ANALYSIS_DATA_NEW', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Insert records into BIO_ASSAY_ANALYSIS_DATA_NEW', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 	/*Calculate TEA Values */
 	BEGIN
@@ -378,17 +378,17 @@ BEGIN
 		data_ct;
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Insert records into tm_wz.tmp_assay_analysis_metrics ', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Insert records into tm_wz.tmp_assay_analysis_metrics ', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 	BEGIN
 	UPDATE tm_wz.BIO_ASSAY_ANALYSIS_DATA_NEW AS d
@@ -401,17 +401,17 @@ BEGIN
 			AND d.fold_change_ratio ::text <> '');
 	GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Update TEA records in tm_lz.BIO_ASSAY_ANALYSIS_DATA_NEW', rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Update TEA records in tm_lz.BIO_ASSAY_ANALYSIS_DATA_NEW', rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 
 	/* Final Insert */
 	SET search_path = "$user", public, biomart;
@@ -432,17 +432,17 @@ BEGIN
 
 		GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
-		'Insert records into biomart.bio_assay_analysis_data for analysis:  ' || cDeleteRow.bio_assay_analysis_id, rowCt, stepCt, 'Done');
-	stepCt := stepCt + 1;
-	EXCEPTION
-		WHEN OTHERS THEN
-		errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        'Insert records into biomart.bio_assay_analysis_data for analysis:  ' || cDeleteRow.bio_assay_analysis_id, rowCt, stepCt, 'Done');
+    stepCt := stepCt + 1;
+    EXCEPTION
+        WHEN OTHERS THEN
+        errorNumber := SQLSTATE;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
-	END;
+    END;
 	END LOOP;
 
 	PERFORM cz_write_audit(jobId,databaseName,procedureName,'FUNCTION Complete',0,stepCt,'Done');
@@ -455,10 +455,10 @@ BEGIN
 EXCEPTION
 	WHEN OTHERS THEN
 	errorNumber := SQLSTATE;
-		errorMessage := SQLERRM;
-		PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
-		PERFORM cz_end_audit (jobID, 'FAIL');
-		rtn_code := -16;
+        errorMessage := SQLERRM;
+        PERFORM cz_error_handler(jobID, procedureName, errorNumber, errorMessage);
+        PERFORM cz_end_audit (jobID, 'FAIL');
+        rtn_code := -16;
 		RETURN;
 END;
 
