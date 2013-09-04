@@ -82,6 +82,16 @@ CREATE SEQUENCE seq_cz_dw_version_id
     CACHE 2;
 
 --
+-- Name: seq_cz_form_layout_id; Type: SEQUENCE; Schema: tm_cz; Owner: -
+--
+CREATE SEQUENCE seq_cz_form_layout_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 20;
+
+--
 -- Name: seq_cz_job_id; Type: SEQUENCE; Schema: tm_cz; Owner: -
 --
 CREATE SEQUENCE seq_cz_job_id

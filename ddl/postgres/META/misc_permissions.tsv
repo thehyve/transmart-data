@@ -1,2 +1,8 @@
 deapp	deapp	s	tm_lz	U
 deapp	de_subject_sample_mapping	r	tm_lz	r
+tm_cz	tm_cz	s	biomart_user	U
+tm_cz	cz_form_layout	r	biomart_user	r
+tm_cz	cz_required_upload_field	r	biomart_user	r
+tm_lz	tm_lz	s	biomart_user	U
+tm_lz	lz_src_analysis_metadata	r	biomart_user	rwad
+tm_lz	seq_etl_id	S	biomart_user	rwU

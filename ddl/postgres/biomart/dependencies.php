@@ -172,8 +172,6 @@ $dependencies = array (
   'bio_assay_analysis_ext' => 
   array (
     0 => 'bio_assay_analysis',
-    1 => 'bio_assay_platform',
-    2 => 'bio_assay_platform',
   ),
   'bio_assay_analysis' => 
   array (

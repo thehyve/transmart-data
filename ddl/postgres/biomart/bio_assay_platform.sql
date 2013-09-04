@@ -9,7 +9,8 @@ CREATE TABLE bio_assay_platform (
     platform_array character varying(50),
     platform_accession character varying(20),
     platform_organism character varying(200),
-    platform_vendor character varying(200)
+    platform_vendor character varying(200),
+    platform_type character varying(50)
 );
 
 --

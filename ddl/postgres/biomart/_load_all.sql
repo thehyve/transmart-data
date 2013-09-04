@@ -15,6 +15,7 @@
 \i biomart/functions/refresh_bio_lit_int_model_mv.sql
 \i biomart/functions/refresh_bio_marker_correl_mv.sql
 \i biomart/functions/tea_npv_precompute.sql
+\i biomart/bio_ad_hoc_property.sql
 \i biomart/bio_analysis_attribute.sql
 \i biomart/bio_analysis_attribute_lineage.sql
 \i biomart/bio_analysis_cohort_xref.sql

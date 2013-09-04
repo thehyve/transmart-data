@@ -23,7 +23,8 @@ CREATE TABLE bio_assay_analysis (
     data_count bigint,
     tea_data_count bigint,
     analysis_update_date date,
-    lsmean_cutoff double precision
+    lsmean_cutoff double precision,
+    etl_id_source bigint
 );
 
 --
