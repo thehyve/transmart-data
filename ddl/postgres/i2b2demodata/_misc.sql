@@ -28,3 +28,8 @@ CREATE SEQUENCE sq_up_encdim_encounternum
     MAXVALUE 9999999999999
     CACHE 1;
 
+--
+-- Name: INDEX concept_counts_patient_count_idx; Type: COMMENT; Schema: i2b2demodata; Owner: -
+--
+COMMENT ON INDEX concept_counts_patient_count_idx IS 'For ETL. Function i2b2_create_concept_counts() used to create a index just to speed up the query under "set any node with missing or zero counts to hidden" so this is presumably useful, together with the index on concept_path.';
+
