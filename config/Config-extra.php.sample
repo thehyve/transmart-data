@@ -29,9 +29,4 @@ EOD
 ];
 
 
-com.recomdata.dataUpload.templates.dir="/home/transmart/gwas_uplad_data_templates"
-com.recomdata.dataUpload.uploads.dir="/home/transmart/gwas_upload_data_files"
-com.recomdata.dataUpload.etl.dir="tranSMART-ETL/Postgres/GPL-1.0/Kettle"
-com.recomdata.dataUpload.stageScript="load_analysis_stage.sh"
-
 // vim: filetype=php et ts=4 sw=4 ai tw=80:
