@@ -127,4 +127,5 @@ BEGIN
 END;
 $body$
 LANGUAGE PLPGSQL;
-<?php // vim: ts=4 sts=4 sw=4 et: ?>
+<?php // vim: ts=4 sts=4 sw=4 et:
+?>
