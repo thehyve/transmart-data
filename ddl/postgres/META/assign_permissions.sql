@@ -273,6 +273,7 @@ BEGIN
             'deapp',
             'searchapp',
             'biomart',
+            'biomart_stage',
             'tm_cz',
             'tm_lz',
             'tm_wz'];

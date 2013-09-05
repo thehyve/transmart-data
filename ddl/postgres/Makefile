@@ -4,6 +4,7 @@ SCHEMAS = \
 		  i2b2metadata \
 		  i2b2demodata \
 		  biomart \
+		  biomart_stage \
 		  deapp \
 		  tm_lz \
 		  tm_cz \

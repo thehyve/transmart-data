@@ -8,6 +8,7 @@ BEGIN
     spec := ARRAY[
         'biomart',
         'biomart_user',
+        'biomart_stage',
         'deapp',
         'i2b2demodata',
         'i2b2metadata',
