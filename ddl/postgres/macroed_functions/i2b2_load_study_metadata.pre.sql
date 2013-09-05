@@ -65,7 +65,7 @@ BEGIN
         upload_date
     FROM
         lt_src_study_metadata x;
-    <?php step_end('Delete existing metadata in lz_src_study_metadata') ?>
+    <?php step_end('Insert data into lz_src_study_metadata from lt_src_study_metadata') ?>
 
     --    delete existing metadata from lz_src_study_metadata_ad_hoc
     <?php step_begin() ?>
