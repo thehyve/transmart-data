@@ -6,6 +6,21 @@ TBNAMES = deapp \
 		  indx \
 		  search_app
 
+SCHEMAS = \
+		  i2b2metadata \
+		  i2b2demodata \
+		  biomart \
+		  biomart_stage \
+		  deapp \
+		  tm_lz \
+		  tm_cz \
+		  tm_wz \
+		  searchapp
+
+ROLES = $(SCHEMAS) biomart_user
+
+SCHEMAS_PATTERN=$(shell echo $(ROLES) | sed "s/\s\+/|/g")
+
 TBDIR_TARGETS = $(addprefix $(TABLESPACES), $(TBNAMES))
 TB_TARGETS = $(addprefix tablespace_, $(TBNAMES))
 TBDROP_TARGETS = $(addprefix drop_tb_, $(TBNAMES))
@@ -14,12 +29,11 @@ cluster_dump.sql:
 	$(PGDUMPALL_COMMAND) -g > $@
 
 general_db_dump.sql:
-	$(PGDUMP_COMMAND) -s -x -N i2b2demodata -N i2b2metadata -N tm_lz \
-			-N tm_cz -N tm_wz -N searchapp -N biomart -N public > $@
+	$(PGDUMP_COMMAND) -s -x $(foreach s,$SCHEMAS,-N $s) -N public > $@
 
 roles.sql: cluster_dump.sql
 	php ../_scripts/filter_type.php $< "Roles" | \
-			egrep 'ROLE (biomart_user|deapp|i2b2metadata|i2b2demodata|tm_cz|tm_lz|tm_wz|biomart|searchapp)\b' \
+			egrep 'ROLE ($(SCHEMAS_PATTERN))\b' \
 			> $@
 
 extensions.sql: general_db_dump.sql

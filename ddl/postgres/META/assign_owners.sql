@@ -39,7 +39,8 @@ BEGIN
         'i2b2metadata',
         'deapp',
         'searchapp',
-        'biomart'
+        'biomart',
+        'biomart_stage'
     ];
 
     FOREACH schema_name IN ARRAY spec LOOP
