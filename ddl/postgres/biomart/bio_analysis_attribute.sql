@@ -27,6 +27,7 @@ BEGIN
     SELECT NEW.BIO_ANALYSIS_ATTRIBUTE_ID, skl.ancestor_id, skl.search_keyword_id 
     FROM searchapp.solr_keywords_lineage skl
     WHERE skl.term_id = NEW.TERM_ID;
+    RETURN new;
 END;
 $$;
 
