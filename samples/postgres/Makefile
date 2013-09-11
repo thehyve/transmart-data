@@ -60,6 +60,12 @@ load_acgh_%: ../common/%/acgh.params ../common/%/acgh
 			KETTLE_HOME="$(realpath kettle-home)" \
 			./load_acgh.sh $<
 
+load_study_metadata_%: ../common/%/study_metadata
+	STUDY_ID=$* METADATA_LOCATION="$(realpath ../common/$*/study_metadata)" \
+			PSQL_COMMAND="$(PSQL_COMMAND)" \
+			KETTLE_HOME="$(realpath kettle-home)" \
+			./load_study_metadata.sh $<
+
 ../common/%/clinical: ../common/Makefile
 	$(MAKE) -C ../common $*/clinical
 
@@ -75,6 +81,9 @@ load_acgh_%: ../common/%/acgh.params ../common/%/acgh
 ../common/%/acgh: ../common/Makefile
 	$(MAKE) -C ../common $*/acgh
 
+../common/%/study_metadata: ../common/Makefile
+	$(MAKE) -C ../common $*/study_metadata
+	
 clean:
 	rm -f logs/*.log kettle-home/kettle.properties
 

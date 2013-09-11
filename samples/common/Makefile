@@ -16,5 +16,8 @@ DATA_LOCATION := http://files.thehyve.net/sample_data/
 %/acgh: %/%_acgh.tar.xz
 	tar -C $* -xJf $(subst %,$*,$<)
 
-%/%_clinical.tar.xz %/%_annotation.tar.xz %/%_expression.tar.xz %/%_analysis.tar.xz %/%_acgh.tar.xz:
+%/study_metadata: %/%_study_metadata.tar.xz
+	tar -C $* -xJf $(subst %,$*,$<)
+	
+%/%_clinical.tar.xz %/%_annotation.tar.xz %/%_expression.tar.xz %/%_analysis.tar.xz %/%_acgh.tar.xz %/%_study_metadata.tar.xz:
 	curl -f $(DATA_LOCATION)$(notdir $(subst %,$*,$@)) > $(subst %,$*,$@)
