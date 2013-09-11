@@ -89,7 +89,7 @@ BEGIN
         upload_date
     FROM
         lt_src_study_metadata_ad_hoc x;
-    <?php step_end('Delete existing metadata in lz_src_study_metadata_ad_hoc') ?>
+    <?php step_end('Insert data in lz_src_study_metadata_ad_hoc') ?>
 
     --    Update existing bio_experiment data
     <?php step_begin() ?>
@@ -106,11 +106,11 @@ BEGIN
         = ( m.title,
             m.description,
             m.design,
-            ( CASE is_date ( m.start_date, 'YYYYMMDD' )
+            ( CASE is_date ( m.start_date )
                     WHEN 1 THEN NULL
                     ELSE TO_DATE ( m.start_date, 'YYYYMMDD' )
                 END ),
-            ( CASE is_date ( m.completion_date, 'YYYYMMDD' )
+            ( CASE is_date ( m.completion_date )
                     WHEN 1 THEN NULL
                     ELSE TO_DATE ( m.completion_date, 'YYYYMMDD' )
                 END ),
@@ -140,7 +140,7 @@ BEGIN
     WHERE ( m.study_id IS NOT NULL
         AND m.study_id ::TEXT <> '' )
         AND b.accession = m.study_id
-        AND b.etl_id = 'METADATA:' || x.study_id;
+        AND b.etl_id = 'METADATA:' || m.study_id;
     <?php step_end('Updated trial data in BIOMART bio_experiment') ?>
 
     --    Update existing bio_clinical_trial data only for true Clinical Trials or JnJ Experimental Medicine Studies
@@ -192,7 +192,7 @@ BEGIN
             m.dosing_regimen,
             m.group_assignment,
             m.type_of_control,
-            ( CASE is_date ( m.completion_date, 'YYYYMMDD' )
+            ( CASE is_date ( m.completion_date )
                     WHEN 1 THEN NULL
                     ELSE TO_DATE ( m.completion_date, 'YYYYMMDD' )
                 END ),
@@ -244,11 +244,11 @@ BEGIN
         m.title,
         m.description,
         m.design,
-        ( CASE is_date ( m.start_date, 'YYYYMMDD' )
+        ( CASE is_date ( m.start_date )
                 WHEN 1 THEN NULL
                 ELSE TO_DATE ( m.start_date, 'YYYYMMDD' )
             END ),
-        ( CASE is_date ( m.completion_date, 'YYYYMMDD' )
+        ( CASE is_date ( m.completion_date )
                 WHEN 1 THEN NULL
                 ELSE TO_DATE ( m.completion_date, 'YYYYMMDD' )
             END ),
@@ -349,7 +349,7 @@ BEGIN
         m.dosing_regimen,
         m.group_assignment,
         m.type_of_control,
-        ( CASE is_date ( m.completion_date, 'YYYYMMDD' )
+        ( CASE is_date ( m.completion_date )
                 WHEN 1 THEN NULL
                 ELSE TO_DATE ( m.completion_date, 'YYYYMMDD' )
             END ),
@@ -511,7 +511,7 @@ BEGIN
     <?php step_end('Delete existing data from bio_data_disease') ?>
 
     FOR study_disease IN
-            SELECT DISTINCT study_id
+            SELECT DISTINCT study_id, disease
             FROM tm_lz.lt_src_study_metadata
             WHERE ( disease IS NOT NULL AND disease::TEXT <> '' ) LOOP
 
@@ -813,13 +813,13 @@ BEGIN
             WHERE ( pubmed_ids IS NOT NULL
                 AND pubmed_ids::TEXT <> '' ) LOOP
 
-        SELECT LENGTH(study_pubmed.pubmed) - LENGTH(REPLACE(study_pubmed.pubmed, ';', '')) + 1
+        SELECT LENGTH(study_pubmed.pubmed_ids) - LENGTH(REPLACE(study_pubmed.pubmed_ids, ';', '')) + 1
             INTO dcount;
 
         WHILE dcount > 0 LOOP
 
             -- multiple pubmed id can be separated by ;, pubmed id and title are separated by :
-            SELECT tm_cz.parse_nth_value(study_pubmed.pubmed, dcount, ';') INTO tmp_pubmed;
+            SELECT tm_cz.parse_nth_value(study_pubmed.pubmed_ids, dcount, ';') INTO tmp_pubmed;
             SELECT tm_cz.instr(tmp_pubmed, ':') INTO lcount;
 
             IF lcount = 0 THEN
@@ -907,11 +907,13 @@ BEGIN
     -- Create i2b2_tags
     <?php step_begin() ?>
     INSERT INTO i2b2metadata.i2b2_tags (
+        tag_id,
         path,
         tag,
         tag_type,
         tags_idx )
     SELECT
+        (select nextval('ont_sq_ps_prid')) as tag_id,
         MIN ( b.c_fullname ) AS path,
         be.accession AS tag,
         'Trial' AS tag_type,
@@ -937,12 +939,14 @@ BEGIN
     -- Insert trial data tags - COMPOUND
     <?php step_begin() ?>
     INSERT INTO i2b2metadata.i2b2_tags (
+        tag_id,
         path,
         tag,
         tag_type,
         tags_idx )
-    SELECT
-        DISTINCT MIN ( o.c_fullname ) AS path,
+    SELECT DISTINCT
+        (select nextval('ont_sq_ps_prid')) as tag_id,
+        MIN ( o.c_fullname ) AS path,
         ( CASE
                 WHEN x.rec_num = 1 THEN c.generic_name
                 ELSE c.brand_name
@@ -990,11 +994,13 @@ BEGIN
 
     <?php step_begin() ?>
     INSERT INTO i2b2metadata.i2b2_tags (
+        tag_id,
         path,
         tag,
         tag_type,
         tags_idx )
     SELECT DISTINCT
+        (select nextval('ont_sq_ps_prid')) as tag_id,
         MIN ( o.c_fullname ) AS path,
         c.prefered_name,
         'Disease' AS tag_type,
