@@ -3,7 +3,6 @@
 --
 CREATE FUNCTION i2b2_create_concept_counts(path character varying, currentjobid numeric DEFAULT (-1)) RETURNS numeric
     LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO tm_cz, i2b2demodata, i2b2metadata, pg_temp
     AS $$
 /*************************************************************************
 * Copyright 2008-2012 Janssen Research & Development, LLC.
@@ -21,7 +20,7 @@ CREATE FUNCTION i2b2_create_concept_counts(path character varying, currentjobid 
 * limitations under the License.
 ******************************************************************/
 Declare
-
+ 
 	--Audit variables
 	newJobFlag		integer;
 	databaseName 	VARCHAR(100);
@@ -32,9 +31,9 @@ Declare
 	errorNumber		character varying;
 	errorMessage	character varying;
 	rtnCd			numeric;
-
+  
 BEGIN
-
+     
 	--Set Audit Parameters
 	newJobFlag := 0; -- False (Default)
 	jobID := currentJobID;
@@ -49,9 +48,9 @@ BEGIN
 		newJobFlag := 1; -- True
 		select tm_cz.cz_start_audit (procedureName, databaseName) into jobID;
 	END IF;
-
+    	
 	stepCt := 0;
-
+  
 	begin
 	delete from i2b2demodata.concept_counts
 	where concept_path like path || '%' escape '`';
@@ -92,7 +91,7 @@ BEGIN
 	  and la.c_basecode = tpm.concept_cd   -- outer join in oracle ???
 	group by fa.c_fullname
 			,ltrim(SUBSTR(fa.c_fullname, 1,instr(fa.c_fullname, '\',-1,2)));
-	get diagnostics rowCt := ROW_COUNT;
+	get diagnostics rowCt := ROW_COUNT;		
 	exception
 	when others then
 		errorNumber := SQLSTATE;
@@ -105,7 +104,7 @@ BEGIN
 	end;
 	stepCt := stepCt + 1;
 	select tm_cz.cz_write_audit(jobId,databaseName,procedureName,'Insert counts for trial into I2B2DEMODATA concept_counts',rowCt,stepCt,'Done') into rtnCd;
-
+	
 	--SET ANY NODE WITH MISSING OR ZERO COUNTS TO HIDDEN
 
 	begin
@@ -122,7 +121,7 @@ BEGIN
 					and zc.patient_count = 0)
 			  )
 		and c_name != 'SECURITY';
-	get diagnostics rowCt := ROW_COUNT;
+	get diagnostics rowCt := ROW_COUNT;	
 	exception
 	when others then
 		errorNumber := SQLSTATE;
@@ -135,7 +134,7 @@ BEGIN
 	end;
 	stepCt := stepCt + 1;
 	select tm_cz.cz_write_audit(jobId,databaseName,procedureName,'Nodes hidden with missing/zero counts for trial into I2B2DEMODATA concept_counts',rowCt,stepCt,'Done') into rtnCd;
-
+		
 	---Cleanup OVERALL JOB if this proc is being run standalone
 	IF newJobFlag = 1
 	THEN
