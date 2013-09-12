@@ -14,6 +14,7 @@ EXPRESSION_PARAMS_FILES := $(wildcard ../common/*/expression.params)
 ANALYSIS_PARAMS_FILES := $(wildcard ../common/*/analysis.params)
 ACGH_PARAMS_FILES := $(wildcard ../common/*/acgh.params)
 STUDY_METADATA_PARAMS_FILES := $(wildcard ../common/*/study_metadata.params)
+SNP_ANNOTATION_PARAMS_FILES := $(wildcard ../common/*/snp_annotation.params)
 
 LOAD_CLINICAL_TARGETS := $(patsubst ../common/%/clinical.params,load_clinical_%, $(CLINICAL_PARAMS_FILES))
 LOAD_ANNOTATION_TARGETS := $(patsubst ../common/%/annotation.params,load_annotation_%, $(ANNOTATION_PARAMS_FILES))
@@ -22,10 +23,17 @@ LOAD_EXPRESSION_PARAMS_TARGETS := $(patsubst ../common/%/expression.params,load_
 LOAD_ANALYSIS_PARAMS_TARGETS := $(patsubst ../common/%/analysis.params,load_analysis_%, $(ANALYSIS_PARAMS_FILES))
 LOAD_ACGH_PARAMS_TARGETS := $(patsubst ../common/%/acgh.params,load_acgh_%, $(ACGH_PARAMS_FILES))
 LOAD_STUDY_METADATA_PARAMS_TARGETS := $(patsubst ../common/%/study_metadata.params,load_study_metadata_%, $(STUDY_METADATA_PARAMS_FILES))
+LOAD_SNP_ANNOTATION_PARAMS_TARGETS := $(patsubst ../common/%/snp_annotation.params,load_snp_annotation_%, $(SNP_ANNOTATION_PARAMS_FILES))
 
 KETTLE_TARGETS := $(LOAD_CLINICAL_TARGETS) $(LOAD_EXPRESSION_PARAMS_TARGETS) $(LOAD_ANALYSIS_PARAMS_TARGETS) $(LOAD_ACGH_PARAMS_TARGETS) $(LOAD_STUDY_METADATA_PARAMS_TARGETS)
-
 $(KETTLE_TARGETS): write_kettle_properties
+
+LOADER_SH = ../common/transmart-loader/loader.sh
+$(LOADER_SH):
+	$(MAKE) -C ../common/transmart-loader loader.sh
+
+$(LOAD_SNP_ANNOTATION_PARAMS_TARGETS): $(LOADER_SH)
+
 #these ones are here just for autocompletion:
 $(LOAD_ANNOTATION_TARGETS):
 $(LOAD_REF_ANNOTATION_TARGETS):
@@ -68,6 +76,14 @@ load_study_metadata_%: ../common/%/study_metadata
 			KETTLE_HOME="$(realpath kettle-home)" \
 			./load_study_metadata.sh $<
 
+loader_Common.properties: loader_Common_properties.php
+	php -d variables_order=E $< > $@
+load_snp_annotation_%: ../common/%/snp_annotation loader_Common.properties
+	mkdir -p ../common/$*/snp_annotation/conf logs
+	cp loader_Common.properties ../common/$*/snp_annotation/conf/Common.properties
+	$(MAKE) -C ../common load_snp_annotation_$* 2>&1 | \
+			tee logs/load_$*_snp_annotation_$(shell date +"%Y%m%d%H%M").log
+
 ../common/%/clinical: ../common/Makefile
 	$(MAKE) -C ../common $*/clinical
 
@@ -85,6 +101,9 @@ load_study_metadata_%: ../common/%/study_metadata
 
 ../common/%/study_metadata: ../common/Makefile
 	$(MAKE) -C ../common $*/study_metadata
+
+../common/%/snp_annotation: ../common/Makefile
+	$(MAKE) -C ../common $*/snp_annotation
 	
 clean:
 	rm -f logs/*.log kettle-home/kettle.properties
