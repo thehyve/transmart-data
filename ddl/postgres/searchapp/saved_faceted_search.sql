@@ -9,7 +9,9 @@ CREATE TABLE saved_faceted_search (
     create_dt date DEFAULT now(),
     modified_dt date,
     search_type character varying(50) DEFAULT 'FACETED_SEARCH'::character varying NOT NULL,
-    analysis_ids character varying(4000)
+    analysis_ids character varying(4000),
+    description character varying(500),
+    criteria character varying(200)
 );
 
 --

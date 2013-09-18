@@ -7,7 +7,8 @@ CREATE TABLE search_keyword_term (
     rank bigint,
     search_keyword_term_id bigint NOT NULL,
     term_length bigint,
-    owner_auth_user_id bigint
+    owner_auth_user_id bigint,
+    data_category character varying(50)
 );
 
 --
