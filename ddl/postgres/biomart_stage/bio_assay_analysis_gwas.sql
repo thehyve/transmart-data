@@ -7,6 +7,8 @@ CREATE TABLE bio_assay_analysis_gwas (
     rs_id character varying(50),
     p_value_char character varying(100),
     etl_id bigint,
-    ext_data character varying(4000)
+    ext_data character varying(4000),
+    log_p_value double precision,
+    p_value double precision
 );
 
