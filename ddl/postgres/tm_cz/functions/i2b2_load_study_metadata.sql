@@ -70,13 +70,13 @@ BEGIN
     BEGIN
     DELETE
     FROM
-        lz_src_study_metadata
+        tm_lz.lz_src_study_metadata
     WHERE
         study_id IN (
             SELECT
                 DISTINCT study_id
             FROM
-                lt_src_study_metadata );
+                tm_lz.lt_src_study_metadata );
     GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
         'Delete existing metadata in lz_src_study_metadata', rowCt, stepCt, 'Done');
@@ -92,12 +92,12 @@ BEGIN
 
     --    insert metadata into lz_src_study_metadata
     BEGIN
-    INSERT INTO lz_src_study_metadata
+    INSERT INTO tm_lz.lz_src_study_metadata
     SELECT
         x.*,
         upload_date
     FROM
-        lt_src_study_metadata x;
+        tm_lz.lt_src_study_metadata x;
     GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
         'Insert data into lz_src_study_metadata from lt_src_study_metadata', rowCt, stepCt, 'Done');
@@ -115,13 +115,13 @@ BEGIN
     BEGIN
     DELETE
     FROM
-        lz_src_study_metadata_ad_hoc
+        tm_lz.lz_src_study_metadata_ad_hoc
     WHERE
         study_id IN (
             SELECT
                 DISTINCT study_id
             FROM
-                lt_src_study_metadata );
+                tm_lz.lt_src_study_metadata );
 
     GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
@@ -138,12 +138,12 @@ BEGIN
 
     --    insert metadata into lz_src_study_metadata_ad_hoc
     BEGIN
-    INSERT INTO lz_src_study_metadata_ad_hoc
+    INSERT INTO tm_lz.lz_src_study_metadata_ad_hoc
     SELECT
         x.*,
         upload_date
     FROM
-        lt_src_study_metadata_ad_hoc x;
+        tm_lz.lt_src_study_metadata_ad_hoc x;
     GET DIAGNOSTICS rowCt := ROW_COUNT;
 	PERFORM cz_write_audit(jobId, databaseName, procedureName,
         'Insert data in lz_src_study_metadata_ad_hoc', rowCt, stepCt, 'Done');
@@ -370,7 +370,7 @@ BEGIN
         m.country,
         m.institution
     FROM
-        lt_src_study_metadata m
+        tm_lz.lt_src_study_metadata m
     WHERE ( m.study_id IS NOT NULL
         AND m.study_id::TEXT <> '' )
         AND NOT EXISTS (
@@ -510,7 +510,7 @@ BEGIN
         'EXP'
     FROM
         biomart.bio_experiment b,
-        lt_src_study_metadata m
+        tm_lz.lt_src_study_metadata m
     WHERE ( m.study_id IS NOT NULL
         AND m.study_id ::TEXT <> '' )
         AND m.study_id = b.accession
@@ -689,7 +689,7 @@ BEGIN
 
             --    add new disease
             BEGIN
-            INSERT INTO bio_disease (
+            INSERT INTO biomart.bio_disease (
                 disease,
                 prefered_name )
             SELECT
@@ -720,7 +720,7 @@ BEGIN
 
             --    Insert new trial data into bio_data_disease
             BEGIN
-            INSERT INTO bio_data_disease (
+            INSERT INTO biomart.bio_data_disease (
                 bio_data_id,
                 bio_disease_id,
                 etl_source )
@@ -883,7 +883,7 @@ BEGIN
         COUNT ( * )
     INTO dcount
     FROM
-        bio_content_repository
+        biomart.bio_content_repository
     WHERE
         repository_type = 'NCBI'
         AND location_type = 'URL';
@@ -916,7 +916,7 @@ BEGIN
 
     --    insert GSE studies into bio_content
     BEGIN
-    INSERT INTO bio_content (
+    INSERT INTO biomart.bio_content (
         repository_id,
         location,
         file_type,
@@ -957,7 +957,7 @@ BEGIN
 
     --    insert GSE studies into bio_content_reference
     BEGIN
-    INSERT INTO bio_content_reference (
+    INSERT INTO biomart.bio_content_reference (
         bio_content_id,
         bio_data_id,
         content_reference_type,
@@ -1142,7 +1142,7 @@ BEGIN
                     SELECT
                         1
                     FROM
-                        bio_content x
+                        biomart.bio_content x
                     WHERE
                         x.etl_id_c LIKE '%' || study_pubmed.study_id || '%'
                         AND x.file_type = 'Publication Web Link'
@@ -1232,7 +1232,7 @@ BEGIN
         tag_type,
         tags_idx )
     SELECT
-        (select nextval('ont_sq_ps_prid')) as tag_id,
+        (select nextval('i2b2metadata.ont_sq_ps_prid')) as tag_id,
         MIN ( b.c_fullname ) AS path,
         be.accession AS tag,
         'Trial' AS tag_type,
@@ -1286,7 +1286,7 @@ BEGIN
         tag_type,
         tags_idx )
     SELECT DISTINCT
-        (select nextval('ont_sq_ps_prid')) as tag_id,
+        (select nextval('i2b2metadata.ont_sq_ps_prid')) as tag_id,
         MIN ( o.c_fullname ) AS path,
         ( CASE
                 WHEN x.rec_num = 1 THEN c.generic_name
@@ -1363,7 +1363,7 @@ BEGIN
         tag_type,
         tags_idx )
     SELECT DISTINCT
-        (select nextval('ont_sq_ps_prid')) as tag_id,
+        (select nextval('i2b2metadata.ont_sq_ps_prid')) as tag_id,
         MIN ( o.c_fullname ) AS path,
         c.prefered_name,
         'Disease' AS tag_type,
