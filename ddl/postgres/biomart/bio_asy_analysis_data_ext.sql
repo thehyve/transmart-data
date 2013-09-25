@@ -10,6 +10,6 @@ CREATE TABLE bio_asy_analysis_data_ext (
 --
 -- Name: bio_asy_analysis_data_ext_bio_asy_analysis_data_id_fkey; Type: FK CONSTRAINT; Schema: biomart; Owner: -
 --
-ALTER TABLE ONLY bio_asy_analysis_data_ext
-    ADD CONSTRAINT bio_asy_analysis_data_ext_bio_asy_analysis_data_id_fkey FOREIGN KEY (bio_asy_analysis_data_id) REFERENCES bio_assay_analysis_gwas(bio_asy_analysis_gwas_id);
+--ALTER TABLE ONLY bio_asy_analysis_data_ext
+--    ADD CONSTRAINT bio_asy_analysis_data_ext_bio_asy_analysis_data_id_fkey FOREIGN KEY (bio_asy_analysis_data_id) REFERENCES bio_assay_analysis_gwas(bio_asy_analysis_gwas_id);
 

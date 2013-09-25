@@ -60,7 +60,7 @@ BEGIN
                 lz.etl_id,
                 lz.study_id,
                 CASE
-                    WHEN lz.data_type = 'Metabolic GWAS'
+                    WHEN lz.data_type in ('GWAS', 'Metabolic GWAS')
                     THEN 'GWAS'
                     ELSE lz.data_type
                 END AS data_type,
@@ -216,14 +216,14 @@ BEGIN
         stepCt := stepCt + 1;
     END IF;
 
-    MOVE FIRST FROM stage_curs;
+    MOVE BACKWARD ALL FROM stage_curs;
     LOOP
         FETCH stage_curs INTO stage_rec;
         EXIT WHEN NOT FOUND;
 
         PERFORM tm_cz.cz_write_audit(jobId, databaseName, procedureName,
                 'Loading ' || stage_rec.study_id || ' ' || stage_rec.orig_data_type || ' ' ||
-                stage_rec.analysis_name, 0, stepCt, 'Starting');
+                stage_rec.analysis_name || ' ' || stage_rec.bio_assay_analysis_id, 0, stepCt, 'Starting');
         stepCt := stepCt + 1;
 
         v_etl_id                := stage_rec.etl_id;
@@ -429,7 +429,7 @@ BEGIN
     END IF;
 
     --Insert data_count to bio_assay_analysis table. added by Haiyan Zhang 01/22/2013
-    MOVE FIRST FROM stage_curs;
+    MOVE BACKWARD ALL FROM stage_curs;
     LOOP
         FETCH stage_curs INTO stage_rec;
         EXIT WHEN NOT FOUND;

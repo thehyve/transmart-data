@@ -17,7 +17,8 @@ BEGIN
     exceptions := ARRAY[
         -- schema, object, owner
         ['biomart', 'heat_map_results',            'tm_cz'],
-        ['deapp',   'de_subject_microarray_data',  'tm_cz'],
+        ['biomart', 'bio_assay_analysis_gwas',     'tm_cz'],
+	['deapp',   'de_subject_microarray_data',  'tm_cz'],
         ['deapp',   'de_subject_acgh_data',        'tm_cz'],
         ['tm_wz',   'wt_subject_microarray_logs',  'tm_cz'],
         ['tm_wz',   'wt_subject_microarray_calcs', 'tm_cz']

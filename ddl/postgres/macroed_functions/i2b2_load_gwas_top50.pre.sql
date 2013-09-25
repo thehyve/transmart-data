@@ -13,7 +13,8 @@ BEGIN
 
     -- Create temporary table tmp_analysis_gwas_top500
     <?php step_begin() ?>
-    CREATE TABLE tmp_analysis_gwas_top500 AS
+    DROP TABLE IF EXISTS biomart.tmp_analysis_gwas_top500;
+    CREATE TABLE biomart.tmp_analysis_gwas_top500 AS
     SELECT
         a.*
     FROM (
@@ -42,14 +43,14 @@ BEGIN
 
     -- Create indexes on tmp_analysis_gwas_top500
     <?php step_begin() ?>
-    CREATE INDEX t_a_g_t500_idx ON tmp_analysis_gwas_top500(rs_id);
-    CREATE INDEX t_a_ga_t500_idx ON tmp_analysis_gwas_top500(bio_assay_analysis_id);
+    CREATE INDEX biomart.t_a_g_t500_idx ON tmp_analysis_gwas_top500(rs_id);
+    CREATE INDEX biomart.t_a_ga_t500_idx ON tmp_analysis_gwas_top500(bio_assay_analysis_id);
     <?php step_end('Create indexes on tmp_analysis_gwas_top500', 0) ?>
 
     -- Drop table biomart.bio_asy_analysis_gwas_top50
     <?php step_begin() ?>
-    SELECT COUNT(*) INTO rowCt FROM biomart.bio_asy_analysis_gwas_top50;
-    DROP TABLE biomart.bio_asy_analysis_gwas_top50;
+    --SELECT COUNT(*) INTO rowCt FROM biomart.bio_asy_analysis_gwas_top50;
+    DROP TABLE IF EXISTS biomart.bio_asy_analysis_gwas_top50;
     <?php step_end('Drop table biomart.bio_asy_analysis_gwas_top50', 'rowCt') ?>
 
     -- Recreate table biomart.bio_asy_analysis_gwas_top50
@@ -60,7 +61,7 @@ BEGIN
         baa.analysis_name AS analysis,
         info.chrom AS chrom,
         info.pos AS pos,
-        gmap.gene_name AS rsgene,
+        gmap.snp_name AS rsgene,
         DATA.rs_id AS rsid,
         DATA.p_value AS pvalue,
         DATA.log_p_value AS logpvalue,
@@ -70,7 +71,7 @@ BEGIN
         biomart.tmp_analysis_gwas_top500 DATA
         JOIN biomart.bio_assay_analysis baa ON baa.bio_assay_analysis_id = DATA.bio_assay_analysis_id
         JOIN deapp.de_rc_snp_info info ON DATA.rs_id = info.rs_id
-            AND ( hg_version = 19 )
+            AND ( hg_version = '19' )
         LEFT JOIN deapp.de_snp_gene_map gmap ON gmap.snp_name = info.rs_id;
     <?php step_end('Recreate table biomart.bio_asy_analysis_gwas_top50') ?>
 
