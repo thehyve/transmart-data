@@ -76,8 +76,8 @@ BEGIN
 
     -- Create indexes on tmp_analysis_gwas_top500
     BEGIN
-    CREATE INDEX biomart.t_a_g_t500_idx ON tmp_analysis_gwas_top500(rs_id);
-    CREATE INDEX biomart.t_a_ga_t500_idx ON tmp_analysis_gwas_top500(bio_assay_analysis_id);
+    CREATE INDEX t_a_g_t500_idx ON biomart.tmp_analysis_gwas_top500(rs_id);
+    CREATE INDEX t_a_ga_t500_idx ON biomart.tmp_analysis_gwas_top500(bio_assay_analysis_id);
     PERFORM cz_write_audit(jobId, databaseName, procedureName,
         'Create indexes on tmp_analysis_gwas_top500', 0, stepCt, 'Done');
     stepCt := stepCt + 1;

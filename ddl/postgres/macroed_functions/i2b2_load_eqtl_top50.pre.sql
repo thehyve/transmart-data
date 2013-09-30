@@ -50,7 +50,7 @@ BEGIN
     -- Create temporary table tmp_analysis_eqtl_top500
     <?php step_begin() ?>
     DROP TABLE IF EXISTS tmp_analysis_eqtl_top500;
-    CREATE TABLE tmp_analysis_eqtl_top500 AS
+    CREATE TABLE biomart.tmp_analysis_eqtl_top500 AS
     SELECT
         a.*
     FROM (
@@ -109,7 +109,7 @@ BEGIN
         DATA.ext_data AS extdata,
         DATA.rnum
     FROM
-        tmp_analysis_eqtl_top500 DATA
+        biomart.tmp_analysis_eqtl_top500 DATA
         JOIN biomart.bio_assay_analysis baa ON baa.bio_assay_analysis_id = DATA.bio_assay_analysis_id
         JOIN deapp.de_rc_snp_info info ON DATA.rs_id = info.rs_id
             AND ( hg_version = '19' )
