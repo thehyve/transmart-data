@@ -21,7 +21,10 @@ CREATE TABLE de_variant_subject_summary (
     variant character varying(1000),
     variant_format character varying(100),
     variant_type character varying(100),
-    reference boolean
+    reference boolean,
+    allele1 integer,
+    allele2 integer,
+    assay_id bigint
 );
 
 --
@@ -34,6 +37,11 @@ COMMENT ON COLUMN de_variant_subject_summary.reference IS 'This column contains 
 --
 ALTER TABLE ONLY de_variant_subject_summary
     ADD CONSTRAINT variant_subject_summary_id PRIMARY KEY (variant_subject_summary_id);
+
+--
+-- Name: de_variant_subject_summary_assay_id_idx; Type: INDEX; Schema: deapp; Owner: -
+--
+CREATE INDEX de_variant_subject_summary_assay_id_idx ON de_variant_subject_summary USING btree (assay_id);
 
 --
 -- Name: variant_subject_summary_uk; Type: INDEX; Schema: deapp; Owner: -
