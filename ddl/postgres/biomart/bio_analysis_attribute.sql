@@ -22,7 +22,7 @@ CREATE FUNCTION trg_bio_analysis_att_baal_fun() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-    insert into BIO_ANALYSIS_ATTRIBUTE_LINEAGE 
+    insert into biomart.BIO_ANALYSIS_ATTRIBUTE_LINEAGE 
     (BIO_ANALYSIS_ATTRIBUTE_ID, ANCESTOR_TERM_ID, ANCESTOR_SEARCH_KEYWORD_ID)
     SELECT NEW.BIO_ANALYSIS_ATTRIBUTE_ID, skl.ancestor_id, skl.search_keyword_id 
     FROM searchapp.solr_keywords_lineage skl
