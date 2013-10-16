@@ -1,2 +1,2 @@
-kettle-home/kettle.properties
-/loader_Common.properties
+/kettle-home/kettle.properties
+/postgresql-*.jar

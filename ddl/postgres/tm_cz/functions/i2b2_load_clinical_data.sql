@@ -145,7 +145,10 @@ BEGIN
 	,subject_id
 	,visit_name
 	,data_label
+        ,modifier_cd
 	,data_value
+        ,units_cd
+        ,date_timestamp
 	,category_cd
 	,etl_job_id
 	,etl_date
@@ -155,7 +158,10 @@ BEGIN
 		  ,subject_id
 		  ,visit_name
 		  ,data_label
+                  ,modifier_cd
 		  ,data_value
+                  ,units_cd
+                  ,date_timestamp
 		  ,category_cd
 		  ,jobId
 		  ,etlDate
@@ -188,7 +194,10 @@ BEGIN
 	,subject_id
 	,visit_name
 	,data_label
+        ,modifier_cd
 	,data_value
+        ,units_cd
+        ,date_timestamp
 	,category_cd
 	,ctrl_vocab_code
 	)
@@ -197,7 +206,10 @@ BEGIN
 		  ,subject_id
 		  ,visit_name
 		  ,data_label
+                  ,modifier_cd
 		  ,data_value
+                  ,units_cd
+                  ,date_timestamp
 		  ,category_cd
 		  ,ctrl_vocab_code
 	from tm_lz.lt_src_clinical_data;
@@ -585,8 +597,9 @@ BEGIN
 	,subject_id
 	,visit_name
 	,data_label
-	,category_cd)
-	select w.site_id, w.subject_id, w.visit_name, w.data_label, w.category_cd
+	,category_cd
+        ,modifier_cd)
+	select w.site_id, w.subject_id, w.visit_name, w.data_label, w.category_cd, w.modifier_cd
 	from tm_wz.wrk_clinical_data w
 	where exists
 		 (select 1 from tm_wz.wt_num_data_types t
@@ -594,7 +607,7 @@ BEGIN
 		   and coalesce(w.data_label,'@') = coalesce(t.data_label,'@')
 		   and coalesce(w.visit_name,'@') = coalesce(t.visit_name,'@')
 		  )
-	group by w.site_id, w.subject_id, w.visit_name, w.data_label, w.category_cd
+	group by w.site_id, w.subject_id, w.visit_name, w.data_label, w.category_cd, w.modifier_cd
 	having count(*) > 1;
 	get diagnostics rowCt := ROW_COUNT;
 	exception
@@ -943,7 +956,7 @@ BEGIN
 	with ncd as (select t.leaf_node, t.node_name, t.data_type from tm_wz.wt_trial_nodes t)
 	update i2b2metadata.i2b2
 	set c_name=ncd.node_name
-	   ,c_columndatatype=ncd.data_type
+	   ,c_columndatatype='T'
 	   ,c_metadataxml=case when ncd.data_type = 'T'
 					  then null
 					  else '<?xml version="1.0"?><ValueMetadata><Version>3.02</Version><CreationDateTime>08/14/2008 01:22:59</CreationDateTime><TestID></TestID><TestName></TestName><DataType>PosFloat</DataType><CodeType></CodeType><Loinc></Loinc><Flagstouse></Flagstouse><Oktousevalues>Y</Oktousevalues><MaxStringLength></MaxStringLength><LowofLowValue>0</LowofLowValue><HighofLowValue>0</HighofLowValue><LowofHighValue>100</LowofHighValue>100<HighofHighValue>100</HighofHighValue><LowofToxicValue></LowofToxicValue><HighofToxicValue></HighofToxicValue><EnumValues></EnumValues><CommentsDeterminingExclusion><Com></Com></CommentsDeterminingExclusion><UnitValues><NormalUnits>ratio</NormalUnits><EqualUnits></EqualUnits><ExcludingUnits></ExcludingUnits><ConvertingUnits><Units></Units><MultiplyingFactor></MultiplyingFactor></ConvertingUnits></UnitValues><Analysis><Enums /><Counts /><New /></Analysis></ValueMetadata>'
@@ -1084,6 +1097,7 @@ BEGIN
      valtype_cd,
      tval_char,
      nval_num,
+     units_cd,
      sourcesystem_cd,
      import_date,
      valueflag_cd,
@@ -1094,8 +1108,8 @@ BEGIN
 	select distinct c.patient_num,
 		   c.patient_num,
 		   i.c_basecode,
-		   current_timestamp,
-		   a.study_id,
+		   coalesce(a.date_timestamp, 'infinity'),
+		   coalesce(a.modifier_cd, '@'),
 		   a.data_type,
 		   case when a.data_type = 'T' then a.data_value
 				else 'E'  --Stands for Equals for numeric types
@@ -1103,6 +1117,7 @@ BEGIN
 		   case when a.data_type = 'N' then a.data_value::numeric
 				else null --Null for text types
 				end,
+                   a.units_cd,
 		   a.study_id, 
 		   current_timestamp, 
 		   '@',
