@@ -129,10 +129,17 @@
 				<field name="SIGGENE" column="search_keyword_id" />
             </entity>
 
-            <entity name="anysignificantgenes" query="SELECT case count(distinct search_keyword_id) when 0 then 0 else 1 end ANY_SIGNIFICANT_GENES
-                           FROM heat_map_results
-                           WHERE bio_assay_analysis_id='${analysis.bio_assay_analysis_id}'
-						   AND significant=1">
+			<entity name="anysignificantgenes" query="
+SELECT (CASE bool_or(ex) WHEN true THEN 1 ELSE 0 END) AS ANY_SIGNIFICANT_GENES
+FROM (
+	SELECT EXISTS (SELECT * FROM heat_map_results
+			WHERE bio_assay_analysis_id='${analysis.bio_assay_analysis_id}'
+			AND significant=1)
+	UNION
+	SELECT EXISTS (SELECT * FROM bio_assay_analysis
+			WHERE bio_assay_analysis_id='${analysis.bio_assay_analysis_id}'
+			AND bio_assay_data_type <> 'mRNA expression')
+) AS A(ex)">
 				<field name="ANY_SIGNIFICANT_GENES" column="any_significant_genes" />
             </entity>
 
