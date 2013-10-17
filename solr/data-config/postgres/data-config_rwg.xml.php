@@ -138,7 +138,7 @@ FROM (
 	UNION
 	SELECT EXISTS (SELECT * FROM bio_assay_analysis
 			WHERE bio_assay_analysis_id='${analysis.bio_assay_analysis_id}'
-			AND bio_assay_data_type <> 'mRNA expression')
+			AND bio_assay_data_type != 'mRNA expression')
 ) AS A(ex)">
 				<field name="ANY_SIGNIFICANT_GENES" column="any_significant_genes" />
             </entity>
