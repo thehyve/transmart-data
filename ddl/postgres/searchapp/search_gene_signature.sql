@@ -44,7 +44,22 @@ CREATE TABLE search_gene_signature (
     upload_file character varying(255) NOT NULL,
     search_gene_sig_file_schema_id bigint DEFAULT 1,
     fold_chg_metric_concept_id bigint,
-    experiment_type_cell_line_id bigint
+    experiment_type_cell_line_id bigint,
+    qc_performed numeric(1,0),
+    qc_date date,
+    qc_info character varying(255),
+    data_source character varying(255),
+    custom_value1 character varying(255),
+    custom_name1 character varying(255),
+    custom_value2 character varying(255),
+    custom_name2 character varying(255),
+    custom_value3 character varying(255),
+    custom_name3 character varying(255),
+    custom_value4 character varying(255),
+    custom_name4 character varying(255),
+    custom_value5 character varying(255),
+    custom_name5 character varying(255),
+    version character varying(255)
 );
 
 --

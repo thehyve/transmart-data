@@ -27,6 +27,12 @@ CREATE TABLE observation_fact (
 );
 
 --
+-- Name: observation_fact_pkey; Type: CONSTRAINT; Schema: i2b2demodata; Owner: -
+--
+ALTER TABLE ONLY observation_fact
+    ADD CONSTRAINT observation_fact_pkey PRIMARY KEY (patient_num, concept_cd, provider_id, modifier_cd);
+
+--
 -- Name: fact_modifier_patient; Type: INDEX; Schema: i2b2demodata; Owner: -
 --
 CREATE INDEX fact_modifier_patient ON observation_fact USING btree (modifier_cd, patient_num);

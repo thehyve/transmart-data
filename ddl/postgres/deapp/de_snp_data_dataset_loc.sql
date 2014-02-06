@@ -8,3 +8,9 @@ CREATE TABLE de_snp_data_dataset_loc (
     location bigint
 );
 
+--
+-- Name: fk_snp_loc_dataset_id; Type: FK CONSTRAINT; Schema: deapp; Owner: -
+--
+ALTER TABLE ONLY de_snp_data_dataset_loc
+    ADD CONSTRAINT fk_snp_loc_dataset_id FOREIGN KEY (snp_dataset_id) REFERENCES de_subject_snp_dataset(subject_snp_dataset_id);
+

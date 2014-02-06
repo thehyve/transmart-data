@@ -26,6 +26,7 @@ CREATE TABLE i2b2 (
     valuetype_cd character varying(50),
     m_exclusion_cd character varying(25),
     c_path character varying(700),
-    c_symbol character varying(50)
+    c_symbol character varying(50),
+    i2b2_id bigint
 );
 

@@ -12,6 +12,16 @@ CREATE AGGREGATE median(anyelement) (
 SET default_with_oids = false;
 
 --
+-- Name: cz_form_layout_seq; Type: SEQUENCE; Schema: tm_cz; Owner: -
+--
+CREATE SEQUENCE cz_form_layout_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
 -- Name: emt_temp_seq; Type: SEQUENCE; Schema: tm_cz; Owner: -
 --
 CREATE SEQUENCE emt_temp_seq

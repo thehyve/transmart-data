@@ -23,7 +23,8 @@ CREATE TABLE bio_assay_analysis (
     data_count bigint,
     tea_data_count bigint,
     analysis_update_date date,
-    lsmean_cutoff double precision
+    lsmean_cutoff double precision,
+    etl_id_source bigint
 );
 
 --
@@ -56,14 +57,4 @@ CREATE TRIGGER trg_bio_assay_analysis_id BEFORE INSERT ON bio_assay_analysis FOR
 --
 ALTER TABLE ONLY bio_assay_analysis
     ADD CONSTRAINT bio_assay_ans_pltfm_fk FOREIGN KEY (bio_asy_analysis_pltfm_id) REFERENCES bio_asy_analysis_pltfm(bio_asy_analysis_pltfm_id);
-
---
--- Name: seq_bio_data_id; Type: SEQUENCE; Schema: biomart; Owner: -
---
-CREATE SEQUENCE seq_bio_data_id
-    START WITH 1082041
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 20;
 

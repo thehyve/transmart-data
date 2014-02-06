@@ -4,6 +4,10 @@
 \i tm_wz/wrk_clinical_data.sql
 \i tm_wz/wrk_mrna_data.sql
 \i tm_wz/wt_clinical_data_dups.sql
+\i tm_wz/wt_clinical_encounter.sql
+\i tm_wz/wt_del_nodes.sql
+\i tm_wz/wt_folder_nodes.sql
+\i tm_wz/wt_mixed_types.sql
 \i tm_wz/wt_mrna_data.sql
 \i tm_wz/wt_mrna_node_values.sql
 \i tm_wz/wt_mrna_nodes.sql
@@ -17,5 +21,7 @@
 \i tm_wz/wt_subject_mrna_data.sql
 \i tm_wz/wt_subject_mrna_probeset.sql
 \i tm_wz/wt_subject_rnaseq_region.sql
+\i tm_wz/wt_subject_sample_mapping.sql
 \i tm_wz/wt_trial_nodes.sql
+\i tm_wz/wt_vocab_nodes.sql
 \i tm_wz/wt_xtrial_nodes.sql

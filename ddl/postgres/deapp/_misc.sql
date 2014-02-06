@@ -1,4 +1,3 @@
-
 --
 -- Name: seq_assay_id; Type: SEQUENCE; Schema: deapp; Owner: -
 --
