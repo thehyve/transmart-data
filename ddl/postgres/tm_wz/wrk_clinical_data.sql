@@ -29,7 +29,8 @@ CREATE TABLE wrk_clinical_data (
     rec_num numeric(18,0),
     valuetype_cd character varying(50),
     leaf_node character varying(2000),
-    modifier_cd     character varying(100),
-    ctrl_vocab_code character varying(200)
+    modifier_cd character varying(100),
+    ctrl_vocab_code character varying(200),
+    date_timestamp timestamp without time zone
 );
 
