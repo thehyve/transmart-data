@@ -22,6 +22,9 @@ CREATE TABLE lz_src_clinical_data (
     visit_reference character varying(100),
     date_ind character(1),
     obs_string character varying(100),
-    valuetype_cd character varying(50)
+    valuetype_cd character varying(50),
+    modifier_cd character varying(100),
+    date_timestamp timestamp without time zone,
+    ctrl_vocab_code character varying(200)
 );
 
