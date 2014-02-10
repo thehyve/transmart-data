@@ -48,17 +48,17 @@ trap 'rm -rf $TEMPDIR' EXIT
 $KITCHEN -norep=Y                                                  \
 -file=$KETTLE_JOBS/load_acgh_data.kjb                              \
 -log='logs/load_'$STUDY_ID'_acgh_data_'$(date +"%Y%m%d%H%M")'.log' \
--param:DATA_FILE_PREFIX=$DATA_FILE_PREFIX                          \
--param:DATA_LOCATION=$DATA_LOCATION                                \
--param:FilePivot_LOCATION=$KETTLE_JOBS'../'                        \
+-param:DATA_FILE_PREFIX="$DATA_FILE_PREFIX"                        \
+-param:DATA_LOCATION="$DATA_LOCATION"                              \
+-param:FilePivot_LOCATION="$KETTLE_JOBS../"                        \
 -param:LOAD_TYPE=I                                                 \
 -param:SAMPLE_REMAP_FILENAME=NOSAMPLEREMAP                         \
 -param:SAMPLE_SUFFIX=.chip                                         \
--param:MAP_FILENAME=$MAP_FILENAME                                  \
--param:SECURITY_REQUIRED=$SECURITY_REQUIRED                        \
--param:SORT_DIR=$TEMPDIR                                           \
+-param:MAP_FILENAME="$MAP_FILENAME"                                \
+-param:SECURITY_REQUIRED="$SECURITY_REQUIRED"                      \
+-param:SORT_DIR="$TEMPDIR"                                         \
 -param:SOURCE_CD=STD                                               \
--param:STUDY_ID=$STUDY_ID                                          \
-"-param:TOP_NODE=$TOP_NODE"
+-param:STUDY_ID="$STUDY_ID"                                        \
+-param:TOP_NODE="$TOP_NODE"
 
 #-param:SQLLDR_PATH=/spin/pg/master/bin/psql \
