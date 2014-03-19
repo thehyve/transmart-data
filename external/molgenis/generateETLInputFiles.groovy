@@ -17,6 +17,8 @@ import org.apache.log4j.Logger
 import org.apache.log4j.PropertyConfigurator
 import org.codehaus.groovy.util.StringUtil
 
+import java.text.MessageFormat
+
 if (args.length < 3) {
     println "Usage generateETLInputFiles.groovy jSessionId datasetId folder"
     return 1
@@ -30,43 +32,68 @@ Map protocolMap = readTsvFileAsMap(new File(baseFolder, "${datasetId}_protocols.
 Map featureMap = readTsvFileAsMap(new File(baseFolder, "${datasetId}_features.tsv"), 0)
 
 List features = featureMap.keySet() as List
-Map protocolCategoryMap = protocolMap.keySet().collectEntries { [ (it) : (getProtocolCategory(it, protocolMap)) ] }
 Map featureLabelMap = featureMap.collectEntries { [ (it.key) : (it.value[1].toString().replace('_',' ')) ] }
-
-//println protocolCategoryMap
-//println featureLabelMap
 
 def cookies = [
         "JSESSIONID=$jSessionId"
 ]
 def cookie = cookies.join(';')
 
-def execute(String path, String cookie) throws IOException {
-    def server = 'http://molgenis01.target.rug.nl'
+def subjectIdPrefix = datasetId.toUpperCase()
+Closure<String> subjectIdFunction = { id ->
+    MessageFormat.format("{0}-{1, number,00000000}", subjectIdPrefix, id)
+}
 
-    def http = new HTTPBuilder(server)
-    def result
+List rows = getAllDataRows(datasetId, subjectIdFunction, cookie, features, featureMap)
+File dataOutputFile = new File(baseFolder, "${datasetId}_data.txt")
+//generates the data file
+writeTsvFile(dataOutputFile, rows, getDataHeader(features, featureLabelMap))
+println "${rows.size()} data rows written to file ${dataOutputFile.absolutePath}"
 
-    http.request(Method.GET) {
-        uri.path = path
-        headers['Cookie'] = cookie
+List mappingRows = getColumnMappingRows(dataOutputFile, features, featureMap, featureLabelMap, protocolMap)
+File columnMappingFile = new File(baseFolder, "${datasetId}_columns.txt")
+//generates the mapping file
+writeTsvFile(columnMappingFile, mappingRows, getColumnMappingHeader())
+println "Column mappings written to file ${columnMappingFile.absolutePath}"
 
-        response.success = { resp, json ->
-            assert resp.statusLine.statusCode == 200
-            result = json
-        }
 
-        response.failure = { resp ->
-            throw new IOException(path + ": "+ resp.statusLine.toString())
-        }
+/******* Methods ********/
+
+List getColumnMappingRows(File dataFile, List features, Map featureMap, Map featureLabelMap, Map protocolMap) {
+
+    Map protocolCategoryMap = protocolMap.keySet().collectEntries { [ (it) : (getProtocolCategory(it, protocolMap)) ] }
+    String filename = dataFile.name
+    String empty = ''
+    int colIndex = 1
+    List result = []
+    result.add([filename, empty, colIndex++, 'SUBJ_ID', empty, empty ])
+
+    List list = features.collect {
+        List md = featureMap.get(it)
+        String protocol = md[2] //parent
+        String category = protocolCategoryMap.get(protocol)
+        String label = featureLabelMap.get(it)
+        [filename, category, colIndex++, featureLabelMap.get(it), empty, empty]
     }
+
+    result.addAll(list)
 
     result
 }
 
+def getColumnMappingHeader() {
+    [
+            'Filename',
+            'Category Code',
+            'Column Number',
+            'Data Label',
+            'Data Label Source',
+            'Controlled Vocab Code',
+    ]
+}
+
 String getAttributeFilter(List features) {
     String featureIds = features.join(',')
-    //"/api/v1/$datasetId?" +
     "attributes=$featureIds"
 }
 
@@ -81,6 +108,9 @@ Map readTsvFileAsMap(File file, int keyColumn) {
     file.withReader { reader ->
         reader.readLine() //skip header
         while (line = reader.readLine()) {
+            if (line.startsWith("#")) {
+                continue //commented
+            }
             List entry = line.split('\t') as List
             result.put(entry[keyColumn], entry)
         }
@@ -89,17 +119,15 @@ Map readTsvFileAsMap(File file, int keyColumn) {
     result
 }
 
-List getAllDataRows(String datasetId, String cookie, List features) {
+List getAllDataRows(String datasetId, Closure<String> subjectIdFunction, String cookie, List features, Map featureMap) {
     List result = []
     String attributeFilter = getAttributeFilter(features)
     String dataUrl = "/api/v1/$datasetId?$attributeFilter"
     boolean done = false
-    String idPrefix = "${datasetId.toUpperCase()}_"
 
     while (!done) {
         Map data = execute(dataUrl, cookie)
-    println data
-        result.addAll(getDataRows(data), )
+        result.addAll(data.items.collect { createDataRow(it, subjectIdFunction, features, featureMap) })
 
         String next = data.nextHref
         if (next) {
@@ -113,26 +141,50 @@ List getAllDataRows(String datasetId, String cookie, List features) {
     result
 }
 
-
-List getDataRows(Map inputJson, String idPrefix) {
+List createDataRow(Map inputRow, Closure<String> subjectIdFunction, List features, Map featureMap) {
     List result = []
+    result.add subjectIdFunction(getRowId(inputRow))
 
+    for (String attr: features) {
+        result.add(getTargetValue(inputRow, attr, featureMap))
+    }
     result
 }
-/*
-List createDataRow(String idPrefix, Map inputRow, List features, Map featureLabelMap) {
+
+List getDataHeader(List features, Map featureLabelMap) {
     List result = []
-
-
-    result.add getRowId(inputRow)
-    for (String feature: fea)
-
+    result.add 'Subject'
+    result.addAll(features.collect { featureLabelMap.get(it) } )
+    result
 }
 
 def getTargetValue(Map inputRow, String attr, Map featureMap) {
-
+    String type = featureMap.get(attr)[3]
+    Object inputValue = inputRow.get(attr)
+    convertValue(inputValue, type)
 }
-*/
+
+def convertValue(Object inputValue, String molgenisType) {
+    switch (molgenisType.toUpperCase()) {
+        case 'BOOL':
+            return Boolean.valueOf(inputValue.toString()) ? 1 : 0
+        case 'DATE':
+            return parseMillis(inputValue)
+        case 'DATE_TIME':
+            return parseMillis(inputValue)
+        case 'CATEGORICAL':
+        case 'XREF':
+        case 'MREF':
+            return inputValue.href
+        default:
+            return inputValue; //no conversion needed
+    }
+}
+
+def parseMillis(String value) {
+    //example date: '1986-08-27T00:00:00+0200'
+    Date.parse("yyyy-MM-dd'T'HH:mm:ssZ", value).time
+}
 
 int getRowId(Map row) {
     String href = row.href
@@ -161,4 +213,40 @@ boolean isEmpty(String str) {
     return !str || "null" == str || str.trim().length() == 0
 }
 
+/******* Methods to move to common script ********/
 
+def execute(String path, String cookie) throws IOException {
+    def server = 'http://molgenis01.target.rug.nl'
+
+    def http = new HTTPBuilder(server)
+    def result
+
+    http.request(Method.GET) {
+        uri.path = path
+        headers['Cookie'] = cookie
+
+        response.success = { resp, json ->
+            assert resp.statusLine.statusCode == 200
+            result = json
+        }
+
+        response.failure = { resp ->
+            throw new IOException(path + ": "+ resp.statusLine.toString())
+        }
+    }
+
+    result
+}
+
+def asTsv(List entry) {
+    entry.join('\t')
+}
+
+def writeTsvFile(File file, List entries, List header) {
+    file.withWriter { out ->
+        out.println asTsv(header)
+        entries.each { List line ->
+            out.println(asTsv(line))
+        }
+    }
+}

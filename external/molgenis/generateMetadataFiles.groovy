@@ -63,7 +63,7 @@ println "Output folder is $targetFolder"
 
 writeTsvFile(protocolsFile, protocolEntries, ['Name','Label','Parent'])
 
-writeTsvFile(featuresFile, featureEntries, ['Name','Label','Parent','Type','Category'])
+writeTsvFile(featuresFile, featureEntries, ['Name','Label','Parent','Type'])
 
 /**
  * Recursively populates the given protocol and feature entry lists.

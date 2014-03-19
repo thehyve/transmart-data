@@ -1,0 +1,18 @@
+Filename	Category Code	Column Number	Data Label	Data Label Source	Controlled Vocab Code
+celiacsprue_data.txt		1	SUBJ_ID		
+celiacsprue_data.txt	Disease+Medical	2	Celiac physician email		
+celiacsprue_data.txt	Disease+Medical	3	Individual		
+celiacsprue_data.txt	Disease+Medical	4	Celiac comments		
+celiacsprue_data.txt	Disease+Medical	5	Gluten Free diet		
+celiacsprue_data.txt	Personal	6	Weight		
+celiacsprue_data.txt	Personal	7	Height		
+celiacsprue_data.txt	Personal	8	Celiac alive		
+celiacsprue_data.txt	Personal	9	gender		
+celiacsprue_data.txt	Personal	10	celiac date of birth		
+celiacsprue_data.txt	Personal	11	Celiac Family		
+celiacsprue_data.txt	Sample	12	Sample Volume		
+celiacsprue_data.txt	Sample	13	Sample Type		
+celiacsprue_data.txt	Sample	14	Isolation Volume		
+celiacsprue_data.txt	Sample	15	Celiac sample number		
+celiacsprue_data.txt	Sample	16	Isolation Type		
+celiacsprue_data.txt	Sample	17	Celiac work up datetime		
