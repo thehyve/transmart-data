@@ -1,0 +1,5 @@
+Name	Label	Parent
+Celiac_Disease_Protocol	Disease	null
+Celiac_Medical_Protocol	Medical	Celiac_Disease_Protocol
+Celiac_Personal_Protocol	Personal	null
+Celiac_Sample_Protocol	Sample	null

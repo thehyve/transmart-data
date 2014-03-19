@@ -1,0 +1,17 @@
+Name	Label	Parent	Type	Category
+Celiac_PhysicianEmail	Celiac_physician_email	Celiac_Medical_Protocol	EMAIL	null
+Celiac_Individual	Individual	Celiac_Medical_Protocol	XREF	null
+Celiac_Comments	Celiac_comments	Celiac_Medical_Protocol	TEXT	null
+Celiac_Glutenfree	Gluten Free diet	Celiac_Medical_Protocol	CATEGORICAL	null
+Celiac_Weight	Weight	Celiac_Personal_Protocol	DECIMAL	null
+Celiac_Height	Height	Celiac_Personal_Protocol	DECIMAL	null
+Celiac_Alive	Celiac_alive	Celiac_Personal_Protocol	BOOL	null
+Celiac_Gender	gender	Celiac_Personal_Protocol	CATEGORICAL	null
+Celiac_DateOfBirth	celiac_date_of_birth	Celiac_Personal_Protocol	DATE	null
+Celiac_Family	Celiac_Family	Celiac_Personal_Protocol	MREF	null
+Celiac_SampleVolume	Sample Volume	Celiac_Sample_Protocol	DECIMAL	null
+Celiac_SampleType	Sample Type	Celiac_Sample_Protocol	STRING	null
+Celiac_IsolationVolume	Isolation Volume	Celiac_Sample_Protocol	DECIMAL	null
+Celiac_SampleNumber	Celiac_sample_number	Celiac_Sample_Protocol	INT	null
+Celiac_IsolationType	Isolation Type	Celiac_Sample_Protocol	STRING	null
+Celiac_WorkUpDatetime	Celiac_work_up_datetime	Celiac_Sample_Protocol	DATE_TIME	null
