@@ -1,4 +1,4 @@
-Name	Label	Parent	Type	Category
+Name	Label	Parent	Type
 Celiac_PhysicianEmail	Celiac_physician_email	Celiac_Medical_Protocol	EMAIL	null
 Celiac_Individual	Individual	Celiac_Medical_Protocol	XREF	null
 Celiac_Comments	Celiac_comments	Celiac_Medical_Protocol	TEXT	null
