@@ -4,7 +4,6 @@ if (!isset($_ENV['TRANSMART_USER'])) {
         exit(1);
 }
 $u = $_ENV['TRANSMART_USER'];
-$r = __DIR__ . '/root/bin/R';
 ?>
 #!/bin/bash
 
@@ -17,37 +16,58 @@ $r = __DIR__ . '/root/bin/R';
 # Short-Description:    rserve
 ### END INIT INFO
 
+NAME=Rserve
+RSERVE_PID="/var/run/$NAME.pid"
+RSERVE_LOG="/var/log/$NAME.log"
+
+. /lib/lsb/init-functions
+
 function do_start {
-        # Rserve does not daemonize properly. We need to reopen stdout
-        # as /dev/null, otherwise we get all kinds of output
-        # The standard way to do it is to connect /dev/null to file
-        # descriptors 0, 1 and 2 only in the child (daemonized) process
-        # but obviously we are unable to do that
-        exec 7>&1
-        exec 1>/dev/null
-        su - -c "<?= $r ?> CMD Rserve --quiet --vanilla" <?= $u, "\n" ?> >&7
-        EXIT_VAL=$?
-        exec 1>&7 7>&-
-        if [ $EXIT_VAL -eq 0 ]; then
-                echo "Rserve started"
-        else
-                echo "Failed starting Rserve"
-        fi
+	set +e
+	log_daemon_msg "Starting $NAME"
+	if ! pgrep -u <?= $u ?> -f Rserve 
+	then
+		touch $RSERVE_PID $RSERVE_LOG
+		chown <?= $u ?> $RSERVE_PID $RSERVE_LOG
+		start-stop-daemon --start --chuid <?= $u ?>  -x /usr/bin/R CMD Rserve > $RSERVE_LOG 2>&1 
+		EXIT_VAL=$?
+        	if [ $EXIT_VAL -eq 0 ]; then
+			pgrep -u <?= $u ?> -f Rserve > $RSERVE_PID
+               	 	log_progress_msg "(Rserve started)"
+			log_end_msg 0
+        	else
+                	log_progress_msg "(Failed starting)"
+			log_end_msg 1
+        	fi
+	else
+		log_progress_msg "(already running)"
+		log_end_msg 0
+	fi
+	set -e
+
 }
 
 function do_stop {
-        if pgrep -u <?= $u ?> -f Rserve  > /dev/null
-        then
-                kill `pgrep -u  <?= $u ?> -f Rserve`
-				if [ $? -eq 0 ]; then
-						echo "Rserve killed"
-				else
-						echo "Failed killing Rserve"
-				fi
+	log_daemon_msg "Stopping $NAME"
+        set +e
+
+	if [ -f "$RSERVE_PID" ]; then
+                start-stop-daemon --stop --pidfile "$RSERVE_PID" \
+                        --user <?= $u ?> \
+                        --retry=TERM/20/KILL/5 >/dev/null
+                if [ $? -eq 1 ]; then
+                        log_progress_msg "$NAME is not running but pid file exists, cleaning up"
+                elif [ $? -eq 3 ]; then
+                        PID="`cat $RSERVE_PID`"
+                        log_failure_msg "Failed to stop $NAME (pid $PID)"
+                        exit 1
+                fi
+                rm -f "$RSERVE_PID"
         else
-                echo "nothing to stop; Rserve is not running"
-                exit 0
+                log_progress_msg "(not running)"
         fi
+        log_end_msg 0
+	set -e
 }
 
 case "$1" in
@@ -65,14 +85,23 @@ case "$1" in
         ;;
 
         status)
-                if pgrep -u <?= $u ?> -f Rserve > /dev/null
-                then
-                        echo "Rserve service running."
-                        exit 0
-                else
-                        echo "Rserve is not running"
-                        exit 1
-                fi
+             	set +e
+		start-stop-daemon --test --start --pidfile "$RSERVE_PID" \
+                	--user <?= $u ?> -- -c "/usr/bin/R CMD Rserve --vanilla" \
+                	>/dev/null 2>&1
+        	if [ "$?" = "0" ]; then
+
+                	if [ -f "$RSERVE_PID" ]; then
+                    		log_success_msg "$NAME is not running, but pid file exists."
+                        	exit 1
+                	else
+                    		log_success_msg "$NAME is not running."
+                        	exit 3
+                	fi
+        	else
+                	log_success_msg "$NAME is running with pid `cat $RSERVE_PID`"
+        	fi
+        	set -e
         ;;
 
         *)
