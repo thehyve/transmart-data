@@ -2178,17 +2178,6 @@
     } ]
   }, {
     "child" : {
-      "type" : "SYNONYM",
-      "owner" : "BIOMART_USER",
-      "name" : "PATHWAY_GENES"
-    },
-    "parents" : [ {
-      "type" : "VIEW",
-      "owner" : "SEARCHAPP",
-      "name" : "PATHWAY_GENES"
-    } ]
-  }, {
-    "child" : {
       "type" : "TYPE",
       "owner" : "BIOMART_USER",
       "name" : "PATIENTS_TAB"
@@ -2611,17 +2600,6 @@
       "type" : "TABLE",
       "owner" : "SEARCHAPP",
       "name" : "SEARCH_BIO_MKR_CORREL_FAST_MV"
-    } ]
-  }, {
-    "child" : {
-      "type" : "SYNONYM",
-      "owner" : "BIOMART_USER",
-      "name" : "SEARCH_BIO_MKR_CORREL_VIEW"
-    },
-    "parents" : [ {
-      "type" : "VIEW",
-      "owner" : "SEARCHAPP",
-      "name" : "SEARCH_BIO_MKR_CORREL_VIEW"
     } ]
   }, {
     "child" : {

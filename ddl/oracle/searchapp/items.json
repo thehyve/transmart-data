@@ -429,23 +429,12 @@
     "parents" : [ {
       "type" : "TABLE",
       "owner" : "SEARCHAPP",
-      "name" : "SEARCH_BIO_MKR_CORREL_FAST_MV"
-    }, {
-      "type" : "TABLE",
-      "owner" : "SEARCHAPP",
       "name" : "SEARCH_GENE_SIGNATURE"
     }, {
       "type" : "TABLE",
       "owner" : "SEARCHAPP",
       "name" : "SEARCH_GENE_SIGNATURE_ITEM"
     } ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "SEARCHAPP",
-      "name" : "SEARCH_BIO_MKR_CORREL_FAST_MV"
-    },
-    "parents" : [ ]
   }, {
     "child" : {
       "type" : "VIEW",
@@ -504,10 +493,6 @@
       "type" : "TABLE",
       "owner" : "SEARCHAPP",
       "name" : "SEARCH_AUTH_USER"
-    }, {
-      "type" : "TABLE",
-      "owner" : "SEARCHAPP",
-      "name" : "SEARCH_GENE_SIGNATURE"
     }, {
       "type" : "TABLE",
       "owner" : "SEARCHAPP",
@@ -1404,13 +1389,6 @@
       "name" : "SEARCH_BIO_MKR_CORREL_FAST_MV"
     },
     "file" : "searchapp/views/search_bio_mkr_correl_fast_mv.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "SEARCHAPP",
-      "name" : "SEARCH_BIO_MKR_CORREL_FAST_MV"
-    },
-    "file" : "searchapp/search_bio_mkr_correl_fast_mv.sql"
   }, {
     "item" : {
       "type" : "VIEW",

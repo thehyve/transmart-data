@@ -5887,17 +5887,6 @@
     "child" : {
       "type" : "SYNONYM",
       "owner" : "TM_CZ",
-      "name" : "PATHWAY_GENES"
-    },
-    "parents" : [ {
-      "type" : "VIEW",
-      "owner" : "SEARCHAPP",
-      "name" : "PATHWAY_GENES"
-    } ]
-  }, {
-    "child" : {
-      "type" : "SYNONYM",
-      "owner" : "TM_CZ",
       "name" : "PATIENT_DIMENSION"
     },
     "parents" : [ {
@@ -7071,17 +7060,6 @@
       "type" : "TABLE",
       "owner" : "SEARCHAPP",
       "name" : "SEARCH_BIO_MKR_CORREL_FAST_MV"
-    } ]
-  }, {
-    "child" : {
-      "type" : "SYNONYM",
-      "owner" : "TM_CZ",
-      "name" : "SEARCH_BIO_MKR_CORREL_VIEW"
-    },
-    "parents" : [ {
-      "type" : "VIEW",
-      "owner" : "SEARCHAPP",
-      "name" : "SEARCH_BIO_MKR_CORREL_VIEW"
     } ]
   }, {
     "child" : {

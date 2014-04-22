@@ -1274,19 +1274,8 @@
     }, {
       "type" : "TABLE",
       "owner" : "BIOMART",
-      "name" : "BIO_LIT_INT_MODEL_MV"
-    }, {
-      "type" : "TABLE",
-      "owner" : "BIOMART",
       "name" : "BIO_LIT_MODEL_DATA"
     } ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "BIOMART",
-      "name" : "BIO_LIT_INT_MODEL_MV"
-    },
-    "parents" : [ ]
   }, {
     "child" : {
       "type" : "REF_CONSTRAINT",
@@ -1366,18 +1355,7 @@
       "type" : "TABLE",
       "owner" : "BIOMART",
       "name" : "BIO_MARKER"
-    }, {
-      "type" : "TABLE",
-      "owner" : "BIOMART",
-      "name" : "BIO_MARKER_CORREL_MV"
     } ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "BIOMART",
-      "name" : "BIO_MARKER_CORREL_MV"
-    },
-    "parents" : [ ]
   }, {
     "child" : {
       "type" : "TABLE",
@@ -4132,13 +4110,6 @@
     "file" : "biomart/views/bio_lit_int_model_mv.sql"
   }, {
     "item" : {
-      "type" : "TABLE",
-      "owner" : "BIOMART",
-      "name" : "BIO_LIT_INT_MODEL_MV"
-    },
-    "file" : "biomart/bio_lit_int_model_mv.sql"
-  }, {
-    "item" : {
       "type" : "REF_CONSTRAINT",
       "owner" : "BIOMART",
       "name" : "BIO_LIT_INT_REF_FK"
@@ -4193,13 +4164,6 @@
       "name" : "BIO_MARKER_CORREL_MV"
     },
     "file" : "biomart/views/bio_marker_correl_mv.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "BIOMART",
-      "name" : "BIO_MARKER_CORREL_MV"
-    },
-    "file" : "biomart/bio_marker_correl_mv.sql"
   }, {
     "item" : {
       "type" : "TABLE",
