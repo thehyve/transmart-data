@@ -10,9 +10,11 @@ BEGIN
 
   RETURN 'BAP:' || nvl(PLATFORM_NAME, 'ERROR');
 END bio_assay_platform_uid;
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 /

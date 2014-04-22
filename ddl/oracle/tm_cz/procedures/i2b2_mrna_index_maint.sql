@@ -4,25 +4,19 @@
   CREATE OR REPLACE PROCEDURE "TM_CZ"."I2B2_MRNA_INDEX_MAINT" 
 (
   run_type 			VARCHAR2 := 'DROP'
- ,tablespace_name	varchar2 := 'INDX'
+ ,tablespace_name	varchar2	:= 'INDX'
  ,currentJobID 		NUMBER := null
 )
 AS
-/*************************************************************************
-* Copyright 2008-2012 Janssen Research & Development, LLC.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-******************************************************************/
+--	Procedure to either drop or create indexes for deapp.de_subject_microarray_data
+
+--	JEA@20111020	New
+--	JEA@20111130	Only do local or bitmap index if de_subject_microarray_data is partitioned
+--	JEA@20120226	Added tablespace to indx10, added bitmapCompress to compress indexs if not bitmapped
+--	JEA@20120301	Removed indx10, subject_id no longer in de_subject_microarray_data
+--	JEA@20120406	Added variable for tablespace name
+--	JEA@20120423	Removed indx5, app code changed to join on assay_id
+--	JEA@20120530	Added indx5 on trial_source if table not partitioned
 
   runType	varchar2(100);
   idxExists	number;
@@ -38,12 +32,12 @@ AS
   procedureName VARCHAR(100);
   jobID number(18,0);
   stepCt number(18,0);
-  sqltext varchar2(200);
   
 BEGIN
 
 	runType := upper(run_type);
-	tableSpace := upper(nvl(tablespace_name,'INDX'));	
+	tableSpace := upper(tablespace_name);
+	
   --Set Audit Parameters
   newJobFlag := 0; -- False (Default)
   jobID := currentJobID;
@@ -171,9 +165,9 @@ BEGIN
 		where table_name = 'DE_SUBJECT_MICROARRAY_DATA'
 		  and index_name = 'DE_MICROARRAY_DATA_IDX1'
 		  and owner = 'DEAPP';
-                  
-		if idxExists = 0 then                      
-                        execute immediate('create index deapp.de_microarray_data_idx1 on deapp.de_subject_microarray_data(trial_name, assay_id, probeset_id) ' || localVar || ' nologging compress tablespace "' || tableSpace || '"');
+		  
+		if idxExists = 0 then
+			execute immediate('create index deapp.de_microarray_data_idx1 on deapp.de_subject_microarray_data(trial_name, assay_id, probeset_id) ' || localVar || ' nologging compress tablespace "' || tableSpace || '"'); 
 			stepCt := stepCt + 1;
 			cz_write_audit(jobId,databaseName,procedureName,'Create de_microarray_data_idx1',0,stepCt,'Done');
 		end if;
@@ -250,26 +244,6 @@ BEGIN
 		end if;
 */							
 	end if;
-	
-	stepCt := stepCt + 1;
-	cz_write_audit(jobId,databaseName,procedureName,'End procedure'||procedureName,SQL%ROWCOUNT,stepCt,'Done');
-	commit;	
 
-	
-    ---Cleanup OVERALL JOB if this proc is being run standalone
-	IF newJobFlag = 1
-	THEN
-		cz_end_audit (jobID, 'SUCCESS');
-	END IF;
-
-	EXCEPTION
-	WHEN OTHERS THEN
-		--Handle errors.
-		cz_error_handler (jobID, procedureName);
-		
-		--End Proc
-		cz_end_audit (jobID, 'FAIL');
 end;
- 
- 
 /

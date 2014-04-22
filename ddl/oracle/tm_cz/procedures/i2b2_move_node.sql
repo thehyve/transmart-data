@@ -9,24 +9,7 @@
   currentJobID NUMBER := null
 )
 AS
-/*************************************************************************
-* Copyright 2008-2012 Janssen Research & Development, LLC.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-******************************************************************/
-
-  root_node		varchar2(2000);
-  root_level	int;
+ 
  
   --Audit variables
   newJobFlag INTEGER(1);
@@ -36,6 +19,13 @@ AS
   stepCt number(18,0);
   
 BEGIN
+
+ 
+  -------------------------------------------------------------
+  -- Add a tree node in I2b2
+  -- KCR@20090519 - First Rev
+  --	JEA@20111212	Added auditing, recreate concept_counts for topNode
+  -------------------------------------------------------------
   
 	stepCt := 0;
 	
@@ -57,12 +47,6 @@ BEGIN
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Start i2b2_move_node',0,stepCt,'Done');  
 	
-	select parse_nth_value(topNode, 2, '\') into root_node from dual;
-	
-	select c_hlevel into root_level
-	from table_access
-	where c_name = root_node;
-	
 	if old_path != ''  or old_path != '%' or new_path != ''  or new_path != '%'
 	then 
       --CONCEPT DIMENSION
@@ -83,7 +67,7 @@ BEGIN
   
 		--update level data
 		UPDATE I2B2
-		set c_hlevel = (length(c_fullname) - nvl(length(replace(c_fullname, '\')),0)) / length('\') - 2 + root_level
+		SET C_HLEVEL = (length(C_FULLNAME) - nvl(length(replace(C_FULLNAME, '\')),0)) / length('\') - 3
 		where c_fullname like new_path || '%';
 		stepCt := stepCt + 1;
 		cz_write_audit(jobId,databaseName,procedureName,'Update i2b2 with new level',SQL%ROWCOUNT,stepCt,'Done'); 
@@ -98,9 +82,9 @@ BEGIN
 		cz_write_audit(jobId,databaseName,procedureName,'Update i2b2 with new dimcode and tooltip',SQL%ROWCOUNT,stepCt,'Done'); 
 		COMMIT;
 
-		--if topNode != '' then
-		--	i2b2_create_concept_counts(topNode,jobId);
-		--end if;
+		if topNode != '' then
+			i2b2_create_concept_counts(topNode,jobId);
+		end if;
 	end if;
 	
 	IF newJobFlag = 1
@@ -116,5 +100,4 @@ BEGIN
 		cz_end_audit (jobID, 'FAIL');
 		
 END;
- 
 /

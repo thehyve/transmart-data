@@ -8,21 +8,6 @@
  ,currentJobID NUMBER := null
 )
 AS
-/*************************************************************************
-* Copyright 2008-2012 Janssen Research and Development, LLC.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-******************************************************************/
   TrialID varchar2(100);
   
     --Audit variables
@@ -100,13 +85,12 @@ BEGIN
 
         --If it doesn't exist, add it
         if v_count = 0 then
-         i2b2_add_node(trial_id, root_node, node_name, jobId);
-			auditText := 'Inserting ' || root_node || ', name ' || node_name;
+			auditText := 'Inserting ' || root_node;
 			stepCt := stepCt + 1;
 			cz_write_audit(jobId,databaseName,procedureName,auditText,0,stepCt,'Done');
-           
+            i2b2_add_node(trial_id, root_node, node_name, jobId);
         end if;
-     -- end if;
+    --  end if;
       
     END LOOP;
 

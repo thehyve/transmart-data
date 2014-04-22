@@ -85,16 +85,21 @@ BEGIN
 			  and partition_name = gexStudy || ':' || gexSource;
 			  
 			if pExists = 0 then
-				tText := 'alter table deapp.de_subject_microarray_data_new add PARTITION "' || gexStudy || ':' || gexSource || 
+				tText := 'alter table deapp.DE_SUBJECT_MICROARRAY_DATA_NEW add PARTITION "' || gexStudy || ':' || gexSource || 
 						'"  VALUES (' || '''' || gexStudy || ':' || gexSource || '''' || ') ' ||
 						   'NOLOGGING COMPRESS TABLESPACE "DEAPP" ';
 				execute immediate(tText);
 				stepCt := stepCt + 1;
-				cz_write_audit(jobId,databaseName,procedureName,'Added ' || gexStudy || ':' || gexSource || ' partition to de_subject_microarray_data_new',0,stepCt,'Done');
+				cz_write_audit(jobId,databaseName,procedureName,'Added ' || gexStudy || ':' || gexSource || ' partition to DE_SUBJECT_MICROARRAY_DATA_NEW',0,stepCt,'Done');
+			else
+				tText := 'alter table deapp.DE_SUBJECT_MICROARRAY_DATA_NEW truncate partition "' || gexStudy || ':' || gexSource || '"';
+				execute immediate(tText);
+				stepCt := stepCt + 1;
+				cz_write_audit(jobId,databaseName,procedureName,'Truncated ' || gexStudy || ':' || gexSource || ' partition in DE_SUBJECT_MICROARRAY_DATA_NEW',0,stepCt,'Done');		
 			end if;
 		end if;
 		
-		insert into deapp.de_subject_microarray_data_new
+		insert into deapp.DE_SUBJECT_MICROARRAY_DATA_NEW
 		(trial_source
 		,trial_name
 		,probeset_id
@@ -115,7 +120,7 @@ BEGIN
 		from de_subject_sample_mapping sm
 			,de_subject_microarray_data sd
 		where sm.trial_name = gexStudy
-		  and sm.source_cd = gexSource
+		  and coalesce(sm.source_cd,'STD') = gexSource
 		  and sm.platform = 'MRNA_AFFYMETRIX'
 		  and sm.assay_id = sd.assay_id;
 		  
@@ -138,19 +143,18 @@ BEGIN
 		
 	--	rename _new to de_subject_microarray_data
 	
-	execute immediate('alter table deapp.de_subject_microarray_data_new rename to de_subject_microarray_data');
+	execute immediate('alter table deapp.DE_SUBJECT_MICROARRAY_DATA_NEW rename to de_subject_microarray_data');
 	
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Rename old de_subject_microarray_data',0,stepCt,'Done');
 		
 	--	add indexes to de_subject_microarray_data
 	
-	i2b2_mrna_index_maint('ADD',null,jobId);
+	i2b2_mrna_index_maint('ADD','INDX',jobId);
 			
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'End i2b2_audit',0,stepCt,'Done');
 	
-    COMMIT;
 	--Cleanup OVERALL JOB if this proc is being run standalone
 	IF newJobFlag = 1
 	THEN

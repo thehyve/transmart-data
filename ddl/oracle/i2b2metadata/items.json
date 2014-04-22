@@ -6,10 +6,6 @@
       "name" : "ADD_ONTOLOGY_NODE"
     },
     "parents" : [ {
-      "type" : "SYNONYM",
-      "owner" : "I2B2DEMODATA",
-      "name" : "I2B2"
-    }, {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
       "name" : "I2B2"
@@ -29,6 +25,34 @@
     "child" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
+      "name" : "ET$000D01230001"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "ET$000D012E0001"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "ET$008901840001"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "ET$00CA007B0001"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
       "name" : "I2B2"
     },
     "parents" : [ ]
@@ -36,7 +60,14 @@
     "child" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "I2B2_BK"
+      "name" : "BIRN"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_BKP"
     },
     "parents" : [ ]
   }, {
@@ -48,38 +79,9 @@
     "parents" : [ ]
   }, {
     "child" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2_INDX1"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2"
-    } ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2_INDX2"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2"
-    } ]
-  }, {
-    "child" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
       "name" : "I2B2_SECURE"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2_SECURE_BK"
     },
     "parents" : [ ]
   }, {
@@ -91,6 +93,17 @@
     "parents" : [ ]
   }, {
     "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_SECURE_CD_IDX"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_SECURE"
+    } ]
+  }, {
+    "child" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
       "name" : "I2B2_TAGS"
@@ -100,12 +113,34 @@
     "child" : {
       "type" : "INDEX",
       "owner" : "I2B2METADATA",
-      "name" : "META_APPLIED_PATH_CUSTOM_IDX"
+      "name" : "IDX_I2B2_B"
     },
     "parents" : [ {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "CUSTOM_META"
+      "name" : "I2B2"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_IDX1"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_I2B2_FULLNAME_BASECODE"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2"
     } ]
   }, {
     "child" : {
@@ -117,6 +152,61 @@
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
       "name" : "I2B2"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_BIRN_B"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "BIRN"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "BIRN_IDX1"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "BIRN"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_BIRN_FULLNAME_BASECODE"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "BIRN"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "META_APPLIED_PATH_BIRN_IDX"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "BIRN"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "META_APPLIED_PATH_CUSTOM_IDX"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "CUSTOM_META"
     } ]
   }, {
     "child" : {
@@ -166,6 +256,13 @@
     "parents" : [ ]
   }, {
     "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SECURE_OBJ_TOKEN_FIX"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
       "type" : "SEQUENCE",
       "owner" : "I2B2METADATA",
       "name" : "SEQ_CONCEPT_CODE"
@@ -182,38 +279,169 @@
     "child" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "TABLE_ACCESS"
+      "name" : "SYS_IMPORT_FULL_01"
     },
     "parents" : [ ]
   }, {
     "child" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "TABLE_ACCESS_20111030"
+      "name" : "SYS_IMPORT_TABLE_01"
     },
     "parents" : [ ]
   }, {
     "child" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "TMP_SECURE_TOKEN"
+      "name" : "SYS_IMPORT_TABLE_02"
     },
     "parents" : [ ]
   }, {
     "child" : {
-      "type" : "TRIGGER",
+      "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "TRG_I2B2_ID"
+      "name" : "SYS_IMPORT_TABLE_03"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F2A_IND_1"
     },
     "parents" : [ {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "I2B2"
-    }, {
-      "type" : "SEQUENCE",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2_ID_SEQ"
+      "name" : "SYS_IMPORT_TABLE_01"
     } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F2A_IND_2"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_01"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F2A_IND_3"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_01"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F46_IND_1"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_FULL_01"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F46_IND_2"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_FULL_01"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F46_IND_3"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_FULL_01"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F60_IND_1"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_02"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F60_IND_2"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_02"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F60_IND_3"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_02"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012FBC_IND_1"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_03"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012FBC_IND_2"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_03"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012FBC_IND_3"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_03"
+    } ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "TABLE_ACCESS"
+    },
+    "parents" : [ ]
   }, {
     "child" : {
       "type" : "TRIGGER",
@@ -229,6 +457,13 @@
       "owner" : "I2B2METADATA",
       "name" : "SEQ_I2B2_DATA_ID"
     } ]
+  }, {
+    "child" : {
+      "type" : "PROCEDURE",
+      "owner" : "I2B2METADATA",
+      "name" : "UTIL_GRANT_ALL"
+    },
+    "parents" : [ ]
   } ],
   "fileAssignments" : [ {
     "item" : {
@@ -248,6 +483,34 @@
     "item" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
+      "name" : "ET$000D01230001"
+    },
+    "file" : "i2b2metadata/et$000d01230001.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "ET$000D012E0001"
+    },
+    "file" : "i2b2metadata/et$000d012e0001.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "ET$008901840001"
+    },
+    "file" : "i2b2metadata/et$008901840001.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "ET$00CA007B0001"
+    },
+    "file" : "i2b2metadata/et$00ca007b0001.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
       "name" : "I2B2"
     },
     "file" : "i2b2metadata/i2b2.sql"
@@ -255,28 +518,35 @@
     "item" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "I2B2_BK"
+      "name" : "BIRN"
     },
-    "file" : "i2b2metadata/i2b2_bk.sql"
+    "file" : "i2b2metadata/birn.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_BKP"
+    },
+    "file" : "i2b2metadata/i2b2_bkp.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_IDX1"
+    },
+    "file" : "i2b2metadata/i2b2.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "BIRN_IDX1"
+    },
+    "file" : "i2b2metadata/birn.sql"
   }, {
     "item" : {
       "type" : "SEQUENCE",
       "owner" : "I2B2METADATA",
       "name" : "I2B2_ID_SEQ"
-    },
-    "file" : "i2b2metadata/i2b2.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2_INDX1"
-    },
-    "file" : "i2b2metadata/i2b2.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2_INDX2"
     },
     "file" : "i2b2metadata/i2b2.sql"
   }, {
@@ -290,16 +560,16 @@
     "item" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "I2B2_SECURE_BK"
-    },
-    "file" : "i2b2metadata/i2b2_secure_bk.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
       "name" : "I2B2_SECURE_BK1"
     },
     "file" : "i2b2metadata/i2b2_secure_bk1.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_SECURE_CD_IDX"
+    },
+    "file" : "i2b2metadata/i2b2_secure.sql"
   }, {
     "item" : {
       "type" : "TABLE",
@@ -307,6 +577,34 @@
       "name" : "I2B2_TAGS"
     },
     "file" : "i2b2metadata/i2b2_tags.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_I2B2_B"
+    },
+    "file" : "i2b2metadata/i2b2.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_BIRN_B"
+    },
+    "file" : "i2b2metadata/birn.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_I2B2_FULLNAME_BASECODE"
+    },
+    "file" : "i2b2metadata/i2b2.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_BIRN_FULLNAME_BASECODE"
+    },
+    "file" : "i2b2metadata/birn.sql"
   }, {
     "item" : {
       "type" : "INDEX",
@@ -321,6 +619,13 @@
       "name" : "META_APPLIED_PATH_I2B2_IDX"
     },
     "file" : "i2b2metadata/i2b2.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "META_APPLIED_PATH_BIRN_IDX"
+    },
+    "file" : "i2b2metadata/birn.sql"
   }, {
     "item" : {
       "type" : "INDEX",
@@ -365,6 +670,13 @@
     "file" : "i2b2metadata/schemes.sql"
   }, {
     "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SECURE_OBJ_TOKEN_FIX"
+    },
+    "file" : "i2b2metadata/secure_obj_token_fix.sql"
+  }, {
+    "item" : {
       "type" : "SEQUENCE",
       "owner" : "I2B2METADATA",
       "name" : "SEQ_CONCEPT_CODE"
@@ -381,23 +693,121 @@
     "item" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_FULL_01"
+    },
+    "file" : "i2b2metadata/sys_import_full_01.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_01"
+    },
+    "file" : "i2b2metadata/sys_import_table_01.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_02"
+    },
+    "file" : "i2b2metadata/sys_import_table_02.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_IMPORT_TABLE_03"
+    },
+    "file" : "i2b2metadata/sys_import_table_03.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F2A_IND_1"
+    },
+    "file" : "i2b2metadata/sys_import_table_01.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F2A_IND_2"
+    },
+    "file" : "i2b2metadata/sys_import_table_01.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F2A_IND_3"
+    },
+    "file" : "i2b2metadata/sys_import_table_01.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F46_IND_1"
+    },
+    "file" : "i2b2metadata/sys_import_full_01.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F46_IND_2"
+    },
+    "file" : "i2b2metadata/sys_import_full_01.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F46_IND_3"
+    },
+    "file" : "i2b2metadata/sys_import_full_01.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F60_IND_1"
+    },
+    "file" : "i2b2metadata/sys_import_table_02.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F60_IND_2"
+    },
+    "file" : "i2b2metadata/sys_import_table_02.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012F60_IND_3"
+    },
+    "file" : "i2b2metadata/sys_import_table_02.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012FBC_IND_1"
+    },
+    "file" : "i2b2metadata/sys_import_table_03.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012FBC_IND_2"
+    },
+    "file" : "i2b2metadata/sys_import_table_03.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "SYS_MTABLE_000012FBC_IND_3"
+    },
+    "file" : "i2b2metadata/sys_import_table_03.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
       "name" : "TABLE_ACCESS"
     },
     "file" : "i2b2metadata/table_access.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "TABLE_ACCESS_20111030"
-    },
-    "file" : "i2b2metadata/table_access_20111030.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "TMP_SECURE_TOKEN"
-    },
-    "file" : "i2b2metadata/tmp_secure_token.sql"
   }, {
     "item" : {
       "type" : "TRIGGER",
@@ -412,5 +822,12 @@
       "name" : "TRG_I2B2_TAG_ID"
     },
     "file" : "i2b2metadata/i2b2_tags.sql"
+  }, {
+    "item" : {
+      "type" : "PROCEDURE",
+      "owner" : "I2B2METADATA",
+      "name" : "UTIL_GRANT_ALL"
+    },
+    "file" : "i2b2metadata/procedures/util_grant_all.sql"
   } ]
 }

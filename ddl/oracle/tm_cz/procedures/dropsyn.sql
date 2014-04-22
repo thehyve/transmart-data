@@ -7,19 +7,21 @@
  FROM user_synonyms;
 
  RetVal  NUMBER;
- sqlstr  VARCHAR2(200);
+ sqlstr  VARCHAR2(200); 
 BEGIN
   FOR s_rec IN s_cur LOOP
     sqlstr := 'DROP SYNONYM ' || s_rec.synonym_name;
 
     EXECUTE IMMEDIATE sqlstr;
     COMMIT;
-  END LOOP;
+  END LOOP; 
 END dropsyn;
 
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 /

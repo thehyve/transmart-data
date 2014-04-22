@@ -4,7 +4,7 @@
   CREATE OR REPLACE PROCEDURE "TM_CZ"."I2B2_LOAD_SECURITY_DATA" 
 (
   currentJobID NUMBER := null
-) AUTHID CURRENT_USER
+)
 AS
 /*************************************************************************
 * Copyright 2008-2012 Janssen Research & Development, LLC.
@@ -28,8 +28,6 @@ AS
   procedureName VARCHAR(100);
   jobID number(18,0);
   stepCt number(18,0);
-  
-  secNodeExists		int;
 
 BEGIN
 
@@ -45,7 +43,7 @@ BEGIN
   IF(jobID IS NULL or jobID < 1)
   THEN
     newJobFlag := 1; -- True
-    czx_start_audit (procedureName, databaseName, jobID);
+    cz_start_audit (procedureName, databaseName, jobID);
   END IF;
 
   stepCt := 0;
@@ -53,7 +51,7 @@ BEGIN
   Execute immediate ('truncate table I2B2METADATA.i2b2_secure');
 
   stepCt := stepCt + 1;
-  czx_write_audit(jobId,databaseName,procedureName,'Truncate I2B2METADATA i2b2_secure',0,stepCt,'Done');
+  cz_write_audit(jobId,databaseName,procedureName,'Truncate I2B2METADATA i2b2_secure',0,stepCt,'Done');
 
   insert into I2B2METADATA.i2b2_secure(
     C_HLEVEL,
@@ -103,114 +101,26 @@ BEGIN
 	coalesce(f.tval_char,'EXP:PUBLIC')
     from I2B2METADATA.I2B2 b
 		,(select distinct case when sourcesystem_cd like '%:%' then substr(sourcesystem_cd,1,instr(sourcesystem_cd,':')-1)
-							   else sourcesystem_cd end as sourcesystem_cd
+							   else modifier_cd end as sourcesystem_cd
 				,tval_char from observation_fact where concept_cd = 'SECURITY') f
 	where b.sourcesystem_cd = f.sourcesystem_cd(+);
     stepCt := stepCt + 1;
-    czx_write_audit(jobId,databaseName,procedureName,'Insert security data into I2B2METADATA i2b2_secure',SQL%ROWCOUNT,stepCt,'Done');
+    cz_write_audit(jobId,databaseName,procedureName,'Insert security data into I2B2METADATA i2b2_secure',SQL%ROWCOUNT,stepCt,'Done');
+
     commit;
-	
-	--	check if SECURITY node exists in i2b2
-	
-	select count(*) into secNodeExists
-	from i2b2metadata.i2b2
-	where c_fullname = '\Public Studies\SECURITY\';
-	
-	if secNodeExists = 0 then
-		insert into i2b2metadata.i2b2
-		(c_hlevel
-		,c_fullname
-		,c_name
-		,c_synonym_cd
-		,c_visualattributes
-		,c_totalnum
-		,c_basecode
-		,c_metadataxml
-		,c_facttablecolumn
-		,c_tablename
-		,c_columnname
-		,c_columndatatype
-		,c_operator
-		,c_dimcode
-		,c_comment
-		,c_tooltip
-		,update_date
-		,download_date
-		,import_date
-		,sourcesystem_cd
-		,valuetype_cd
-		,i2b2_id
-		)
-		select 1 as c_hlevel
-			  ,'\Public Studies\SECURITY\' as c_fullname
-			  ,'SECURITY' as c_name
-			  ,'N' as c_synonym_cd
-			  ,'CA' as c_visualattributes
-			  ,null as c_totalnum
-			  ,null as c_basecode
-			  ,null as c_metadataxml
-			  ,'concept_cd' as c_facttablecolumn
-			  ,'concept_dimension' as c_tablename
-			  ,'concept_path' as c_columnname
-			  ,'T' as c_columndatatype
-			  ,'LIKE' as c_operator
-			  ,'\Public Studies\SECURITY\' as c_dimcode
-			  ,null as c_comment
-			  ,'\Public Studies\SECURITY\' as c_tooltip
-			  ,sysdate as update_date
-			  ,null as download_date
-			  ,sysdate as import_date
-			  ,null as sourcesystem_cd
-			  ,null as valuetype_cd
-			  ,I2B2_ID_SEQ.nextval as i2b2_id
-		from dual;
-			  
-		stepCt := stepCt + 1;
-		czx_write_audit(jobId,databaseName,procedureName,'Insert \Public Studies\SECURITY\ node to i2b2',SQL%ROWCOUNT,stepCt,'Done');
-		COMMIT;	
-	end if;
 
-	--	check if SECURITY node exists in concept_dimension
-	
-	select count(*) into secNodeExists
-	from i2b2demodata.concept_dimension
-	where concept_path = '\Public Studies\SECURITY\';
-	
-	if secNodeExists = 0 then
-		insert into i2b2demodata.concept_dimension
-		(concept_cd
-		,concept_path
-		,name_char
-		,update_date
-		,download_date
-		,import_date
-		,sourcesystem_cd
-		)
-		select 'SECURITY'
-			 ,'\Public Studies\SECURITY\'
-			 ,'SECURITY'
-			 ,sysdate
-			 ,sysdate
-			 ,sysdate
-			 ,null
-		from dual;
-		stepCt := stepCt + 1;
-		czx_write_audit(jobId,databaseName,procedureName,'Insert \Public Studies\SECURITY\ node to concept_dimension',SQL%ROWCOUNT,stepCt,'Done');
-		commit;
-	end if;
-	
     ---Cleanup OVERALL JOB if this proc is being run standalone
-	IF newJobFlag = 1
-	THEN
-	czx_end_audit (jobID, 'SUCCESS');
-	END IF;
+  IF newJobFlag = 1
+  THEN
+    cz_end_audit (jobID, 'SUCCESS');
+  END IF;
 
-	EXCEPTION
-	WHEN OTHERS THEN
-		--Handle errors.
-		czx_error_handler (jobID, procedureName);
-		--End Proc
-		czx_end_audit (jobID, 'FAIL');
+  EXCEPTION
+  WHEN OTHERS THEN
+    --Handle errors.
+    cz_error_handler (jobID, procedureName);
+    --End Proc
+    cz_end_audit (jobID, 'FAIL');
 
 end;
 /

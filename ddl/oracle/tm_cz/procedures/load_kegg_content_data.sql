@@ -8,21 +8,21 @@ begin
 begin
 
   delete from bio_content_reference
-    where bio_content_id in
+    where bio_content_id in 
       (select bio_file_content_id
       from bio_content
-      where repository_id in
+      where repository_id in 
         (select bio_content_repo_id
         from bio_content_repository
         where upper(repository_type)='KEGG')
       );
   --806
   delete from bio_content
-    where repository_id =
+    where repository_id = 
       (select bio_content_repo_id
       from bio_content_repository
       where upper(repository_type)='KEGG');
-  --806
+  --806  
   delete from bio_content_repository
     where upper(repository_type)='KEGG';
   --1
@@ -60,7 +60,7 @@ begin
     bcr.bio_content_repo_id
   , bcr.location||'dbget-bin/show_pathway?'|| bm.primary_external_id
   , 'Data'
-  from
+  from 
     bio_content_repository bcr
   , bio_marker bm
   where upper(bcr.repository_type)='KEGG'
@@ -93,8 +93,10 @@ end;
 
 
 end;
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
 /

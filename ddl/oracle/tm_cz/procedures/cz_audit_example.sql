@@ -32,12 +32,12 @@ BEGIN
   --Step Audit
   cz_write_audit (jobID, databaseName, procedureName, 'Start loading some data', SQL%ROWCOUNT, 1, 'PASS');
 
-  update cz_job_master set job_name = job_name;
+  update cz_job_master set job_name = job_name; 
 
   --Step Audit
   cz_write_audit (jobID, databaseName, procedureName, '# of rows on the cz_job_master table', SQL%ROWCOUNT, 2, 'PASS');
 
-
+  
   cz_write_info (jobID, 1, 39, procedureName, 'Writing a message');
 
 
@@ -67,6 +67,8 @@ BEGIN
 END;
 
 
-
-
+ 
+ 
+ 
+ 
 /

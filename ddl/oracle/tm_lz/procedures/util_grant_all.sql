@@ -3,7 +3,7 @@
 --
   CREATE OR REPLACE PROCEDURE "TM_LZ"."UTIL_GRANT_ALL" 
 (username	varchar2 := 'DATATRUST'
-,V_WHATTYPE IN VARCHAR2 DEFAULT 'PROCEDURES,FUNCTIONS,TABLES,VIEWS,PACKAGES,SEQUENCE')
+,V_WHATTYPE IN VARCHAR2 DEFAULT 'PROCEDURES,FUNCTIONS,TABLES,VIEWS,PACKAGES')
 AUTHID CURRENT_USER
 AS
 -------------------------------------------------------------------------------------
@@ -18,10 +18,9 @@ AS
     --ON OBJECTS OWNED BY THE CURRENT USER
 	
 	--	JEA@20110901	Added parameter to allow username other than DATATRUST, look for EXTRNL as external table names
-	--	JEA@20120223	Added grant drop any table, grant analyze any to TABLES routine
-	--	JEA@20120226	Added additional grants to TABLES routine
 
     v_user      varchar2(2000) := SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA');
+	extTable	int;
 
   begin
 
@@ -31,7 +30,13 @@ AS
 
      for L_TABLE in (select table_name from user_tables where table_name not like '%EXTRNL%') LOOP
 
-       if L_TABLE.table_name like '%EXTRNL%' then
+		select count(*) into extTable
+		from all_external_tables
+		where owner = v_user
+		  and table_name = L_TABLE.table_name;
+		   
+       --if L_TABLE.table_name like '%EXTRNL%' then
+	    if extTable > 0 then
           --grant select only to External tables
           execute immediate 'grant select on ' || L_TABLE.table_name || ' to ' || username;
        
@@ -42,14 +47,6 @@ AS
        end if;
        
      END LOOP; --TABLE LOOP
-	 
-	 execute immediate 'grant create any table to ' || username;
-	 execute immediate 'grant drop any table to ' || username;
-	 execute immediate 'grant alter any table to ' || username;
-	 execute immediate 'grant create any index to ' || username;
-	 execute immediate 'grant drop any index to ' || username;
-	 execute immediate 'grant analyze any to ' || username;
-	 
      end if;
      
 	IF UPPER(V_WHATTYPE) LIKE '%VIEW%' THEN
@@ -73,18 +70,7 @@ AS
 
      END LOOP; --PROCEDURE LOOP
   end if;
-  
- IF UPPER(V_WHATTYPE) LIKE '%SEQUENCE%'  THEN
-    dbms_output.put_line(chr(10) || 'Sequence');
-
-    for L_PROCEDURE in (select object_name from user_objects where object_type = 'SEQUENCE' )
-     LOOP
-
-       execute immediate 'grant select on ' || L_PROCEDURE.object_name || ' to ' || username;
-      -- DBMS_OUTPUT.put_line('grant execute on ' || L_PROCEDURE.object_name || ' to ' || username);
-
-     END LOOP; --PROCEDURE LOOP
-  end if;
 
 END;
+ 
 /

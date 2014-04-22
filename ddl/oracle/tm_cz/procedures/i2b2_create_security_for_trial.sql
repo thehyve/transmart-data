@@ -45,8 +45,8 @@ BEGIN
 	jobID := currentJobID;
 
 	SELECT sys_context('USERENV', 'CURRENT_SCHEMA') INTO databaseName FROM dual;
-	procedureName := $$PLSQL_UNIT;
-
+	PROCEDURENAME := $$PLSQL_UNIT;
+ 
 	--Audit JOB Initialization
 	--If Job ID does not exist, then this is a single procedure run and we need to create it
 	IF(jobID IS NULL or jobID < 1)
@@ -96,7 +96,7 @@ BEGIN
 		  ,TrialId
 		  ,1
 	from patient_dimension
-	where sourcesystem_cd like TrialID || ':%';
+	where sourcesystem_cd like TrialID || '%';
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Insert security records for trial from I2B2DEMODATA observation_fact',SQL%ROWCOUNT,stepCt,'Done');
 	
@@ -120,7 +120,7 @@ BEGIN
 		   TrialID,
 		   decode(securedStudy,'Y','EXP:' || TrialID,'EXP:PUBLIC')
 	from patient_dimension
-	where sourcesystem_cd like TrialID || ':%';
+	where sourcesystem_cd like TrialID || '%';
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Insert data for trial into I2B2DEMODATA patient_trial',SQL%ROWCOUNT,stepCt,'Done');
 	commit;
@@ -129,8 +129,8 @@ BEGIN
 	
 	select count(*) into pExists
 	from searchapp.search_secure_object sso
-	where bio_data_unique_id = 'EXP:' || TrialId;
-	
+	WHERE BIO_DATA_UNIQUE_ID = 'EXP:' || TRIALID;
+	 
 	if pExists = 0 then
 		--	if securedStudy = Y, add trial to searchapp.search_secured_object
 		if securedStudy = 'Y' then
@@ -193,7 +193,7 @@ BEGIN
     cz_end_audit (jobID, 'SUCCESS');
   END IF;
 
-  EXCEPTION
+  EXCEPTION 
   WHEN OTHERS THEN
     --Handle errors.
     cz_error_handler (jobID, procedureName);
@@ -201,6 +201,4 @@ BEGIN
     cz_end_audit (jobID, 'FAIL');
 	
 END;
-
- 
 /

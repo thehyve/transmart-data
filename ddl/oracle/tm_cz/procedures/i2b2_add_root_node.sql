@@ -4,23 +4,10 @@
   CREATE OR REPLACE PROCEDURE "TM_CZ"."I2B2_ADD_ROOT_NODE" 
 (root_node		varchar2
 ,currentJobID	NUMBER := null
-) AUTHID CURRENT_USER
+)
 AS
-/*************************************************************************
-* Copyright 2008-2012 Janssen Research & Development, LLC.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-******************************************************************/
+	--	JEA@20120510	New
+	--	JEA@20120529	Updated for i2b2 1.6
 	
 	--Audit variables
 	newJobFlag 	INTEGER(1);
@@ -50,11 +37,11 @@ Begin
 	IF(jobID IS NULL or jobID < 1)
 	THEN
 		newJobFlag := 1; -- True
-		czx_start_audit (procedureName, databaseName, jobID);
+		cz_start_audit (procedureName, databaseName, jobID);
 	END IF;
 	
 	stepCt := stepCt + 1;
-	czx_write_audit(jobId,databaseName,procedureName,'Start ' || procedureName,0,stepCt,'Done');
+	cz_write_audit(jobId,databaseName,procedureName,'Start ' || procedureName,0,stepCt,'Done');
 	
 	insert into table_access
 	select rootNode as c_table_cd
@@ -64,7 +51,7 @@ Begin
 		  ,rootPath as c_fullname
 		  ,rootNode as c_name
 		  ,'N' as c_synonym_cd
-		  ,'CAP' as c_visualattributes
+		  ,'CA' as c_visualattributes
 		  ,null as c_totalnum
 		  ,null as c_basecode
 		  ,null as c_metadataxml
@@ -86,7 +73,7 @@ Begin
 		 where x.c_table_cd = rootNode);
 	
 	stepCt := stepCt + 1;
-	czx_write_audit(jobId,databaseName,procedureName,'Insert to table_access',SQL%ROWCOUNT,stepCt,'Done');
+	cz_write_audit(jobId,databaseName,procedureName,'Insert to table_access',SQL%ROWCOUNT,stepCt,'Done');
     COMMIT;	
 
 	--	insert root_node into i2b2
@@ -119,7 +106,7 @@ Begin
 		  ,rootPath as c_fullname
 		  ,rootNode as c_name
 		  ,'N' as c_synonym_cd
-		  ,'CAP' as c_visualattributes
+		  ,'CA' as c_visualattributes
 		  ,null as c_totalnum
 		  ,null as c_basecode
 		  ,null as c_metadataxml
@@ -131,7 +118,7 @@ Begin
 		  ,rootPath as c_dimcode
 		  ,null as c_comment
 		  ,rootPath as c_tooltip
-		  ,sysdate as update_date
+		  ,null as update_date
 		  ,null as download_date
 		  ,sysdate as import_date
 		  ,null as sourcesystem_cd
@@ -143,25 +130,25 @@ Begin
 		  where x.c_name = rootNode);
 		  
 	stepCt := stepCt + 1;
-	czx_write_audit(jobId,databaseName,procedureName,'Insert root_node ' || rootNode || ' to i2b2',SQL%ROWCOUNT,stepCt,'Done');
+	cz_write_audit(jobId,databaseName,procedureName,'Insert root_node ' || rootNode || ' to i2b2',SQL%ROWCOUNT,stepCt,'Done');
     COMMIT;	
 			
 	stepCt := stepCt + 1;
-	czx_write_audit(jobId,databaseName,procedureName,'End ' || procedureName,0,stepCt,'Done');
+	cz_write_audit(jobId,databaseName,procedureName,'End ' || procedureName,0,stepCt,'Done');
 	
     COMMIT;
 	--Cleanup OVERALL JOB if this proc is being run standalone
 	IF newJobFlag = 1
 	THEN
-		czx_end_audit (jobID, 'SUCCESS');
+		cz_end_audit (jobID, 'SUCCESS');
 	END IF;
 
 	EXCEPTION
 	WHEN OTHERS THEN
 		--Handle errors.
-		czx_error_handler (jobID, procedureName);
+		cz_error_handler (jobID, procedureName);
 		--End Proc
-		czx_end_audit (jobID, 'FAIL');
+		cz_end_audit (jobID, 'FAIL');
 	
 END;
 /

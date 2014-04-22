@@ -18,13 +18,14 @@
 "SOURCE_CD" NVARCHAR2(100), 
  CONSTRAINT "COMPOUNDDIM_PK" PRIMARY KEY ("BIO_COMPOUND_ID")
  USING INDEX
- TABLESPACE "INDX"  ENABLE
+ TABLESPACE "USERS"  ENABLE
   ) SEGMENT CREATION IMMEDIATE
- TABLESPACE "BIOMART" ;
+ TABLESPACE "USERS" ;
 --
 -- Type: TRIGGER; Owner: BIOMART; Name: TRG_BIO_COMPOUND_ID
 --
   CREATE OR REPLACE TRIGGER "BIOMART"."TRG_BIO_COMPOUND_ID" before insert on "BIO_COMPOUND"    for each row begin     if inserting then       if :NEW."BIO_COMPOUND_ID" is null then          select SEQ_BIO_DATA_ID.nextval into :NEW."BIO_COMPOUND_ID" from dual;       end if;    end if; end;
+
 
 
 

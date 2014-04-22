@@ -6,10 +6,21 @@
   currentJobID NUMBER := null
 )
 AS
-	--	NOTE****	The CleanCell macro must be run for all the data in Dataset_Explorer_MetaData.xls file before it is saved to a text file!!  CleanCell will remove
-	--				any embedded line feeds in the data.
-
-	-- JEA@20110720	New, cloned for tranSMART consortia
+/*************************************************************************
+* Copyright 2008-2012 Janssen Research & Development, LLC.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+******************************************************************/
 
   
 	--Audit variables
@@ -21,8 +32,10 @@ AS
 	
 	dcount 				int;
 	lcount 				int;
+	upload_date			timestamp;
 	tmp_compound		varchar2(200);
 	tmp_disease			varchar2(200);
+	tmp_organism		varchar2(200);
 	tmp_pubmed			varchar2(200);
 	pubmed_id			varchar2(200);
 	pubmed_title		varchar2(200);
@@ -45,6 +58,15 @@ AS
   
 	study_disease_array study_disease_tab;
   
+	Type study_taxonomy_rec is record
+	(study_id	varchar2(200)
+	,organism	varchar2(500)
+	);
+  
+	Type study_taxonomy_tab is table of study_taxonomy_rec;
+  
+	study_taxonomy_array study_taxonomy_tab;
+    
 	Type study_pubmed_rec is record
 	(study_id	varchar2(200)
 	,pubmed	varchar2(500)
@@ -72,30 +94,49 @@ BEGIN
 	END IF;
   
 	stepCt := 0;
-  
- --	figure out study_type
-  /* select sourcesystem_cd, c_fullname, parse_nth_value(c_fullname,2,'\') as study_type from i2b2
-where c_hlevel = 0
-order by c_fullname
-*/
+	select sysdate into upload_date from dual;
+	
+	--	delete existing metadata from lz_src_study_metadata
+	
+	delete from lz_src_study_metadata
+	where study_id in (select distinct study_id from lt_src_study_metadata);
+	stepCt := stepCt + 1;
+	cz_write_audit(jobId,databaseName,procedureName,'Delete existing metadata in lz_src_study_metadata',SQL%ROWCOUNT,stepCt,'Done');
+	commit;
 
+	--	insert metadata into lz_src_study_metadata
+	
+	insert into lz_src_study_metadata
+	select x.*, upload_date
+	from lt_src_study_metadata x;
+	stepCt := stepCt + 1;
+	cz_write_audit(jobId,databaseName,procedureName,'Delete existing metadata in lz_src_study_metadata',SQL%ROWCOUNT,stepCt,'Done');
+	commit;
+  
 	--	Update existing bio_experiment data
 	
 	update biomart.bio_experiment b
 	set (title
 	    ,description
 		,design
+		,start_date
 		,completion_date
 		,primary_investigator
-		,overall_design) =
+		,overall_design
+		,institution
+		,country) =
 	    (select m.title
 		       ,m.description
 			   ,m.design
+			   ,decode(is_date(m.start_date,'YYYYMMDD'),1,null,to_date(m.start_date,'YYYYMMDD'))
 			   ,decode(is_date(m.completion_date,'YYYYMMDD'),1,null,to_date(m.completion_date,'YYYYMMDD'))
-			   ,m.primary_investigator
-			   ,substr(decode(m.primary_end_points,null,null,'N/A',null,m.primary_end_points) ||
+			   ,coalesce(m.primary_investigator,m.study_owner)
+			   ,coalesce(substr(decode(m.primary_end_points,null,null,'N/A',null,m.primary_end_points) ||
 					    decode(m.inclusion_criteria,null,null,'N/A',null,' Inclusion Criteria: ' || m.inclusion_criteria) ||
 						decode(m.exclusion_criteria,null,null,'N/A',null,' Exclusion Criteria: ' || m.exclusion_criteria),1,2000)
+						,m.overall_design)
+			   ,m.institution
+			   ,m.country
 		 from lt_src_study_metadata m
 		 where m.study_id is not null
 		   and b.accession = m.study_id)
@@ -193,28 +234,32 @@ order by c_fullname
 	,etl_id
 	,status
 	,overall_design
-	,accession)
+	,accession
+	,country
+	,institution)
 	select 'Experiment'
 	      ,m.title
 		  ,m.description
 		  ,m.design
 		  ,decode(is_date(m.start_date,'YYYYMMDD'),1,null,to_date(m.start_date,'YYYYMMDD'))
 		  ,decode(is_date(m.completion_date,'YYYYMMDD'),1,null,to_date(m.completion_date,'YYYYMMDD'))
-		  ,m.primary_investigator
+		  ,coalesce(m.primary_investigator,m.study_owner)
 		  ,m.contact_field
-		  ,m.study_id
 		  ,'METADATA:' || m.study_id
-		  ,decode(m.primary_end_points,null,null,'N/A',null,replace(m.primary_end_points,'"',null)) ||
-					    decode(m.inclusion_criteria,null,null,'N/A',null,' Inclusion Criteria: ' || replace(m.inclusion_criteria,'"',null)) ||
-						decode(m.exclusion_criteria,null,null,'N/A',null,' Exclusion Criteria: ' || replace(m.exclusion_criteria,'"',null))
 		  ,m.study_id
+		  ,substr(coalesce(decode(m.primary_end_points,null,null,'N/A',null,replace(m.primary_end_points,'"',null)) ||
+					    decode(m.inclusion_criteria,null,null,'N/A',null,' Inclusion Criteria: ' || replace(m.inclusion_criteria,'"',null)) ||
+						DECODE(M.EXCLUSION_CRITERIA,NULL,NULL,'N/A',NULL,' Exclusion Criteria: ' || REPLACE(M.EXCLUSION_CRITERIA,'"',NULL))
+						,m.overall_design),0,2000)
+		  ,m.study_id
+		  ,m.country
+		  ,m.institution
 	from lt_src_study_metadata m
 	where m.study_id is not null
 	  and not exists
 	      (select 1 from biomart.bio_experiment x
 		   where m.study_id = x.accession
-		     and m.study_id is not null)
-	;
+		     and m.study_id is not null);
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Inserted trial data in BIOMART bio_experiment',SQL%ROWCOUNT,stepCt,'Done');
 	commit;
@@ -292,10 +337,10 @@ order by c_fullname
 	
 	--	Insert new trial into bio_data_uid
 	
-	insert into biomart.bio_data_uid
+  insert into biomart.bio_data_uid
 	(bio_data_id
 	,unique_id
-	,bio_data_type
+	,BIO_DATA_TYPE
 	)
 	select distinct b.bio_experiment_id
 	      ,'EXP:' || m.study_id
@@ -303,11 +348,9 @@ order by c_fullname
 	from biomart.bio_experiment b
 		,lt_src_study_metadata m
 	where m.study_id is not null
-	  and m.study_id = b.accession
-	  and not exists
-	      (select 1 from biomart.bio_data_uid x
-		   where x.unique_id = 'EXP:' || m.study_id)
-	;
+	  AND M.STUDY_ID = B.ACCESSION
+	  AND b.bio_experiment_id NOT IN
+	      (SELECT X.BIO_DATA_ID FROM BIOMART.BIO_DATA_UID X);
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Inserted trial data into BIOMART bio_data_uid',SQL%ROWCOUNT,stepCt,'Done');
 	commit;
@@ -315,7 +358,7 @@ order by c_fullname
 	--	delete existing compound data for study, compound list may change
 	
 	delete bio_data_compound dc
-	where dc.bio_data_id = 
+	where dc.bio_data_id in 
 		 (select x.bio_experiment_id
 		  from bio_experiment x
 			  ,lt_src_study_metadata y
@@ -392,7 +435,7 @@ order by c_fullname
 	--	delete existing disease data for studies
 	
 	delete bio_data_disease dc
-	where dc.bio_data_id = 
+	where dc.bio_data_id in 
 		 (select x.bio_experiment_id
 		  from bio_experiment x
 			  ,lt_src_study_metadata y
@@ -434,7 +477,7 @@ order by c_fullname
 				where not exists
 					 (select 1 from bio_disease x
 					  where upper(x.disease) = upper(tmp_disease))
-				  and tmp_compound is not null;
+				  and tmp_disease is not null;
 				stepCt := stepCt + 1;
 				cz_write_audit(jobId,databaseName,procedureName,'Added disease to bio_disease',SQL%ROWCOUNT,stepCt,'Done');
 				commit;
@@ -467,6 +510,85 @@ order by c_fullname
 			end loop;
 		end loop;
 	end if;
+
+	--	delete existing taxonomy data for studies
+	
+	delete bio_data_taxonomy dc
+	where dc.bio_data_id in 
+		 (select x.bio_experiment_id
+		  from bio_experiment x
+			  ,lt_src_study_metadata y
+		  where x.accession = y.study_id
+		    and x.etl_id = 'METADATA:' || y.study_id);
+
+	stepCt := stepCt + 1;
+	cz_write_audit(jobId,databaseName,procedureName,'Delete existing data from bio_data_taxonomy',SQL%ROWCOUNT,stepCt,'Done');
+	commit;
+
+	select distinct study_id, organism
+	bulk collect into study_taxonomy_array
+	from lt_src_study_metadata
+	where organism is not null;
+	
+	if SQL%ROWCOUNT > 0 then 
+		for i in study_taxonomy_array.first .. study_taxonomy_array.last
+		loop
+		
+			select length(study_taxonomy_array(i).organism) -
+				   length(replace(study_taxonomy_array(i).organism,';',null))+1
+				into dcount
+			from dual;
+	 
+			while dcount > 0
+			Loop	
+		
+				select parse_nth_value(study_taxonomy_array(i).organism,dcount,';') into tmp_organism
+				from dual;
+				   
+				--	add new organism
+				
+				insert into bio_taxonomy bc
+				(taxon_name
+				,taxon_label)
+				select tmp_organism
+					  ,tmp_organism
+				from dual
+				where not exists
+					 (select 1 from bio_taxonomy x
+					  where upper(x.taxon_name) = upper(tmp_organism))
+				  and tmp_organism is not null;
+				stepCt := stepCt + 1;
+				cz_write_audit(jobId,databaseName,procedureName,'Added organism to bio_taxonomy',SQL%ROWCOUNT,stepCt,'Done');
+				commit;
+							
+				--	Insert new trial data into bio_data_taxonomy
+
+				insert into bio_data_taxonomy
+				(bio_data_id
+				,bio_taxonomy_id
+				,etl_source
+				)
+				select b.bio_experiment_id
+					  ,c.bio_taxonomy_id
+					  ,'METADATA:' || study_disease_array(i).study_id
+				from biomart.bio_experiment b
+					,biomart.bio_taxonomy c
+				where upper(tmp_organism) = upper(c.taxon_name) 
+				  and tmp_organism is not null
+				  and b.accession = study_disease_array(i).study_id
+				  and not exists
+						 (select 1 from biomart.bio_data_taxonomy x
+						  where b.bio_experiment_id = x.bio_data_id
+							and c.bio_taxonomy_id = x.bio_taxonomy_id);
+
+				stepCt := stepCt + 1;
+				cz_write_audit(jobId,databaseName,procedureName,'Inserted trial data in BIOMART bio_data_taxonomy',SQL%ROWCOUNT,stepCt,'Done');
+				commit;
+				
+				dcount := dcount - 1;
+			end loop;
+		end loop;
+	end if;
 	
 	--	add ncbi/GEO linking
 	
@@ -490,7 +612,7 @@ order by c_fullname
 		commit;
 		
 	end if;
-	
+
 	--	insert GSE studies into bio_content
 	
 	insert into bio_content
@@ -548,6 +670,32 @@ order by c_fullname
 	commit;
 
 	--	add PUBMED linking
+	
+	--	delete existing pubmed data for studies
+	
+	delete bio_content_reference dc
+	where dc.bio_content_id in 
+		 (select x.bio_file_content_id
+		  from bio_content x
+			  ,lt_src_study_metadata y
+		  where x.file_type = 'Publication Web Link'
+		    and x.etl_id_c = 'METADATA:' || y.study_id);
+
+	stepCt := stepCt + 1;
+	cz_write_audit(jobId,databaseName,procedureName,'Delete existing Pubmed data from bio_content_reference',SQL%ROWCOUNT,stepCt,'Done');
+	commit;			
+			
+	delete bio_content dc
+	where dc.bio_file_content_id in 
+		 (select x.bio_file_content_id
+		  from bio_content x
+			  ,lt_src_study_metadata y
+		  where x.file_type = 'Publication Web Link'
+		    and x.etl_id_c = 'METADATA:' || y.study_id);
+
+	stepCt := stepCt + 1;
+	cz_write_audit(jobId,databaseName,procedureName,'Delete existing Pubmed data from bio_content',SQL%ROWCOUNT,stepCt,'Done');
+	commit;
 	
 	select distinct study_id, pubmed_ids
 	bulk collect into study_pubmed_array
@@ -651,8 +799,8 @@ order by c_fullname
 	
 		--	Create i2b2_tags
 
-	delete from i2b2_tags
-	where upper(tag_type) = 'Trial';
+	DELETE FROM I2B2_TAGS
+	where upper(tag_type) = 'TRIAL';
 	
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Delete existing Trial tags in i2b2_tags',SQL%ROWCOUNT,stepCt,'Done');
@@ -676,16 +824,18 @@ order by c_fullname
 	--	Insert trial data tags - COMPOUND
 	
 	delete from i2b2_tags t
-	where upper(t.tag_type) = 'COMPOUND';
-
+	WHERE UPPER(T.TAG_TYPE) = 'COMPOUND';
+	COMMIT;	
+  
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Delete existing Compound tags in I2B2METADATA i2b2_tags',SQL%ROWCOUNT,stepCt,'Done');
-	commit;	
-	
+	COMMIT;	
+
+
 	insert into i2b2_tags
 	(path, tag, tag_type, tags_idx)
-	select distinct min(o.c_fullname) as path
-		  ,decode(x.rec_num,1,c.generic_name,c.brand_name) as tag
+	SELECT DISTINCT MIN(O.C_FULLNAME) AS PATH
+		  ,trim(decode(x.rec_num,1,c.generic_name,c.brand_name)) as tag
 		  ,'Compound' as tag_type
 		  ,1 as tags_idx
 	from bio_experiment be
@@ -696,8 +846,10 @@ order by c_fullname
 	where be.bio_experiment_id = bc.bio_data_id
        and bc.bio_compound_id = c.bio_compound_id
        and be.accession = o.sourcesystem_cd
-       and decode(x.rec_num,1,c.generic_name,c.brand_name) is not null
-	group by decode(x.rec_num,1,c.generic_name,c.brand_name);
+       AND DECODE(X.REC_NUM,1,C.GENERIC_NAME,C.BRAND_NAME) IS NOT NULL
+       and o.c_fullname not like '%\Across Trials\%'
+	GROUP BY DECODE(X.REC_NUM,1,C.GENERIC_NAME,C.BRAND_NAME);
+
 
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Insert Compound tags in I2B2METADATA i2b2_tags',SQL%ROWCOUNT,stepCt,'Done');
@@ -712,30 +864,49 @@ order by c_fullname
 	cz_write_audit(jobId,databaseName,procedureName,'Delete existing DISEASE tags in I2B2METADATA i2b2_tags',SQL%ROWCOUNT,stepCt,'Done');
 	commit;	
 		
-	insert into i2b2_tags
+    /* JDC: Rewrote this, as this was not getting all the disease terms for each study -----
+ 	insert into i2b2_tags
 	(path, tag, tag_type, tags_idx)
-	select distinct min(o.c_fullname) as path
-		   ,c.prefered_name
+	SELECT DISTINCT MIN(O.C_FULLNAME) AS PATH
+		   ,trim(c.prefered_name)
 		   ,'Disease' as tag_type
 		   ,1 as tags_idx
 	from bio_experiment be
 		,bio_data_disease bc
 		,bio_disease c
-		,i2b2 o
-      --,(select rownum as rec_num from table_access where rownum < 3) x
+		,I2B2 O
+      ,(select rownum as rec_num from table_access where rownum < 3) x
 	where be.bio_experiment_id = bc.bio_data_id
       and bc.bio_disease_id = c.bio_disease_id
-      and be.accession = o.sourcesystem_cd
-    --and decode(x.rec_num,1,c.generic_name,c.brand_name) is not null
+      AND BE.ACCESSION = O.SOURCESYSTEM_CD
+      AND O.C_FULLNAME NOT LIKE '\Across Trials\%'
+   -- and decode(x.rec_num,1,c.disease,c.prefered_name) is not null
 	group by c.prefered_name;
+  */
+  
+    insert into i2b2_tags
+	(PATH, TAG, TAG_TYPE, TAGS_IDX)
+	SELECT distinct I2B2.C_FULLNAME AS PATH
+		   ,trim(c.prefered_name)
+		   ,'Disease' as tag_type
+		   ,1 as tags_idx
+	from bio_experiment be
+		,bio_data_disease bc
+		,bio_disease c
+		,I2B2
+	where be.bio_experiment_id = bc.bio_data_id
+      and bc.bio_disease_id = c.bio_disease_id
+      AND BE.ACCESSION = I2B2.SOURCESYSTEM_CD
+      and bc.etl_source like 'METADATA:%' -- only get terms that came from the metadata spreadsheet
+      AND I2B2.C_FULLNAME NOT LIKE '\Across Trials\%'
+      AND I2B2.C_HLEVEL =1;
+  
+  
 
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Insert Disease tags in I2B2METADATA i2b2_tags',SQL%ROWCOUNT,stepCt,'Done');
 	commit;	
-	
-	stepCt := stepCt + 1;
-	cz_write_audit(jobId,databaseName,procedureName,'End i2b2_load_study_metadata',SQL%ROWCOUNT,stepCt,'Done');
-	commit;
+
 	
     ---Cleanup OVERALL JOB if this proc is being run standalone
 	IF newJobFlag = 1
@@ -826,6 +997,5 @@ END;
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Inserted SNP WORKFLOW in I2B2METADATA i2b2_tags',SQL%ROWCOUNT,stepCt,'Done');
 	commit;		
-*/	
- 
+*/
 /

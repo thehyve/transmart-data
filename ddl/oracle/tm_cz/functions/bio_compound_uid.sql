@@ -12,10 +12,12 @@ BEGIN
 
   RETURN 'COM:' || nvl(CAS_REGISTRY, nvl(JNJ_NUMBER, nvl(CNTO_NUMBER, 'ERROR')));
 END BIO_COMPOUND_UID;
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 /

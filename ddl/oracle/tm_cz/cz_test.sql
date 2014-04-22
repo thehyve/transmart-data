@@ -17,19 +17,21 @@
 "TEST_MAX_VALUE" NUMBER(18,4), 
 "TEST_CATEGORY_ID" NUMBER, 
 "TEST_SEVERITY_CD" NVARCHAR2(20), 
+"TABLE_TYPE" VARCHAR2(100 BYTE), 
  CONSTRAINT "CZ_TEST_PK" PRIMARY KEY ("TEST_ID")
  USING INDEX
- TABLESPACE "TRANSMART"  ENABLE
+ TABLESPACE "USERS"  ENABLE
   ) SEGMENT CREATION IMMEDIATE
- TABLESPACE "TRANSMART" ;
+ TABLESPACE "USERS" ;
 --
 -- Type: TRIGGER; Owner: TM_CZ; Name: TRG_CZ_TEST_ID
 --
   CREATE OR REPLACE TRIGGER "TM_CZ"."TRG_CZ_TEST_ID" 
-before insert on "CZ_TEST"    for each row
-begin     if inserting then
-if :NEW."TEST_ID" is null then
+before insert on "CZ_TEST"    for each row 
+begin     if inserting then       
+if :NEW."TEST_ID" is null then          
 select SEQ_CZ.nextval into :NEW."TEST_ID" from dual;       end if;       end if;   end;
+
 
 /
 ALTER TRIGGER "TM_CZ"."TRG_CZ_TEST_ID" ENABLE;

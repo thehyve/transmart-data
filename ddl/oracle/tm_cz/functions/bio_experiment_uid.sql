@@ -10,9 +10,11 @@ BEGIN
 
   RETURN 'EXP:' || nvl(PRIMARY_ID, 'ERROR');
 END bio_experiment_uid;
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 /

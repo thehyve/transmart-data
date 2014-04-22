@@ -29,17 +29,19 @@ BEGIN
     dynamicSQL2 := dynamicSQL2 || ',max(decode(patient_num,' || cast(r_cPatients.patient_num as varchar2) || ',cast(nval_num as varchar2(20)),null)) "' || cast(r_cPatients.patient_num as varchar2) || '"';
 
   END LOOP;
-
+  
   dynamicSQL := dynamicSQL || ' from observation_fact a join i2b2 b on a.concept_cd = b.c_basecode where c_fullname like ''%BRC Depression Study%'' and c_columndatatype = ''T'' and c_visualattributes not like ''%H%'' group by c_name, c_fullname';
   dynamicSQL2 := dynamicSQL2 || ' from observation_fact a join i2b2 b on a.concept_cd = b.c_basecode where c_fullname like ''%BRC Depression Study%'' and c_columndatatype = ''N'' and c_visualattributes not like ''%H%'' group by c_name, c_fullname order by c_fullname';
 
   execute immediate(dynamicSQL || ' UNION ALL ' || dynamicsql2);
-
+  
   dbms_output.put_line(dynamicSQL);-- || ' UNION ALL ' || dynamicsql2);
   dbms_output.put_line('UNION ALL');
   dbms_output.put_line(dynamicsql2);
 END;
 
-
-
+ 
+ 
+ 
+ 
 /

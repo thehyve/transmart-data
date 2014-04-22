@@ -14,25 +14,26 @@
 "JOB_NAME" NVARCHAR2(500), 
  CONSTRAINT "CZ_JOB_MASTER_PK" PRIMARY KEY ("JOB_ID")
  USING INDEX
- TABLESPACE "TRANSMART"  ENABLE
+ TABLESPACE "USERS"  ENABLE
   ) SEGMENT CREATION IMMEDIATE
- TABLESPACE "TRANSMART" ;
+ TABLESPACE "USERS" ;
 --
 -- Type: SEQUENCE; Owner: TM_CZ; Name: SEQ_CZ_JOB_MASTER
 --
-CREATE SEQUENCE  "TM_CZ"."SEQ_CZ_JOB_MASTER"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 18288 CACHE 2 NOORDER  NOCYCLE ;
+CREATE SEQUENCE  "TM_CZ"."SEQ_CZ_JOB_MASTER"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 14367 CACHE 2 NOORDER  NOCYCLE ;
 --
 -- Type: TRIGGER; Owner: TM_CZ; Name: TRG_CZ_JOB_ID
 --
   CREATE OR REPLACE TRIGGER "TM_CZ"."TRG_CZ_JOB_ID" 
-  before insert on CZ_JOB_MASTER    for each row
-  begin
-    if inserting then
-      if :NEW.JOB_ID is null then
-        select SEQ_CZ_JOB_MASTER.nextval into :NEW.JOB_ID from dual;
-      end if;
-    end if;
+  before insert on CZ_JOB_MASTER    for each row 
+  begin     
+    if inserting then       
+      if :NEW.JOB_ID is null then          
+        select SEQ_CZ_JOB_MASTER.nextval into :NEW.JOB_ID from dual;       
+      end if;       
+    end if;   
   end;
+
 
 
 

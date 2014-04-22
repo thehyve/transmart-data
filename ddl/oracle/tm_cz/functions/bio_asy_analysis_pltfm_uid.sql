@@ -10,9 +10,11 @@ BEGIN
 
   RETURN 'BAAP:' || nvl(PLATFORM_NAME, 'ERROR');
 END bio_asy_analysis_pltfm_uid;
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 /

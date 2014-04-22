@@ -7,13 +7,13 @@
 )
 AS
 BEGIN
-
+  
   -------------------------------------------------------------
   -- Shows a tree node in I2b2
   -- KCR@20090519 - First Rev
   -------------------------------------------------------------
   if path != ''  or path != '%'
-  then
+  then 
 
       --I2B2
     UPDATE i2b2
@@ -27,6 +27,6 @@ BEGIN
       AND C_FULLNAME LIKE PATH || '%';
     COMMIT;
   END IF;
-
+  
 END;
 /

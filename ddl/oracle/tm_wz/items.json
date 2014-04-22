@@ -1,6 +1,124 @@
 {
   "dependencies" : [ {
     "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "BIO_ASSAY_ANALYSIS_DATA_NEW"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "CATEGORY"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "I2B2_LOAD_PATH"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "I2B2_LOAD_PATH_WITH_COUNT"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "I2B2_LOAD_TREE_FULL"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_TPM_CATEGORY_CD"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "TIME_POINT_MEASUREMENT"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_TPM_DATA_LABEL"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "TIME_POINT_MEASUREMENT"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_TPM_USUBJID"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "TIME_POINT_MEASUREMENT"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_WTN_LOAD_CLINICAL"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "WT_TRIAL_NODES"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_WT_TRIALNODES"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "WT_TRIAL_NODES"
+    } ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "PATIENT_INFO"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "TIME_POINT_MEASUREMENT"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "TMP_ASSAY_ANALYSIS_METRICS"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "TMP_TRIAL_NODES"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
       "type" : "PROCEDURE",
       "owner" : "TM_WZ",
       "name" : "UTIL_GRANT_ALL"
@@ -25,20 +143,6 @@
       "type" : "TABLE",
       "owner" : "TM_WZ",
       "name" : "WT_CLINICAL_DATA_DUPS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_METABOLOMIC_NODES"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_METABOLOMIC_NODE_VALUES"
     },
     "parents" : [ ]
   }, {
@@ -80,102 +184,7 @@
     "child" : {
       "type" : "TABLE",
       "owner" : "TM_WZ",
-      "name" : "WT_PROTEOMICS_NODES"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_PROTEOMICS_NODE_VALUES"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_QPCR_MIRNA_NODES"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_QPCR_MIRNA_NODE_VALUES"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_RBM_NODES"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_RBM_NODE_VALUES"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_RNA_SEQ_NODES"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_RNA_SEQ_NODE_VALUES"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
       "name" : "WT_SUBJECT_INFO"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MBOLOMICS_LOGS_I1"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_METABOLOMICS_LOGS"
-    } ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MBOLOMICS_PROBESET"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_METABOLOMICS_CALCS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_METABOLOMICS_LOGS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_METABOLOMICS_MED"
     },
     "parents" : [ ]
   }, {
@@ -197,34 +206,6 @@
       "type" : "TABLE",
       "owner" : "TM_WZ",
       "name" : "WT_SUBJECT_MICROARRAY_MED"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MIRNA_CALCS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MIRNA_LOGS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MIRNA_MED"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MIRNA_PROBESET"
     },
     "parents" : [ ]
   }, {
@@ -267,150 +248,116 @@
     "child" : {
       "type" : "TABLE",
       "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_CALCS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_LOGS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_LOGS_I1"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_LOGS"
-    } ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_MED"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_PROBESET"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_CALCS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_CALCS_I1"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_CALCS"
-    } ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_LOGS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_LOGS_I1"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_LOGS"
-    } ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_MED"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_PROBESET"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_CALCS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_CALCS_I1"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_CALCS"
-    } ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_LOGS"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_LOGS_I1"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_LOGS"
-    } ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_MED"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_PROBESET"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
       "name" : "WT_TRIAL_NODES"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "WT_XTRIAL_NODES"
     },
     "parents" : [ ]
   } ],
   "fileAssignments" : [ {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "BIO_ASSAY_ANALYSIS_DATA_NEW"
+    },
+    "file" : "tm_wz/bio_assay_analysis_data_new.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "CATEGORY"
+    },
+    "file" : "tm_wz/category.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "I2B2_LOAD_PATH"
+    },
+    "file" : "tm_wz/i2b2_load_path.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "I2B2_LOAD_PATH_WITH_COUNT"
+    },
+    "file" : "tm_wz/i2b2_load_path_with_count.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "I2B2_LOAD_TREE_FULL"
+    },
+    "file" : "tm_wz/i2b2_load_tree_full.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_TPM_CATEGORY_CD"
+    },
+    "file" : "tm_wz/time_point_measurement.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_TPM_DATA_LABEL"
+    },
+    "file" : "tm_wz/time_point_measurement.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_TPM_USUBJID"
+    },
+    "file" : "tm_wz/time_point_measurement.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_WTN_LOAD_CLINICAL"
+    },
+    "file" : "tm_wz/wt_trial_nodes.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "TM_WZ",
+      "name" : "IDX_WT_TRIALNODES"
+    },
+    "file" : "tm_wz/wt_trial_nodes.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "PATIENT_INFO"
+    },
+    "file" : "tm_wz/patient_info.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "TIME_POINT_MEASUREMENT"
+    },
+    "file" : "tm_wz/time_point_measurement.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "TMP_ASSAY_ANALYSIS_METRICS"
+    },
+    "file" : "tm_wz/tmp_assay_analysis_metrics.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "TMP_TRIAL_NODES"
+    },
+    "file" : "tm_wz/tmp_trial_nodes.sql"
+  }, {
     "item" : {
       "type" : "PROCEDURE",
       "owner" : "TM_WZ",
@@ -438,20 +385,6 @@
       "name" : "WT_CLINICAL_DATA_DUPS"
     },
     "file" : "tm_wz/wt_clinical_data_dups.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_METABOLOMIC_NODES"
-    },
-    "file" : "tm_wz/wt_metabolomic_nodes.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_METABOLOMIC_NODE_VALUES"
-    },
-    "file" : "tm_wz/wt_metabolomic_node_values.sql"
   }, {
     "item" : {
       "type" : "TABLE",
@@ -491,100 +424,9 @@
     "item" : {
       "type" : "TABLE",
       "owner" : "TM_WZ",
-      "name" : "WT_PROTEOMICS_NODES"
-    },
-    "file" : "tm_wz/wt_proteomics_nodes.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_PROTEOMICS_NODE_VALUES"
-    },
-    "file" : "tm_wz/wt_proteomics_node_values.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_QPCR_MIRNA_NODES"
-    },
-    "file" : "tm_wz/wt_qpcr_mirna_nodes.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_QPCR_MIRNA_NODE_VALUES"
-    },
-    "file" : "tm_wz/wt_qpcr_mirna_node_values.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_RBM_NODES"
-    },
-    "file" : "tm_wz/wt_rbm_nodes.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_RBM_NODE_VALUES"
-    },
-    "file" : "tm_wz/wt_rbm_node_values.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_RNA_SEQ_NODES"
-    },
-    "file" : "tm_wz/wt_rna_seq_nodes.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_RNA_SEQ_NODE_VALUES"
-    },
-    "file" : "tm_wz/wt_rna_seq_node_values.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
       "name" : "WT_SUBJECT_INFO"
     },
     "file" : "tm_wz/wt_subject_info.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MBOLOMICS_LOGS_I1"
-    },
-    "file" : "tm_wz/wt_subject_metabolomics_logs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MBOLOMICS_PROBESET"
-    },
-    "file" : "tm_wz/wt_subject_mbolomics_probeset.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_METABOLOMICS_CALCS"
-    },
-    "file" : "tm_wz/wt_subject_metabolomics_calcs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_METABOLOMICS_LOGS"
-    },
-    "file" : "tm_wz/wt_subject_metabolomics_logs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_METABOLOMICS_MED"
-    },
-    "file" : "tm_wz/wt_subject_metabolomics_med.sql"
   }, {
     "item" : {
       "type" : "TABLE",
@@ -606,34 +448,6 @@
       "name" : "WT_SUBJECT_MICROARRAY_MED"
     },
     "file" : "tm_wz/wt_subject_microarray_med.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MIRNA_CALCS"
-    },
-    "file" : "tm_wz/wt_subject_mirna_calcs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MIRNA_LOGS"
-    },
-    "file" : "tm_wz/wt_subject_mirna_logs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MIRNA_MED"
-    },
-    "file" : "tm_wz/wt_subject_mirna_med.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_MIRNA_PROBESET"
-    },
-    "file" : "tm_wz/wt_subject_mirna_probeset.sql"
   }, {
     "item" : {
       "type" : "INDEX",
@@ -666,127 +480,15 @@
     "item" : {
       "type" : "TABLE",
       "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_CALCS"
-    },
-    "file" : "tm_wz/wt_subject_proteomics_calcs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_LOGS"
-    },
-    "file" : "tm_wz/wt_subject_proteomics_logs.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_LOGS_I1"
-    },
-    "file" : "tm_wz/wt_subject_proteomics_logs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_MED"
-    },
-    "file" : "tm_wz/wt_subject_proteomics_med.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_PROTEOMICS_PROBESET"
-    },
-    "file" : "tm_wz/wt_subject_proteomics_probeset.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_CALCS"
-    },
-    "file" : "tm_wz/wt_subject_rbm_calcs.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_CALCS_I1"
-    },
-    "file" : "tm_wz/wt_subject_rbm_calcs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_LOGS"
-    },
-    "file" : "tm_wz/wt_subject_rbm_logs.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_LOGS_I1"
-    },
-    "file" : "tm_wz/wt_subject_rbm_logs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_MED"
-    },
-    "file" : "tm_wz/wt_subject_rbm_med.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RBM_PROBESET"
-    },
-    "file" : "tm_wz/wt_subject_rbm_probeset.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_CALCS"
-    },
-    "file" : "tm_wz/wt_subject_rna_calcs.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_CALCS_I1"
-    },
-    "file" : "tm_wz/wt_subject_rna_calcs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_LOGS"
-    },
-    "file" : "tm_wz/wt_subject_rna_logs.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_LOGS_I1"
-    },
-    "file" : "tm_wz/wt_subject_rna_logs.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_MED"
-    },
-    "file" : "tm_wz/wt_subject_rna_med.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
-      "name" : "WT_SUBJECT_RNA_PROBESET"
-    },
-    "file" : "tm_wz/wt_subject_rna_probeset.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "TM_WZ",
       "name" : "WT_TRIAL_NODES"
     },
     "file" : "tm_wz/wt_trial_nodes.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "TM_WZ",
+      "name" : "WT_XTRIAL_NODES"
+    },
+    "file" : "tm_wz/wt_xtrial_nodes.sql"
   } ]
 }

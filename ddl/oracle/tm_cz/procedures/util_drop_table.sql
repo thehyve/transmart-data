@@ -20,13 +20,13 @@ AS
 BEGIN
 
   --Check if table exists
-  select count(*)
+  select count(*) 
   into v_exists
   from user_tables
   where table_name = v_tabname;
 
   if v_exists > 0 then
-     v_cmdline := 'drop table ' || v_tabname;
+     v_cmdline := 'drop table ' || v_tabname; 
      EXECUTE IMMEDIATE v_cmdline;
   end if;
 

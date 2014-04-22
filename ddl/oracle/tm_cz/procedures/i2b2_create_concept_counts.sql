@@ -5,23 +5,28 @@
 (
   path VARCHAR2
  ,currentJobID NUMBER := null
+ ,buildTree VARCHAR2 := 'Y'
 )
 AS
-/*************************************************************************
-* Copyright 2008-2012 Janssen Research & Development, LLC.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-******************************************************************/
+  -------------------------------------------------------------
+  -- Insert records into the Concept Counts table for new nodes
+  -- KCR@20090404 - First Rev
+  -- KCR@20090709 - NEXT Rev
+  -- JEA@20090817 - Changed processing to eliminate need for cursor
+  -- JEA@20091118 - Added auditing
+  -- JEA@20100507 - Changed to account for Biomarker mRNA nodes that may have different patient counts from
+  --				the Samples & Timepoints concept
+  -- JEA220100702 - Remove separate pass for Biomarker mRNA nodes, they now have unique concept codes
+  -- JEA@20111025	Exclude samples from being counted as subjects
+  -- JEA@20120113	Allow for third character in c_visualattributes
+  
+  --1. BUILD A TEMP TABLE OF ALL CONCEPT CODES WITH THEIR PATIENTS.
+  -- NEED TO INCLUDE ROLLUPS OF INDIRECT RELATIONSHIPS (FOLDERS TO THEIR CHILDREN)
+  --Build a cursor of Paths by level
+  --iterate through the paths in reverse, so determine max level and go backwards, 
+  --this way each folder will have the data needed when you get to it already rolled up
+
+  -------------------------------------------------------------
     
   --Audit variables
   newJobFlag INTEGER(1);
@@ -55,7 +60,7 @@ BEGIN
     concept_path like path || '%';
   stepCt := stepCt + 1;
   cz_write_audit(jobId,databaseName,procedureName,'Delete counts for trial from I2B2DEMODATA concept_counts',SQL%ROWCOUNT,stepCt,'Done');
-	
+
   commit;
 
 /*	Removed because mRNA nodes have unique concept_cds (20100702)
@@ -109,8 +114,22 @@ BEGIN
 	cz_write_audit(jobId,databaseName,procedureName,'Insert all remaining leaf counts for trial into I2B2DEMODATA concept_counts',SQL%ROWCOUNT,stepCt,'Done');
 	commit;	
 */
-	
+
+
+
+
+
+----------July 2013. Performance fix by TR. Join tree pre compute
+IF(buildTree = 'Y')
+THEN
+	I2B2_CREATE_FULL_TREE(path, currentJobID);
+END IF;
+
+----------------------
+
+
 	--	Join each node (folder or leaf) in the path to it's leaf in the work table to count patient numbers
+-----July 2013. Performance fix by TR. Join by pre compute tree
 
 	insert into concept_counts
 	(concept_path
@@ -124,23 +143,26 @@ BEGIN
 	    ,i2b2 la
 		,observation_fact tpm
 		,patient_dimension p
+		,TM_WZ.I2B2_LOAD_TREE_FULL tree
 	where fa.c_fullname like path || '%'
 	  and substr(fa.c_visualattributes,2,1) != 'H'
-	  and la.c_fullname like fa.c_fullname || '%'
+	  --and la.c_fullname like fa.c_fullname || '%'
+		and fa.rowid = tree.IDROOT 
+		and la.rowid = tree.IDCHILD
 	  and la.c_visualattributes like 'L%'
 	  and tpm.patient_num = p.patient_num
 	  and p.sourcesystem_cd not like '%:S:%'
 	  and la.c_basecode = tpm.concept_cd(+)
 	group by fa.c_fullname
 			,ltrim(SUBSTR(fa.c_fullname, 1,instr(fa.c_fullname, '\',-1,2)));
-			
+
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Insert counts for trial into I2B2DEMODATA concept_counts',SQL%ROWCOUNT,stepCt,'Done');
-		
+
 	commit;
 
 	--execute immediate('truncate table tmp_concept_counts');
-	
+
 	--SET ANY NODE WITH MISSING OR ZERO COUNTS TO HIDDEN
 
 	update i2b2
@@ -156,10 +178,10 @@ BEGIN
 					and zc.patient_count = 0)
 			  )
 		and c_name != 'SECURITY';
-		
+
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Nodes hidden with missing/zero counts for trial into I2B2DEMODATA concept_counts',SQL%ROWCOUNT,stepCt,'Done');
-		
+
 	  commit;
     
     ---Cleanup OVERALL JOB if this proc is being run standalone
@@ -174,7 +196,7 @@ BEGIN
     cz_error_handler (jobID, procedureName);
     --End Proc
     cz_end_audit (jobID, 'FAIL');
-	
+
 END;
 
 /*	needed for i2b2 1.4
@@ -307,7 +329,5 @@ and i.c_fullname like '%BEERLUNG%'
   GROUP BY CONCEPT_PATH;
   COMMIT;
 */
- 
-
  
 /

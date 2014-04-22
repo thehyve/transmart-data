@@ -15,7 +15,7 @@
 )
 AS
 /*************************************************************************
-* Copyright 2008-2012 Janssen Research BIOMART_USER, LLC.
+* Copyright 2008-2012 Janssen Research & Development, LLC.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -95,14 +95,9 @@ AS
   where c_fullname like topNode || '%'
     and substr(c_visualattributes,2,1) = 'H';
     --and c_visualattributes like '_H_';
-    
-    cursor uploadI2b2 is 
-    select category_cd,display_value,display_label,display_unit from
-    tm_lz.lt_src_display_mapping group by category_cd,display_value,display_label,display_unit;
 
 
 BEGIN
-EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 	TrialID := upper(trial_id);
 	secureStudy := upper(secure_study);
 	
@@ -140,7 +135,7 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
     newJobFlag := 1; -- True
     cz_start_audit (procedureName, databaseName, jobID);
   END IF;
-    
+    	
 	stepCt := 0;
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Starting i2b2_process_mrna_data',0,stepCt,'Done');
@@ -163,7 +158,7 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
   	--	check if platform exists in de_mrna_annotation .  If not, abort run.
 	
 	select count(*) into pCount
-	from DE_MRNA_ANNOTATION
+	from deapp.DE_MRNA_ANNOTATION
 	where GPL_ID in (select distinct m.platform from lt_src_mrna_subj_samp_map m);
 	
 	if PCOUNT = 0 then
@@ -275,7 +270,7 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 			   where x.sourcesystem_cd = 
 				 regexp_replace(TrialID || ':' || s.site_id || ':' || s.subject_id,'(::){1,}', ':'))
 		) x;
-
+	
 	pCount := SQL%ROWCOUNT;
 	
 	stepCt := stepCt + 1;
@@ -306,7 +301,7 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 	if pExists = 0 then
 		--	dataset is not partitioned so must delete
 		
-		delete from de_subject_microarray_data
+		delete from deapp.de_subject_microarray_data
 		where trial_source = TrialId || ':' || sourceCd;
 		stepCt := stepCt + 1;
 		cz_write_audit(jobId,databaseName,procedureName,'Delete data from de_subject_microarray_data',SQL%ROWCOUNT,stepCt,'Done');
@@ -318,21 +313,20 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 			into pExists
 			from all_tab_partitions
 			where table_name = 'DE_SUBJECT_MICROARRAY_DATA'
-			  and partition_name = TrialId;
+			  and partition_name = TrialId || ':' || sourceCd;
 			
-		
 		if pExists = 0 then
 					
 			--	needed to add partition to de_subject_microarray_data
 
-			sqlText := 'alter table deapp.de_subject_microarray_data add PARTITION "' || TrialID || '"  VALUES (' || '''' || TrialID || '''' || ') ' ||
+			sqlText := 'alter table deapp.de_subject_microarray_data add PARTITION "' || TrialID || ':' || sourceCd || '"  VALUES (' || '''' || TrialID || ':' || sourceCd || '''' || ') ' ||
 						   'NOLOGGING COMPRESS TABLESPACE "DEAPP" ';
 			execute immediate(sqlText);
 			stepCt := stepCt + 1;
 			cz_write_audit(jobId,databaseName,procedureName,'Adding partition to de_subject_microarray_data',0,stepCt,'Done');
 				
 		else
-			sqlText := 'alter table deapp.de_subject_microarray_data truncate partition "' || TrialID || '"';
+			sqlText := 'alter table deapp.de_subject_microarray_data truncate partition "' || TrialID || ':' || sourceCd || '"';
 			execute immediate(sqlText);
 			stepCt := stepCt + 1;
 			cz_write_audit(jobId,databaseName,procedureName,'Truncating partition in de_subject_microarray_data',0,stepCt,'Done');
@@ -675,38 +669,33 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 		inner join wt_mrna_nodes ln
 			on a.platform = ln.platform
 			and a.tissue_type = ln.tissue_type
-                        and a.category_cd=ln.category_cd  --modified
 			and nvl(a.attribute_1,'@') = nvl(ln.attribute_1,'@')
 			and nvl(a.attribute_2,'@') = nvl(ln.attribute_2,'@')
 			and ln.node_type = 'LEAF'
 		inner join wt_mrna_nodes pn
 			on a.platform = pn.platform
-                        and pn.category_cd=substr(a.category_cd,1,instr(a.category_cd,'PLATFORM')+8)
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'PLATFORM')+8),'TISSUETYPE') > 1 then a.tissue_type else '@' end = nvl(pn.tissue_type,'@')
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'PLATFORM')+8),'ATTR1') > 1 then a.attribute_1 else '@' end = nvl(pn.attribute_1,'@')
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'PLATFORM')+8),'ATTR2') > 1 then a.attribute_2 else '@' end = nvl(pn.attribute_2,'@')
-			and pn.node_type = 'PLATFORM'	     
+			and pn.node_type = 'PLATFORM'	  
 		left outer join wt_mrna_nodes ttp
 			on a.tissue_type = ttp.tissue_type
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'TISSUETYPE')+10),'PLATFORM') > 1 then a.platform else '@' end = nvl(ttp.platform,'@')
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'TISSUETYPE')+10),'ATTR1') > 1 then a.attribute_1 else '@' end = nvl(ttp.attribute_1,'@')
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'TISSUETYPE')+10),'ATTR2') > 1 then a.attribute_2 else '@' end = nvl(ttp.attribute_2,'@')
-			and ttp.node_type = 'TISSUETYPE'
-                        and ttp.category_cd=substr(a.category_cd,1,instr(a.category_cd,'TISSUETYPE')+10)
+			and ttp.node_type = 'TISSUETYPE'		  
 		left outer join wt_mrna_nodes a1
 			on a.attribute_1 = a1.attribute_1
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'ATTR1')+5),'PLATFORM') > 1 then a.platform else '@' end = nvl(a1.platform,'@')
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'ATTR1')+5),'TISSUETYPE') > 1 then a.tissue_type else '@' end = nvl(a1.tissue_type,'@')
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'ATTR1')+5),'ATTR2') > 1 then a.attribute_2 else '@' end = nvl(a1.attribute_2,'@')
-			and a1.node_type = 'ATTR1'	
-                        and a1.category_cd=substr(a.category_cd,1,instr(a.category_cd,'ATTR1')+5)
+			and a1.node_type = 'ATTR1'		  
 		left outer join wt_mrna_nodes a2
 			on a.attribute_2 = a1.attribute_2
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'ATTR2')+5),'PLATFORM') > 1 then a.platform else '@' end = nvl(a2.platform,'@')
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'ATTR2')+5),'TISSUETYPE') > 1 then a.tissue_type else '@' end = nvl(a2.tissue_type,'@')
 			and case when instr(substr(a.category_cd,1,instr(a.category_cd,'ATTR2')+5),'ATTR1') > 1 then a.attribute_1 else '@' end = nvl(a2.attribute_1,'@')
-			and a2.node_type = 'ATTR2'
-                        and a2.category_cd=substr(a.category_cd,1,instr(a.category_cd,'ATTR2')+5)
+			and a2.node_type = 'ATTR2'			  
 		left outer join patient_dimension sid
 			on  regexp_replace(TrialId || ':S:' || a.site_id || ':' || a.subject_id || ':' || a.sample_cd,
 							  '(::){1,}', ':') = sid.sourcesystem_cd
@@ -744,8 +733,6 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 	,provider_id
 	,location_cd
 	,units_cd
-        ,sample_cd
-        ,instance_num
     )
     select distinct m.patient_id
 		  ,m.concept_code
@@ -759,8 +746,6 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 		  ,'@'
 		  ,'@'
 		  ,'' -- no units available
-                  ,m.sample_cd
-                  ,1
     from  de_subject_sample_mapping m
     where m.trial_name = TrialID 
 	  and m.source_cd = sourceCD
@@ -772,7 +757,7 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
     commit;
     
 	--	Insert sample facts 
-
+	
 	insert into observation_fact
     (patient_num
 	,concept_cd
@@ -786,8 +771,6 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 	,provider_id
 	,location_cd
 	,units_cd
-  ,sample_cd
-  ,instance_num
     )
     select distinct m.sample_id
 		  ,m.concept_code
@@ -801,8 +784,6 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 		  ,'@'
 		  ,'@'
 		  ,'' -- no units available
-      ,m.sample_cd
-      ,1
     from  de_subject_sample_mapping m
     where m.trial_name = TrialID 
 	  and m.source_cd = sourceCd
@@ -813,10 +794,6 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 	cz_write_audit(jobId,databaseName,procedureName,'Insert sample facts into I2B2DEMODATA observation_fact',SQL%ROWCOUNT,stepCt,'Done');
 
     commit;
-    ---INSERT sample_dimension
-      INSERT INTO I2B2DEMODATA.SAMPLE_DIMENSION(SAMPLE_CD) 
-         SELECT DISTINCT SAMPLE_CD FROM 
-           DEAPP.DE_SUBJECT_SAMPLE_MAPPING WHERE SAMPLE_CD NOT IN (SELECT SAMPLE_CD FROM I2B2DEMODATA.SAMPLE_DIMENSION) ;
     
 	--Update I2b2 for correct data type
 	
@@ -828,23 +805,17 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 	cz_write_audit(jobId,databaseName,procedureName,'Initialize data_type and xml in i2b2',SQL%ROWCOUNT,stepCt,'Done');
 	commit;
 	
-        for ul in uploadI2b2
-        loop
-	update i2b2 n
-	SET n.c_columndatatype = 'T',
+	update i2b2
+	SET c_columndatatype = 'N',
       --Static XML String
-		n.c_metadataxml =  ('<?xml version="1.0"?><ValueMetadata><Version>3.02</Version><CreationDateTime>08/14/2008 01:22:59</CreationDateTime><TestID></TestID><TestName></TestName><DataType>PosFloat</DataType><CodeType></CodeType><Loinc></Loinc><Flagstouse></Flagstouse><Oktousevalues>Y</Oktousevalues><MaxStringLength></MaxStringLength><LowofLowValue>0</LowofLowValue>
-                <HighofLowValue>0</HighofLowValue><LowofHighValue>100</LowofHighValue>100<HighofHighValue>100</HighofHighValue>
-                <LowofToxicValue></LowofToxicValue><HighofToxicValue></HighofToxicValue>
-                <EnumValues></EnumValues><CommentsDeterminingExclusion><Com></Com></CommentsDeterminingExclusion>
-                <UnitValues><NormalUnits>ratio</NormalUnits><EqualUnits></EqualUnits>
-                <ExcludingUnits></ExcludingUnits><ConvertingUnits><Units></Units><MultiplyingFactor></MultiplyingFactor>
-                </ConvertingUnits></UnitValues><Analysis><Enums /><Counts />
-                <New /></Analysis>'||(select xmlelement(name "SeriesMeta",xmlforest(m.display_value as "Value",m.display_unit as "Unit",m.display_label as "DisplayName")) as hi 
-      from tm_lz.lt_src_display_mapping m where m.category_cd=ul.category_cd)||
-                '</ValueMetadata>') where n.c_fullname=(select leaf_node from wt_mrna_nodes where category_cd=ul.category_cd and leaf_node=n.c_fullname);
-                
-                end loop;
+		c_metadataxml = '<?xml version="1.0"?><ValueMetadata><Version>3.02</Version><CreationDateTime>08/14/2008 01:22:59</CreationDateTime><TestID></TestID><TestName></TestName><DataType>PosFloat</DataType><CodeType></CodeType><Loinc></Loinc><Flagstouse></Flagstouse><Oktousevalues>Y</Oktousevalues><MaxStringLength></MaxStringLength><LowofLowValue>0</LowofLowValue><HighofLowValue>0</HighofLowValue><LowofHighValue>100</LowofHighValue>100<HighofHighValue>100</HighofHighValue><LowofToxicValue></LowofToxicValue><HighofToxicValue></HighofToxicValue><EnumValues></EnumValues><CommentsDeterminingExclusion><Com></Com></CommentsDeterminingExclusion><UnitValues><NormalUnits>ratio</NormalUnits><EqualUnits></EqualUnits><ExcludingUnits></ExcludingUnits><ConvertingUnits><Units></Units><MultiplyingFactor></MultiplyingFactor></ConvertingUnits></UnitValues><Analysis><Enums /><Counts /><New /></Analysis></ValueMetadata>'
+	where c_basecode IN (
+		  select xd.concept_cd
+		  from wt_mrna_nodes xd
+			  ,observation_fact xf
+		  where xf.concept_cd = xd.concept_cd
+		  group by xd.concept_Cd
+		  having Max(xf.valtype_cd) = 'N');
 		  
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Update c_columndatatype and c_metadataxml for numeric data types in I2B2METADATA i2b2',SQL%ROWCOUNT,stepCt,'Done');
@@ -873,15 +844,7 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 	cz_write_audit(jobId,databaseName,procedureName,'Update visual attributes for leaf nodes in I2B2METADATA i2b2',SQL%ROWCOUNT,stepCt,'Done');
   
 	COMMIT;
-        
-        update i2b2 a
-	set c_visualattributes='FAS'
-        where a.c_fullname = substr(topNode,1,instr(topNode,'\',1,3));
-        
-        stepCt := stepCt + 1;
-	cz_write_audit(jobId,databaseName,procedureName,'Update visual attributes for study nodes in I2B2METADATA i2b2',SQL%ROWCOUNT,stepCt,'Done');
-  
-    COMMIT;
+    
   --Build concept Counts
   --Also marks any i2B2 records with no underlying data as Hidden, need to do at Trial level because there may be multiple platform and there is no longer
   -- a unique top-level node for mRNA data
@@ -906,10 +869,13 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 
 
   --Reload Security: Inserts one record for every I2B2 record into the security table
-
+-- JDC 03032014 : Skip during a bulk load
+/*
     i2b2_load_security_data(jobId);
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Load security data',0,stepCt,'Done');
+*/
+
 
 --	tag data with probeset_id from reference.probeset_deapp
   
@@ -947,7 +913,7 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 	  and decode(dataType,'R',sign(md.intensity_value),1) = 1  --	take only >0 for dataType R
 	group by gs.probeset_id
 		--  ,sd.sample_cd
-		  ,sd.patient_id 
+		  ,sd.patient_id
 		--  ,sd.sample_cd
 		--  ,sd.subject_id
 		  ,sd.assay_id;
@@ -966,7 +932,7 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 	--	insert into de_subject_microarray_data when dataType is T (transformed)
 
 	if dataType = 'T' then
-		insert into de_subject_microarray_data
+		insert into deapp.de_subject_microarray_data
 		(trial_source
 		,probeset_id
 		,assay_id
@@ -1030,34 +996,32 @@ EXECUTE IMMEDIATE 'alter session set NLS_NUMERIC_CHARACTERS=".,"';
 		cz_write_audit(jobId,databasename,procedurename,'Platform data missing from one or more subject_sample mapping records',1,stepCt,'ERROR');
 		cz_error_handler(jobid,procedurename);
 		cz_end_audit (jobId,'FAIL');
-		select 161 into rtn_code from dual;
+		select 16 into rtn_code from dual;
 	when missing_tissue then
 		cz_write_audit(jobId,databasename,procedurename,'Tissue Type data missing from one or more subject_sample mapping records',1,stepCt,'ERROR');
 		cz_error_handler(jobid,procedurename);
 		CZ_END_AUDIT (JOBID,'FAIL');
-		select 162 into rtn_code from dual;
+		select 16 into rtn_code from dual;
 	when unmapped_platform then
 		cz_write_audit(jobId,databasename,procedurename,'Platform not found in de_mrna_annotation',1,stepCt,'ERROR');
 		CZ_ERROR_HANDLER(JOBID,PROCEDURENAME);
 		cz_end_audit (jobId,'FAIL');
-		select 169 into rtn_code from dual;
+		select 16 into rtn_code from dual;
 	when multiple_platform then
 		cz_write_audit(jobId,databasename,procedurename,'Multiple platforms for sample_cd in lt_src_mrna_subj_samp_map',1,stepCt,'ERROR');
 		CZ_ERROR_HANDLER(JOBID,PROCEDURENAME);
 		cz_end_audit (jobId,'FAIL');
-		select 163 into rtn_code from dual;
+		select 16 into rtn_code from dual;
 	when no_probeset_recs then
 		cz_write_audit(jobId,databasename,procedurename,'Unable to match probesets to platform in probeset_deapp',1,stepCt,'ERROR');
 		CZ_ERROR_HANDLER(JOBID,PROCEDURENAME);
 		cz_end_audit (jobId,'FAIL');
-		select 165 into rtn_code from dual;
+		select 16 into rtn_code from dual;
 	WHEN OTHERS THEN
 		--Handle errors.
 		cz_error_handler (jobID, procedureName);
 		--End Proc
 		cz_end_audit (jobID, 'FAIL');
-		select 166 into rtn_code from dual;
-END; 
-
-	
+		select 16 into rtn_code from dual;
+END;
 /

@@ -9,21 +9,6 @@
  ,currentJobID NUMBER := null
 )
 AS
-/*************************************************************************
-* Copyright 2008-2012 Janssen Research and Development, LLC.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-******************************************************************/
   
   root_node		varchar2(2000);
   root_level	int;
@@ -37,6 +22,15 @@ AS
   stepCt number(18,0);
   
 BEGIN
+  
+  -------------------------------------------------------------
+  -- Add a tree node in I2b2
+  -- KCR@20090519 - First Rev
+  -- JEA@20100107 - Added auditing
+  -- JEA@20111212	Added i2b2_id sequence
+  -- JEA@20120529	Updated for i2b2 1.6
+  
+  -------------------------------------------------------------
     
   stepCt := 0;
 	
@@ -61,11 +55,8 @@ BEGIN
     cz_start_audit (procedureName, databaseName, jobID);
   END IF;
   
-  if path = ''  or path = '%' or path_name = ''
+  if path != ''  or path != '%' or path_name != ''
   then 
-  	stepCt := stepCt + 1;
-	cz_write_audit(jobId,databaseName,procedureName,'Missing path or name - path:' || path || ' name: ' || path_name,SQL%ROWCOUNT,stepCt,'Done');
-  else
     --Delete existing node.
     --I2B2
     DELETE 
@@ -84,7 +75,7 @@ BEGIN
 	stepCt := stepCt + 1;
 	cz_write_audit(jobId,databaseName,procedureName,'Deleted any concepts for path from I2B2DEMODATA concept_dimension',SQL%ROWCOUNT,stepCt,'Done');
     COMMIT;
-    
+     
       --I2B2
       DELETE
         FROM i2b2
@@ -125,7 +116,7 @@ BEGIN
       'CONCEPT_CD',
       'CONCEPT_DIMENSION',
       'CONCEPT_PATH',
-      CONCEPT_PATH,
+      CONCEPT_PATH, 
       CONCEPT_PATH,
       sysdate,
       sysdate,

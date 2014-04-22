@@ -16,10 +16,11 @@ AS
 
     --GRANTS DATATRUST POSSIBLE PERMISSIONS
     --ON OBJECTS OWNED BY THE CURRENT USER
-
+	
 	--	JEA@20110901	Added parameter to allow username other than DATATRUST, look for EXTRNL as external table names
 
     v_user      varchar2(2000) := SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA');
+	extTable	int;
 
   begin
 
@@ -29,26 +30,32 @@ AS
 
      for L_TABLE in (select table_name from user_tables where table_name not like '%EXTRNL%') LOOP
 
-       if L_TABLE.table_name like '%EXTRNL%' then
+		select count(*) into extTable
+		from all_external_tables
+		where owner = v_user
+		  and table_name = L_TABLE.table_name;
+		   
+       --if L_TABLE.table_name like '%EXTRNL%' then
+	    if extTable > 0 then
           --grant select only to External tables
           execute immediate 'grant select on ' || L_TABLE.table_name || ' to ' || username;
-
+       
        else
-          --Grant full permissions on regular tables
+          --Grant full permissions on regular tables  
           execute immediate 'grant select, insert, update, delete on ' || L_TABLE.table_name || ' to ' || username;
           --DBMS_OUTPUT.put_line('grant select, insert, update, delete on ' || L_TABLE.table_name || ' to ' || username);
        end if;
-
+       
      END LOOP; --TABLE LOOP
      end if;
-
+     
 	IF UPPER(V_WHATTYPE) LIKE '%VIEW%' THEN
     dbms_output.put_line('Owner ' || v_user  || '   Grantee ' || username);
     dbms_output.put_line('Views');
 
      for L_VIEW in (select view_name from user_views ) LOOP
           execute immediate 'grant select on ' || L_VIEW.view_name || ' to ' || username;
-
+       
      END LOOP; --TABLE LOOP
  end if;
 
@@ -65,4 +72,5 @@ AS
   end if;
 
 END;
+ 
 /

@@ -15,7 +15,7 @@ AS
 
     --GRANTS SELECT PERMISSIONS to DATATRUST (default) or specified user
     --ON OBJECTS OWNED BY THE CURRENT USER
-
+	
 	--	JEA@20110927	New, cloned from UTIL_GRANT_ALL
 
     v_user      varchar2(2000) := SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA');
@@ -29,7 +29,7 @@ AS
 
 	 execute immediate 'grant select on ' || L_TABLE.table_name || ' to ' || username;
           DBMS_OUTPUT.put_line('grant select on ' || L_TABLE.table_name || ' to ' || username);
-
+       
      END LOOP; --TABLE LOOP
 
   --  dbms_output.put_line(chr(10) || 'Views');
