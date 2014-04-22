@@ -32,3 +32,4 @@ join cz_test_category e
   on e.test_category_id = c.test_category_id
 WHERE A.TEST_RUN_ID = (select max(test_Run_id) from az_test_run)
 ORDER BY a.TEST_RUN_ID, c.test_table, c.test_column;
+ 

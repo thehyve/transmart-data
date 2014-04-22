@@ -6,4 +6,5 @@
 from search_taxonomy_rels str, search_taxonomy st, search_taxonomy_level4 stl4
 where parent_id=stl4.term_id
 and str.child_id=st.term_id
- ;
+;
+ 

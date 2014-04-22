@@ -6,4 +6,5 @@
 from search_taxonomy_rels str, search_taxonomy st, search_categories sc
 where parent_id=sc.category_id
 and str.child_id=st.term_id
- ;
+;
+ 

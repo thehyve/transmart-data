@@ -29,4 +29,5 @@ UNION
  and l.parent4 is not null 
 )
 where search_keyword_id is not null
- ;
+;
+ 

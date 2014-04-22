@@ -160,6 +160,10 @@
     },
     "parents" : [ {
       "type" : "TABLE",
+      "owner" : "BIOMART",
+      "name" : "BIO_MARKER_CORREL_MV"
+    }, {
+      "type" : "TABLE",
       "owner" : "SEARCHAPP",
       "name" : "SEARCH_KEYWORD"
     } ]
@@ -425,6 +429,10 @@
     "parents" : [ {
       "type" : "TABLE",
       "owner" : "SEARCHAPP",
+      "name" : "SEARCH_BIO_MKR_CORREL_FAST_MV"
+    }, {
+      "type" : "TABLE",
+      "owner" : "SEARCHAPP",
       "name" : "SEARCH_GENE_SIGNATURE"
     }, {
       "type" : "TABLE",
@@ -433,11 +441,22 @@
     } ]
   }, {
     "child" : {
+      "type" : "TABLE",
+      "owner" : "SEARCHAPP",
+      "name" : "SEARCH_BIO_MKR_CORREL_FAST_MV"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
       "type" : "VIEW",
       "owner" : "SEARCHAPP",
       "name" : "SEARCH_BIO_MKR_CORREL_VIEW"
     },
     "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "BIOMART",
+      "name" : "BIO_ASSAY_DATA_ANNOTATION"
+    }, {
       "type" : "TABLE",
       "owner" : "SEARCHAPP",
       "name" : "SEARCH_GENE_SIGNATURE"
@@ -1216,7 +1235,7 @@
       "owner" : "SEARCHAPP",
       "name" : "PATHWAY_GENES"
     },
-    "file" : "searchapp/views/pathway_genes.sql"
+    "file" : "searchapp/_cross.sql"
   }, {
     "item" : {
       "type" : "TABLE",
@@ -1387,11 +1406,18 @@
     "file" : "searchapp/views/search_bio_mkr_correl_fast_mv.sql"
   }, {
     "item" : {
+      "type" : "TABLE",
+      "owner" : "SEARCHAPP",
+      "name" : "SEARCH_BIO_MKR_CORREL_FAST_MV"
+    },
+    "file" : "searchapp/search_bio_mkr_correl_fast_mv.sql"
+  }, {
+    "item" : {
       "type" : "VIEW",
       "owner" : "SEARCHAPP",
       "name" : "SEARCH_BIO_MKR_CORREL_VIEW"
     },
-    "file" : "searchapp/views/search_bio_mkr_correl_view.sql"
+    "file" : "searchapp/_cross.sql"
   }, {
     "item" : {
       "type" : "VIEW",

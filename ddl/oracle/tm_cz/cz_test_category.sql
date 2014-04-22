@@ -11,6 +11,7 @@
  TABLESPACE "USERS"  ENABLE
   ) SEGMENT CREATION IMMEDIATE
  TABLESPACE "USERS" ;
+
 --
 -- Type: TRIGGER; Owner: TM_CZ; Name: TRG_CZ_TEST_CATEGORY_ID
 --
@@ -23,3 +24,4 @@ select SEQ_CZ.nextval into :NEW."TEST_CATEGORY_ID" from dual;       end if;     
 
 /
 ALTER TRIGGER "TM_CZ"."TRG_CZ_TEST_CATEGORY_ID" ENABLE;
+ 

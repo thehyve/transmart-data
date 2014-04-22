@@ -13,3 +13,4 @@ PARALLEL_ENABLE AGGREGATE USING t_string_agg;
  
  
 /
+ 

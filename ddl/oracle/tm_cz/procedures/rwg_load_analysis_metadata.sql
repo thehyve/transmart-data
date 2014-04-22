@@ -695,3 +695,4 @@ and upper(ext.study_id) =upper(trialID);
   
 END;
 /
+ 

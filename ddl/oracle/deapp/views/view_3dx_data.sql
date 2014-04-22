@@ -8,4 +8,5 @@ ma.gene_id, ma.organism
 from DEAPP.de_subject_microarray_data smd, DEAPP.de_mrna_annotation ma
 where trial_name like 'LWG_P101194_NZBW'
 and ma.probeset_id = ma.probeset_id
- ;
+;
+ 

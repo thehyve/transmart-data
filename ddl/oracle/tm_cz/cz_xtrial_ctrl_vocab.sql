@@ -8,6 +8,7 @@
 "CTRL_VOCAB_ID" NUMBER(18,0) NOT NULL ENABLE
   ) SEGMENT CREATION IMMEDIATE
  TABLESPACE "USERS" ;
+
 --
 -- Type: TRIGGER; Owner: TM_CZ; Name: TRG_XTRIAL_CTRL_VOCAB_ID
 --
@@ -20,3 +21,4 @@ select SEQ_CZ.nextval into :NEW."CTRL_VOCAB_ID" from dual;       end if;       e
 
 /
 ALTER TRIGGER "TM_CZ"."TRG_XTRIAL_CTRL_VOCAB_ID" ENABLE;
+ 

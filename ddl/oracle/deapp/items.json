@@ -612,6 +612,10 @@
     "parents" : [ {
       "type" : "TABLE",
       "owner" : "DEAPP",
+      "name" : "DE_SUBJECT_MICROARRAY_DATA"
+    }, {
+      "type" : "TABLE",
+      "owner" : "DEAPP",
       "name" : "DE_SUBJECT_SAMPLE_MAPPING"
     }, {
       "type" : "FUNCTION",
@@ -1028,7 +1032,15 @@
       "owner" : "DEAPP",
       "name" : "VIEW_3DX_DATA"
     },
-    "parents" : [ ]
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "DEAPP",
+      "name" : "DE_MRNA_ANNOTATION"
+    }, {
+      "type" : "TABLE",
+      "owner" : "DEAPP",
+      "name" : "DE_SUBJECT_MICROARRAY_DATA"
+    } ]
   } ],
   "fileAssignments" : [ {
     "item" : {

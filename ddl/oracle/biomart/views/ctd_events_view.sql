@@ -23,4 +23,5 @@ order by REF_ARTICLE_PROTOCOL_ID, DEFINITION_OF_THE_EVENT
  
  
  
- ;
+;
+ 

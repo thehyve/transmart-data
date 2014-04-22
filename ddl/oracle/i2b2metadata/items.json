@@ -18,6 +18,24 @@
     "child" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
+      "name" : "BIRN"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "BIRN_IDX1"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "BIRN"
+    } ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
       "name" : "CUSTOM_META"
     },
     "parents" : [ ]
@@ -60,23 +78,20 @@
     "child" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "BIRN"
-    },
-    "parents" : [ ]
-  }, {
-    "child" : {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
       "name" : "I2B2_BKP"
     },
     "parents" : [ ]
   }, {
     "child" : {
-      "type" : "SEQUENCE",
+      "type" : "INDEX",
       "owner" : "I2B2METADATA",
-      "name" : "I2B2_ID_SEQ"
+      "name" : "I2B2_IDX1"
     },
-    "parents" : [ ]
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2"
+    } ]
   }, {
     "child" : {
       "type" : "TABLE",
@@ -113,62 +128,7 @@
     "child" : {
       "type" : "INDEX",
       "owner" : "I2B2METADATA",
-      "name" : "IDX_I2B2_B"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2"
-    } ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2_IDX1"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2"
-    } ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "IDX_I2B2_FULLNAME_BASECODE"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2"
-    } ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "META_APPLIED_PATH_I2B2_IDX"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2"
-    } ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
       "name" : "IDX_BIRN_B"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
-      "name" : "BIRN"
-    } ]
-  }, {
-    "child" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "BIRN_IDX1"
     },
     "parents" : [ {
       "type" : "TABLE",
@@ -185,6 +145,28 @@
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
       "name" : "BIRN"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_I2B2_B"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_I2B2_FULLNAME_BASECODE"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2"
     } ]
   }, {
     "child" : {
@@ -207,6 +189,17 @@
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
       "name" : "CUSTOM_META"
+    } ]
+  }, {
+    "child" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "META_APPLIED_PATH_I2B2_IDX"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2"
     } ]
   }, {
     "child" : {
@@ -476,6 +469,20 @@
     "item" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
+      "name" : "BIRN"
+    },
+    "file" : "i2b2metadata/birn.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "BIRN_IDX1"
+    },
+    "file" : "i2b2metadata/birn.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
       "name" : "CUSTOM_META"
     },
     "file" : "i2b2metadata/custom_meta.sql"
@@ -518,13 +525,6 @@
     "item" : {
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
-      "name" : "BIRN"
-    },
-    "file" : "i2b2metadata/birn.sql"
-  }, {
-    "item" : {
-      "type" : "TABLE",
-      "owner" : "I2B2METADATA",
       "name" : "I2B2_BKP"
     },
     "file" : "i2b2metadata/i2b2_bkp.sql"
@@ -533,20 +533,6 @@
       "type" : "INDEX",
       "owner" : "I2B2METADATA",
       "name" : "I2B2_IDX1"
-    },
-    "file" : "i2b2metadata/i2b2.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "BIRN_IDX1"
-    },
-    "file" : "i2b2metadata/birn.sql"
-  }, {
-    "item" : {
-      "type" : "SEQUENCE",
-      "owner" : "I2B2METADATA",
-      "name" : "I2B2_ID_SEQ"
     },
     "file" : "i2b2metadata/i2b2.sql"
   }, {
@@ -581,16 +567,23 @@
     "item" : {
       "type" : "INDEX",
       "owner" : "I2B2METADATA",
-      "name" : "IDX_I2B2_B"
+      "name" : "IDX_BIRN_B"
     },
-    "file" : "i2b2metadata/i2b2.sql"
+    "file" : "i2b2metadata/birn.sql"
   }, {
     "item" : {
       "type" : "INDEX",
       "owner" : "I2B2METADATA",
-      "name" : "IDX_BIRN_B"
+      "name" : "IDX_BIRN_FULLNAME_BASECODE"
     },
     "file" : "i2b2metadata/birn.sql"
+  }, {
+    "item" : {
+      "type" : "INDEX",
+      "owner" : "I2B2METADATA",
+      "name" : "IDX_I2B2_B"
+    },
+    "file" : "i2b2metadata/i2b2.sql"
   }, {
     "item" : {
       "type" : "INDEX",
@@ -602,7 +595,7 @@
     "item" : {
       "type" : "INDEX",
       "owner" : "I2B2METADATA",
-      "name" : "IDX_BIRN_FULLNAME_BASECODE"
+      "name" : "META_APPLIED_PATH_BIRN_IDX"
     },
     "file" : "i2b2metadata/birn.sql"
   }, {
@@ -619,13 +612,6 @@
       "name" : "META_APPLIED_PATH_I2B2_IDX"
     },
     "file" : "i2b2metadata/i2b2.sql"
-  }, {
-    "item" : {
-      "type" : "INDEX",
-      "owner" : "I2B2METADATA",
-      "name" : "META_APPLIED_PATH_BIRN_IDX"
-    },
-    "file" : "i2b2metadata/birn.sql"
   }, {
     "item" : {
       "type" : "INDEX",
@@ -808,13 +794,6 @@
       "name" : "TABLE_ACCESS"
     },
     "file" : "i2b2metadata/table_access.sql"
-  }, {
-    "item" : {
-      "type" : "TRIGGER",
-      "owner" : "I2B2METADATA",
-      "name" : "TRG_I2B2_ID"
-    },
-    "file" : "i2b2metadata/i2b2.sql"
   }, {
     "item" : {
       "type" : "TRIGGER",

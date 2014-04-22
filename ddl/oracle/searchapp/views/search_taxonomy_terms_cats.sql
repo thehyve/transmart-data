@@ -14,4 +14,5 @@ select term_id, term_name, category_name from searchapp.search_taxonomy_level4
 UNION
 select term_id, term_name, category_name from searchapp.search_taxonomy_level5
 )
- ;
+;
+ 

@@ -132,3 +132,4 @@ where upper(rwg.study_id) like upper(trialID);
   
 END;
 /
+ 

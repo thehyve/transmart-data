@@ -8,4 +8,5 @@ where s1.parent_id=s2.child_id(+)
 and s2.parent_id=s3.child_id(+)
 and s3.parent_id=s4.child_id(+)
 and s4.parent_id=s5.child_id(+)
- ;
+;
+ 

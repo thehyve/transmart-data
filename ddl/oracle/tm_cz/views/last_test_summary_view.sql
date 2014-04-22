@@ -38,4 +38,5 @@ group by
   d.test_category,
   d.test_sub_category1,
   d.test_sub_category2,
-  c.version_name;
+c.version_name;
+ 
