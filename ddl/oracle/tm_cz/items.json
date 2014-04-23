@@ -1787,37 +1787,6 @@
     } ]
   }, {
     "child" : {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_AUDIT_EXAMPLE"
-    },
-    "parents" : [ {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_END_AUDIT"
-    }, {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_ERROR_HANDLER"
-    }, {
-      "type" : "TABLE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_JOB_MASTER"
-    }, {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_START_AUDIT"
-    }, {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_WRITE_AUDIT"
-    }, {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_WRITE_INFO"
-    } ]
-  }, {
-    "child" : {
       "type" : "TABLE",
       "owner" : "TM_CZ",
       "name" : "CZ_DATA_PROFILE_COLUMN_EXCLUSI"
@@ -2669,28 +2638,6 @@
     } ]
   }, {
     "child" : {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "EXEC_TEST"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_TEST"
-    } ]
-  }, {
-    "child" : {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "EXEC_TEST_RUN"
-    },
-    "parents" : [ {
-      "type" : "TABLE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_TEST"
-    } ]
-  }, {
-    "child" : {
       "type" : "FUNCTION",
       "owner" : "TM_CZ",
       "name" : "FRACT_ERROR_DIST"
@@ -2934,6 +2881,10 @@
     }, {
       "type" : "SYNONYM",
       "owner" : "TM_CZ",
+      "name" : "I2B2"
+    }, {
+      "type" : "SYNONYM",
+      "owner" : "TM_CZ",
       "name" : "TABLE_ACCESS"
     } ]
   }, {
@@ -3139,29 +3090,6 @@
       "type" : "TABLE",
       "owner" : "I2B2METADATA",
       "name" : "I2B2_BKP"
-    } ]
-  }, {
-    "child" : {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "I2B2_CLINICAL_DATA_EXTRNL_LT"
-    },
-    "parents" : [ {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_END_AUDIT"
-    }, {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_ERROR_HANDLER"
-    }, {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_START_AUDIT"
-    }, {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_WRITE_AUDIT"
     } ]
   }, {
     "child" : {
@@ -8693,13 +8621,6 @@
     "file" : "tm_cz/procedures/czx_write_info.sql"
   }, {
     "item" : {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "CZ_AUDIT_EXAMPLE"
-    },
-    "file" : "tm_cz/procedures/cz_audit_example.sql"
-  }, {
-    "item" : {
       "type" : "TABLE",
       "owner" : "TM_CZ",
       "name" : "CZ_DATA_PROFILE_COLUMN_EXCLUSI"
@@ -8980,20 +8901,6 @@
     "file" : "tm_cz/_misc.sql"
   }, {
     "item" : {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "EXEC_TEST"
-    },
-    "file" : "tm_cz/procedures/exec_test.sql"
-  }, {
-    "item" : {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "EXEC_TEST_RUN"
-    },
-    "file" : "tm_cz/procedures/exec_test_run.sql"
-  }, {
-    "item" : {
       "type" : "FUNCTION",
       "owner" : "TM_CZ",
       "name" : "FRACT_ERROR_DIST"
@@ -9055,13 +8962,6 @@
       "name" : "I2B2_BACKOUT_TRIAL"
     },
     "file" : "tm_cz/procedures/i2b2_backout_trial.sql"
-  }, {
-    "item" : {
-      "type" : "PROCEDURE",
-      "owner" : "TM_CZ",
-      "name" : "I2B2_CLINICAL_DATA_EXTRNL_LT"
-    },
-    "file" : "tm_cz/procedures/i2b2_clinical_data_extrnl_lt.sql"
   }, {
     "item" : {
       "type" : "PROCEDURE",

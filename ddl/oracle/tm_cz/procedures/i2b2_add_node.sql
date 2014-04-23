@@ -105,8 +105,7 @@ BEGIN
     INSERT
      INTO I2B2
       (c_hlevel, C_FULLNAME, C_NAME, C_VISUALATTRIBUTES, c_synonym_cd, C_FACTTABLECOLUMN, C_TABLENAME, C_COLUMNNAME,
-      C_DIMCODE, C_TOOLTIP, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, c_basecode, C_OPERATOR, c_columndatatype, c_comment,
-	  i2b2_id, m_applied_path)
+      C_DIMCODE, C_TOOLTIP, UPDATE_DATE, DOWNLOAD_DATE, IMPORT_DATE, SOURCESYSTEM_CD, c_basecode, C_OPERATOR, c_columndatatype, c_comment, m_applied_path)
     SELECT 
       (length(concept_path) - nvl(length(replace(concept_path, '\')),0)) / length('\') - 2 + root_level,
       CONCEPT_PATH,
@@ -126,8 +125,7 @@ BEGIN
       'LIKE',
       'T',
       decode(TrialID,null,null,'trial:' || TrialID),
-	  i2b2_id_seq.nextval,
-	  '@'
+      '@'
     FROM
       CONCEPT_DIMENSION
     WHERE 

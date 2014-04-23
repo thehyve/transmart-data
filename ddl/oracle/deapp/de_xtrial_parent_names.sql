@@ -25,7 +25,7 @@ CREATE SEQUENCE  "DEAPP"."DE_PARENT_CD_SEQ"  MINVALUE 1 MAXVALUE 999999999999999
   CREATE OR REPLACE TRIGGER "DEAPP"."DE_PARENT_CD_TRG" 
 BEFORE INSERT ON deapp.de_xtrial_parent_names
 FOR EACH ROW
-       WHEN (
+        WHEN (
 new.parent_cd is null
       ) BEGIN
   SELECT de_parent_cd_seq.nextval
