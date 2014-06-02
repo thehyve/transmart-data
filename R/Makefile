@@ -1,44 +1,39 @@
 R_MIRROR = http://cran-mirror.cs.uu.nl
-R_VERSION = 3.0.1
-R_SOURCE = R-$(R_VERSION)
-PREFIX = root
-R_EXEC = $(PREFIX)/bin/R
+R_REPO = http://cran-mirror.cs.uu.nl/bin/linux/ubuntu
 
-R_FLAGS ?= -O2 -march=native -mtune=native
+MICHAEL_RUTTER_KEY=E084DAB9
 
-$(R_SOURCE):
-	curl -f $(R_MIRROR)/src/base/R-3/$@.tar.gz | tar xzf -
+install_R:
+	. /etc/lsb-release; \
+	test $$DISTRIB_RELEASE != '12.04' || \
+	grep $(R_REPO) /etc/apt/sources.list || \
+	( gpg --recv-keys --keyserver keyserver.ubuntu.com $(MICHAEL_RUTTER_KEY) && \
+	  ( gpg -a --export $(MICHAEL_RUTTER_KEY) | apt-key add -) && \
+	  echo 'deb $(R_REPO) precise/' >> /etc/apt/sources.list && \
+	  apt-get update \
+	)
+	apt-get install r-base libcairo-dev
 
-build/Makefile: $(R_SOURCE)
-	mkdir -p build && cd build && \
-		CFLAGS="$(R_FLAGS)" \
-		CXXFLAGS="$(R_FLAGS)" \
-		FFLAGS="$(R_FLAGS)" \
-		../$(R_SOURCE)/configure --prefix=$(realpath .)/$(PREFIX) \
-		--enable-R-shlib --without-readline \
-		--with-libpng --without-jpeglib --without-libtiff \
-		--without-system-xz --without-ICU \
-		--without-recommended-packages
+cran_packages: cran_pkg.R 
+	CRAN_MIRROR=$(R_MIRROR) R -f $<
 
-$(R_EXEC): build/Makefile
-	 $(MAKE) -C build -j8 && $(MAKE) -C build -j8 install
-
-cran_packages: cran_pkg.R $(R_EXEC)
-	CRAN_MIRROR=$(R_MIRROR) $(R_EXEC) -f $<
-
-other_packages: other_pkg.R cran_packages $(R_EXEC)
-	$(R_EXEC) -f $<
+other_packages: other_pkg.R cran_packages 
+	R -f $<
 
 install_packages: cran_packages other_packages
 
 start_Rserve start_Rserve.dbg:
-	$(R_EXEC) CMD $(patsubst start_%,%,$@)
+	R CMD $(patsubst start_%,%,$@)
+
+install: install_R install_packages
 
 # must be run as root
 install_rserve_init:
 	TRANSMART_USER=$(TRANSMART_USER) php -d variables_order=E -d open_basedir=/ \
 		rserve.php > /etc/init.d/rserve
 	chmod +x /etc/init.d/rserve
+	sudo update-rc.d rserve defaults
+
 
 install_rserve_unit:
 	TRANSMART_USER=$(TRANSMART_USER) php -d variables_order=E -d open_basedir=/ \
