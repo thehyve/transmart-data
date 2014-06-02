@@ -1,60 +1,42 @@
 --
--- Name: de_variant_subject_summary; Type: TABLE; Schema: deapp; Owner: -
---
-CREATE TABLE "DEAPP"."DE_VARIANT_SUBJECT_SUMMARY" (
-    variant_subject_summary_id NUMBER(22,0) ,
-    chr VARCHAR2(50 BYTE),
-    pos NUMBER(22,0),
-    dataset_id VARCHAR2(50 BYTE) NOT NULL,
-    subject_id VARCHAR2(50 BYTE) NOT NULL,
-    rs_id VARCHAR2(50 BYTE),
-    variant VARCHAR2(1000 BYTE),
-    variant_format VARCHAR2(100 BYTE),
-    variant_type VARCHAR2(100 BYTE),
-    reference char(1) check( reference in ('T', 'F') ),
-    allele1 NUMBER(5,0),
-    allele2 NUMBER(5,0),
-    assay_id NUMBER(18,0)
-);
-
---
--- Name: COLUMN de_variant_subject_summary.reference; Type: COMMENT; Schema: deapp; Owner: -
---
-COMMENT ON COLUMN deapp.de_variant_subject_summary.reference IS 'This column contains a flag whether this subject has a reference value on this variant, or not.';
-
---
--- Name: COLUMN de_variant_subject_summary.assay_id; Type: COMMENT; Schema: deapp; Owner: -
---
-COMMENT ON COLUMN deapp.de_variant_subject_summary.assay_id IS 'Reference to de_subject_sample_mapping';
-
---
--- Name: variant_subject_summary_id; Type: CONSTRAINT; Schema: deapp; Owner: -
---
-ALTER TABLE "DEAPP"."DE_VARIANT_SUBJECT_SUMMARY"
-    ADD CONSTRAINT variant_subject_summary_id PRIMARY KEY (variant_subject_summary_id);
-
---
--- Name: variant_subject_summary_uk; Type: INDEX; Schema: deapp; Owner: -
---
-CREATE UNIQUE INDEX variant_subject_summary_uk
-  ON "DEAPP"."DE_VARIANT_SUBJECT_SUMMARY" (dataset_id, chr, pos, rs_id, subject_id);
-
---
--- Name: variant_subject_summary_fk; Type: FK CONSTRAINT; Schema: deapp; Owner: -
---
-ALTER TABLE "DEAPP"."DE_VARIANT_SUBJECT_SUMMARY"
-    ADD FOREIGN KEY (dataset_id) REFERENCES DEAPP.DE_VARIANT_DATASET(dataset_id);
-
---
--- Type: SEQUENCE; Owner: DEAPP; Name: de_variant_subject_summary_seq
+-- Type: SEQUENCE; Owner: DEAPP; Name: DE_VARIANT_SUBJECT_SUMMARY_SEQ
 --
 CREATE SEQUENCE  "DEAPP"."DE_VARIANT_SUBJECT_SUMMARY_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20 NOORDER  NOCYCLE ;
 
 --
--- Type: TRIGGER; Owner: DEAPP; Name: TRG_VARIANT_POPULATION_INFO_ID
+-- Type: TABLE; Owner: DEAPP; Name: DE_VARIANT_SUBJECT_SUMMARY
 --
-create or replace
-TRIGGER "DEAPP"."TRG_VARIANT_SUBJECT_SUMMARY_ID"
+ CREATE TABLE "DEAPP"."DE_VARIANT_SUBJECT_SUMMARY" 
+  (	"VARIANT_SUBJECT_SUMMARY_ID" NUMBER(22,0), 
+"CHR" VARCHAR2(50 BYTE), 
+"POS" NUMBER(22,0), 
+"DATASET_ID" VARCHAR2(50 BYTE) NOT NULL ENABLE, 
+"SUBJECT_ID" VARCHAR2(50 BYTE) NOT NULL ENABLE, 
+"RS_ID" VARCHAR2(50 BYTE), 
+"VARIANT" VARCHAR2(1000 BYTE), 
+"VARIANT_FORMAT" VARCHAR2(100 BYTE), 
+"VARIANT_TYPE" VARCHAR2(100 BYTE), 
+"REFERENCE" CHAR(1 BYTE), 
+"ALLELE1" NUMBER(5,0), 
+"ALLELE2" NUMBER(5,0), 
+"ASSAY_ID" NUMBER(18,0), 
+ CHECK ( reference in ('T', 'F') ) ENABLE, 
+ CONSTRAINT "VARIANT_SUBJECT_SUMMARY_ID" PRIMARY KEY ("VARIANT_SUBJECT_SUMMARY_ID")
+ USING INDEX
+ TABLESPACE "DEAPP"  ENABLE
+  ) SEGMENT CREATION DEFERRED
+ TABLESPACE "DEAPP" ;
+
+--
+-- Type: REF_CONSTRAINT; Owner: DEAPP; Name: SYS_C0045383
+--
+ALTER TABLE "DEAPP"."DE_VARIANT_SUBJECT_SUMMARY" ADD FOREIGN KEY ("DATASET_ID")
+ REFERENCES "DEAPP"."DE_VARIANT_DATASET" ("DATASET_ID") ENABLE;
+
+--
+-- Type: TRIGGER; Owner: DEAPP; Name: TRG_VARIANT_SUBJECT_SUMMARY_ID
+--
+  CREATE OR REPLACE TRIGGER "DEAPP"."TRG_VARIANT_SUBJECT_SUMMARY_ID" 
 before insert on DEAPP.DE_VARIANT_SUBJECT_SUMMARY
 for each row
 begin
@@ -66,3 +48,4 @@ begin
 end;
 /
 ALTER TRIGGER "DEAPP"."TRG_VARIANT_SUBJECT_SUMMARY_ID" ENABLE;
+ 
