@@ -21,4 +21,4 @@ order by REF_ARTICLE_PROTOCOL_ID, SECONDARY_TYPE
  
  
  
- ;
+;

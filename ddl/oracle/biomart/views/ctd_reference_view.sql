@@ -19,4 +19,4 @@ order by REF_ARTICLE_PROTOCOL_ID, REF_RECORD_ID
  
  
  
- ;
+;

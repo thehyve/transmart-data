@@ -14,5 +14,4 @@ END bio_assay_platform_uid;
 
 
 
-
 /

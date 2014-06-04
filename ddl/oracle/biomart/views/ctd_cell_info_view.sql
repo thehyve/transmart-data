@@ -18,4 +18,4 @@ order by REF_ARTICLE_PROTOCOL_ID, CELLINFO_TYPE
  
  
  
- ;
+;

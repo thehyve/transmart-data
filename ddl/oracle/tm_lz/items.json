@@ -472,6 +472,17 @@
     "child" : {
       "type" : "TRIGGER",
       "owner" : "TM_LZ",
+      "name" : "TRG_LT_CHROMO_REGION_ID"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "TM_LZ",
+      "name" : "LT_CHROMOSOMAL_REGION"
+    } ]
+  }, {
+    "child" : {
+      "type" : "TRIGGER",
+      "owner" : "TM_LZ",
       "name" : "TRG_LZ_SRC_ANALYSIS_META_ID"
     },
     "parents" : [ {
@@ -946,6 +957,13 @@
       "name" : "SEQ_ETL_ID"
     },
     "file" : "tm_lz/lz_src_analysis_metadata.sql"
+  }, {
+    "item" : {
+      "type" : "TRIGGER",
+      "owner" : "TM_LZ",
+      "name" : "TRG_LT_CHROMO_REGION_ID"
+    },
+    "file" : "tm_lz/lt_chromosomal_region.sql"
   }, {
     "item" : {
       "type" : "TRIGGER",
