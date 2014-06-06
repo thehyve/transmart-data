@@ -28,6 +28,7 @@
 \i deapp/de_subject_rnaseq_data.sql
 \i deapp/de_subject_sample_mapping.sql
 \i deapp/de_subject_snp_dataset.sql
+\i deapp/de_two_region_variant.sql
 \i deapp/de_variant_dataset.sql
 \i deapp/de_variant_population_data.sql
 \i deapp/de_variant_population_info.sql
