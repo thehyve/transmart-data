@@ -34,6 +34,14 @@ try {
 				[trialId, 'NA', matcher[0][1], matcher[0][0], gplId, tissue, "LFQ-${matcher[0][2]}", null, 'Biomarker_Data+PLATFORM+ATTR1', 'STD' ] as String[])
 		}
 	}
+    def msmscounts = inLine.collect { it =~ /(?i)^MS\.MS\.Count\.(.+)_(.+)$/ }
+    msmscounts.each { matcher ->
+        if(matcher) {
+            //TODO site_id is really used in calculations. Needs to be not null value
+            writer.writeNext(
+                    [trialId, 'NA', matcher[0][1], matcher[0][0], gplId, tissue, "MS.MS.count-${matcher[0][2]}", null, 'Biomarker_Data+PLATFORM+ATTR1', 'STD' ] as String[])
+        }
+    }
 } finally {
 	reader.close()
 	writer.close()

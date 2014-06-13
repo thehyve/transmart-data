@@ -22,8 +22,10 @@ try {
 	String[] inLine = reader.readNext()
 	writer.writeNext(['file_names', 'intensity_start_value', 'intensity_end_value'] as String[])
 	Integer startIndx = null, endIndx
+
 	inLine.eachWithIndex { val, indx ->
-		if(val ==~ /(?i)^LFQ\.intensity\.(.+)_.+$/) {
+		if(val ==~ /(?i)^LFQ\.intensity\.(.+)_.+$/ ||
+                val ==~ /(?i)^MS\.MS\.Count\.(.+)_.+$/) {
 			if(startIndx == null) startIndx = indx
 			endIndx = indx
 		}
