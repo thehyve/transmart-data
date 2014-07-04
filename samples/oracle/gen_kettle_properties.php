@@ -16,8 +16,8 @@ TM_WZ_DB_USER=tm_wz
 DEAPP_DB_NAME=<?= $_ENV['ORASID'] , "\n" ?>
 DEAPP_DB_PORT=<?= $_ENV['ORAPORT'] , "\n" ?>
 DEAPP_DB_SERVER=<?= $_ENV['ORAHOST'], "\n" ?>
-DEAPP_PWD=deapp
-DEAPP_USER=deapp
+DEAPP_DB_PWD=deapp
+DEAPP_DB_USER=deapp
 BIOMART_DB_NAME=<?= $_ENV['ORASID'] , "\n" ?>
 BIOMART_DB_PORT=<?= $_ENV['ORAPORT'] , "\n" ?>
 BIOMART_DB_SERVER=<?= $_ENV['ORAHOST'], "\n" ?>
