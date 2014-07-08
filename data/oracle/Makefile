@@ -6,13 +6,13 @@ DEAPP_PSW ?= deapp
 SEARCHAPP_PSW ?= searchapp
 $(ENV_DIR)/$(TRANSMART_LOADER)/conf/Common.properties:
 	echo "driver_class=oracle.jdbc.driver.OracleDriver" > $@ \
-	&& echo "url=jdbc:oracle:thin:@localhost:11521:PLAYG" >> $@ \
+	&& echo "url=jdbc:oracle:thin:@localhost:21521:TSMWONT1" >> $@ \
 	&& echo "biomart_username=biomart" >> $@ \
-	&& echo "biomart_password=$(BIOMART_PSW)" >> $@ \
+	&& echo "biomart_password=TMuser0!" >> $@ \
 	&& echo "deapp_username=deapp" >> $@ \
-	&& echo "deapp_password=$(DEAPP_PSW)" >> $@ \
+	&& echo "deapp_password=TMuser0!" >> $@ \
 	&& echo "searchapp_username=searchapp" >> $@ \
-	&& echo "searchapp_password=$(SEARCHAPP_PSW)" >> $@
+	&& echo "searchapp_password=TMuser0!" >> $@
 
 .PHONY: $(ENV_DIR)/$(TRANSMART_LOADER)/conf/Common.properties
 
