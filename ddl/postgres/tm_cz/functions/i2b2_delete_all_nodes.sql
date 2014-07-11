@@ -55,7 +55,7 @@ Begin
 		begin
 		DELETE FROM i2b2demodata.OBSERVATION_FACT 
 		WHERE 
-		concept_cd IN (SELECT C_BASECODE FROM i2b2metadata.I2B2 WHERE C_FULLNAME LIKE PATH || '%' escape '`');
+		concept_cd IN (SELECT C_BASECODE FROM i2b2metadata.I2B2 WHERE C_FULLNAME LIKE PATH || '%' escape E'\b');
 		get diagnostics rowCt := ROW_COUNT;
 		exception
 		when others then
@@ -73,7 +73,7 @@ Begin
 		--CONCEPT DIMENSION
 		begin
 		DELETE FROM i2b2demodata.CONCEPT_DIMENSION
-		WHERE CONCEPT_PATH LIKE path || '%' escape '`';
+		WHERE CONCEPT_PATH LIKE path || '%' escape E'\b';
 		get diagnostics rowCt := ROW_COUNT;
 		exception
 		when others then
@@ -91,7 +91,7 @@ Begin
 		--I2B2
 		begin
 		DELETE FROM i2b2metadata.i2b2
-		WHERE C_FULLNAME LIKE PATH || '%' escape '`';
+		WHERE C_FULLNAME LIKE PATH || '%' escape E'\b';
 		get diagnostics rowCt := ROW_COUNT;
 		exception
 		when others then
@@ -109,7 +109,7 @@ Begin
 		--i2b2_secure
 		begin
 		DELETE FROM i2b2metadata.i2b2_secure
-		WHERE C_FULLNAME LIKE PATH || '%' escape '`';
+		WHERE C_FULLNAME LIKE PATH || '%' escape E'\b';
 		get diagnostics rowCt := ROW_COUNT;
 		exception
 		when others then
@@ -128,7 +128,7 @@ Begin
 		--concept_counts
 		begin
 		DELETE FROM i2b2demodata.concept_counts
-		WHERE concept_path LIKE PATH || '%' escape '`';
+		WHERE concept_path LIKE PATH || '%' escape E'\b';
 		get diagnostics rowCt := ROW_COUNT;
 		exception
 		when others then
