@@ -55,7 +55,7 @@ try {
 		//TODO site_id is really used in calculations. Needs to be not null value
 		def matcher = entry.key
 		writer.writeNext(
-			[trialId, 'NA', matcher[0][1], matcher[0][1], gplId, tissue, null, null, 'Biomarker_Data+PLATFORM+ATTR1', 'STD' ] as String[])
+			[trialId, null, matcher[0][1], matcher[0][1], gplId, tissue, null, null, 'Biomarker_Data+PLATFORM+ATTR1', 'STD' ] as String[])
 	}
 } finally {
 	writer.close()
