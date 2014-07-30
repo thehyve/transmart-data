@@ -13,22 +13,24 @@ CREATE SEQUENCE de_two_region_junction_seq
 
 CREATE TABLE de_two_region_junction (
     two_region_junction_id bigint DEFAULT nextval('de_two_region_junction_seq'::regclass) NOT NULL,
-    up_gene character varying(50),
+    up_len bigint NOT NULL,
     up_chr character varying(50) NOT NULL,
     up_pos bigint NOT NULL,
-    down_gene character varying(50),
+    up_strand bit,
+    down_len bigint NOT NULL,
     down_chr character varying(50) NOT NULL,
     down_pos bigint NOT NULL,
-    is_in_frame boolean NOT NULL,
+    down_strand boolean,
+    is_in_frame boolean,
     assay_id bigint
 );
 
 
 --
--- Name: COLUMN de_two_region_junction.up_gene; Type: COMMENT; Schema: deapp; Owner: -
+-- Name: COLUMN de_two_region_junction.up_len; Type: COMMENT; Schema: deapp; Owner: -
 --
 
-COMMENT ON COLUMN de_two_region_junction.up_gene IS 'up stream fusion gene (5" partner)';
+COMMENT ON COLUMN de_two_region_junction.up_len IS 'length of up stream junction';
 
 
 --
@@ -46,10 +48,17 @@ COMMENT ON COLUMN de_two_region_junction.up_pos IS 'location of up stream fusion
 
 
 --
--- Name: COLUMN de_two_region_junction.down_gene; Type: COMMENT; Schema: deapp; Owner: -
+-- Name: COLUMN de_two_region_junction.up_strand; Type: COMMENT; Schema: deapp; Owner: -
 --
 
-COMMENT ON COLUMN de_two_region_junction.down_gene IS 'down stream fusion gene (3" partner)';
+COMMENT ON COLUMN de_two_region_junction.up_strand IS 'strand of up stream junction, 1 for +, 0 for -';
+
+
+--
+-- Name: COLUMN de_two_region_junction.down_len; Type: COMMENT; Schema: deapp; Owner: -
+--
+
+COMMENT ON COLUMN de_two_region_junction.down_len IS 'length of down stream junction';
 
 
 --
@@ -63,14 +72,21 @@ COMMENT ON COLUMN de_two_region_junction.down_chr IS 'chromosome of down stream 
 -- Name: COLUMN de_two_region_junction.down_pos; Type: COMMENT; Schema: deapp; Owner: -
 --
 
-COMMENT ON COLUMN de_two_region_junction.down_pos IS 'location of down stream fusion partner''s junction point';
+COMMENT ON COLUMN de_two_region_junction.down_pos IS 'location of down stream junction point';
+
+
+--
+-- Name: COLUMN de_two_region_junction.down_strand; Type: COMMENT; Schema: deapp; Owner: -
+--
+
+COMMENT ON COLUMN de_two_region_junction.down_strand IS 'strand of down stream junction, 1 for +, 0 for -';
 
 
 --
 -- Name: COLUMN de_two_region_junction.is_in_frame; Type: COMMENT; Schema: deapp; Owner: -
 --
 
-COMMENT ON COLUMN de_two_region_junction.is_in_frame IS 'whether down stream fusion partner is frame-shift or in-frame-shift';
+COMMENT ON COLUMN de_two_region_junction.is_in_frame IS 'whether junction is frame-shift or in-frame-shift';
 
 
 
