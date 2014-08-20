@@ -2,12 +2,15 @@
 -- Name: de_subject_rnaseq_data; Type: TABLE; Schema: deapp; Owner: -
 --
 CREATE TABLE de_subject_rnaseq_data (
-    trial_name varchar(50),
-    region_id  bigint,
-    assay_id   bigint,
-    patient_id bigint,
-    readcount  bigint,
-    partition_id bigint
+    trial_name             varchar(50),
+    region_id              bigint,
+    assay_id               bigint,
+    patient_id             bigint,
+    readcount              bigint,
+    normalizedreadcount    double precision,
+    lognormalizedreadcount double precision,
+    zscore                 double precision,
+    partition_id           bigint
 );
 
 --
