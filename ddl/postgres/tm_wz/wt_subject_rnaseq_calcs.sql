@@ -3,7 +3,6 @@
 --
 CREATE TABLE tm_wz.wt_subject_rnaseq_calcs
 (
-  --WL--trial_name character varying(200),
   region_id bigint,
   mean_readcount numeric,
   median_readcount numeric,

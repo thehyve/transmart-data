@@ -7,10 +7,7 @@ CREATE TABLE tm_wz.wt_subject_rnaseq_logs
   readcount bigint,
   assay_id bigint,
   patient_id bigint,
-  --WL--sample_id bigint,
-  --WL--subject_id character varying(100),
   trial_name character varying(200),
-  --WL--timepoint character varying(200),
   log_readcount double precision,
   raw_readcount double precision
 );
