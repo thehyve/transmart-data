@@ -50,7 +50,7 @@ ALTER FUNCTION i2b2_process_proteomics_data(character varying, character varying
 
 ALTER FUNCTION i2b2_process_qpcr_mirna_data(character varying, character varying, character varying, character varying, numeric, character varying, numeric, character varying) SET search_path TO tm_cz, tm_lz, tm_wz, i2b2demodata, i2b2metadata, deapp, pg_temp;
 
-ALTER FUNCTION i2b2_process_rnaseq_data(character varying, character varying, character varying, character varying, numeric) SET search_path TO tm_cz, tm_lz, tm_wz, deapp, i2b2demodata, pg_temp;
+ALTER FUNCTION i2b2_process_rnaseq_data(character varying, character varying, character varying, character varying, character varying, numeric, numeric) SET search_path TO tm_cz, tm_lz, tm_wz, deapp, i2b2demodata, pg_temp;
 
 ALTER FUNCTION i2b2_proteomics_zscore_calc(character varying, character varying, numeric, character varying, numeric, character varying) SET search_path TO tm_cz, tm_lz, tm_wz, i2b2demodata, i2b2metadata, deapp, pg_temp;
 
