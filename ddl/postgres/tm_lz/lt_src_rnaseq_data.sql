@@ -7,5 +7,6 @@ CREATE TABLE tm_lz.lt_src_rnaseq_data
   region_name character varying(100),
   expr_id character varying(100),
   readcount character varying(50)
+  normalizedreadcount character varying(50)
 );
 

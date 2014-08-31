@@ -21,7 +21,9 @@ BEGIN
         ['deapp',   'de_subject_acgh_data',        'tm_cz'],
         ['deapp',   'de_subject_rnaseq_data',      'tm_cz'],
         ['tm_wz',   'wt_subject_microarray_logs',  'tm_cz'],
-        ['tm_wz',   'wt_subject_microarray_calcs', 'tm_cz']
+        ['tm_wz',   'wt_subject_microarray_calcs', 'tm_cz'],
+        ['tm_wz',   'wt_subject_rnaseq_logs',      'tm_cz'],
+        ['tm_wz',   'wt_subject_rnaseq_calcs',     'tm_cz']
     ];
 
     -- Convert array to table
