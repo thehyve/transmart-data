@@ -15,8 +15,6 @@ CREATE TABLE de_two_region_junction_event (
     two_region_junction_event_id bigint DEFAULT nextval('de_two_region_junction_event_seq'::regclass) NOT NULL,
     junction_id int NULL,
     event_id int NULL,
-	is_origin bit NULL,
-	is_dest bit NULL,
     reads_span integer,
     reads_junction integer,
     pairs_span integer,
