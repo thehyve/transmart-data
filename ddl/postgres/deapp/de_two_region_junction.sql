@@ -16,12 +16,13 @@ CREATE TABLE de_two_region_junction (
     up_len bigint NOT NULL,
     up_chr character varying(50) NOT NULL,
     up_pos bigint NOT NULL,
-    up_strand bit,
+    up_strand character(1),
     down_len bigint NOT NULL,
     down_chr character varying(50) NOT NULL,
     down_pos bigint NOT NULL,
-    down_strand boolean,
+    down_strand character(1),
     is_in_frame boolean,
+	external_id bigint,
     assay_id bigint
 );
 
