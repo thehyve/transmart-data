@@ -26,10 +26,6 @@ update_datasets:
 	$(MAKE) $*/$*_expression.tar.xz
 	tar -C $* -xJf $*/$*_expression.tar.xz
 
-%/analysis.params %/analysis:
-	$(MAKE) $*/$*_analysis.tar.xz
-	tar -C $* -xJf $*/$*_analysis.tar.xz
-
 %/acgh.params %/acgh:
 	$(MAKE) $*/$*_acgh.tar.xz
 	tar -C $* -xJf $*/$*_acgh.tar.xz
@@ -42,6 +38,9 @@ update_datasets:
 	$(MAKE) $*/$*_proteomics.tar.xz
 	tar -C $* -xJf $*/$*_proteomics.tar.xz
 
+%/vcf.params:
+	$(MAKE) $*/$*_vcf.tar.xz
+	tar -C $* -xJf $*/$*_vcf.tar.xz
 
 TARBALLS := $(shell test ! -f datasets || php enumerate.php tarballs)
 $(TARBALLS):

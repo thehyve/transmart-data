@@ -6,9 +6,13 @@ DECLARE
     dummy   record;
 BEGIN
     spec := ARRAY[
+        'amapp',
         'biomart',
+        'biomart_stage',
         'biomart_user',
         'deapp',
+        'fmapp',
+        'galaxy',
         'i2b2demodata',
         'i2b2metadata',
         'searchapp',

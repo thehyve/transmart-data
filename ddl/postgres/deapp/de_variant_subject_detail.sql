@@ -21,7 +21,7 @@ CREATE TABLE de_variant_subject_detail (
     alt character varying(500),
     qual character varying(100),
     filter character varying(50),
-    info character varying(5000),
+    info character varying(10000), --changed from text ... CLOB in oracle
     format character varying(500),
     variant_value text
 );
@@ -41,6 +41,11 @@ CREATE INDEX de_variant_sub_detail_idx2 ON de_variant_subject_detail USING btree
 -- Name: de_variant_sub_dt_idx1; Type: INDEX; Schema: deapp; Owner: -
 --
 CREATE INDEX de_variant_sub_dt_idx1 ON de_variant_subject_detail USING btree (dataset_id, rs_id);
+
+--
+-- Name: gen_variant_subj_det_chr_pos; Type: INDEX; Schema: deapp; Owner: -
+--
+CREATE INDEX gen_variant_subj_det_chr_pos ON de_variant_subject_detail USING btree (chr, pos);
 
 --
 -- Name: variant_subject_detail_uk; Type: INDEX; Schema: deapp; Owner: -
