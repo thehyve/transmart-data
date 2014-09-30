@@ -13,7 +13,7 @@ CREATE SEQUENCE de_two_region_event_gene_seq
 
 CREATE TABLE de_two_region_event_gene (
     two_region_event_gene_id bigint DEFAULT nextval('de_two_region_event_gene_seq'::regclass) NOT NULL,
-    gene_id bigint NOT NULL,
+    gene_id character varying(50) NOT NULL,
     event_id bigint NOT NULL,
 	effect character varying(500)
 );
@@ -23,6 +23,12 @@ CREATE TABLE de_two_region_event_gene (
 --
 
 COMMENT ON COLUMN de_two_region_event_gene.effect IS 'effect of the event on the gene: FUSION, CONTAINED, DISRUPTED, ...';
+
+--
+-- Name: COLUMN de_two_region_event_gene.gene_id; Type: COMMENT; Schema: deapp; Owner: -
+--
+
+COMMENT ON COLUMN de_two_region_event_gene.gene_id IS 'HUGO gene identifier';
 
 --
 -- Name: de_two_region_event_gene_id; Type: CONSTRAINT; Schema: deapp; Owner: -
