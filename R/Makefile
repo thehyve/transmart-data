@@ -1,5 +1,7 @@
+include ../makefile.inc
+
 R_MIRROR ?= http://cran-mirror.cs.uu.nl
-R_VERSION = 3.0.1
+R_VERSION = 3.0.3
 R_SOURCE = R-$(R_VERSION)
 R_PREFIX ?= $(realpath .)/root
 R_EXEC = $(R_PREFIX)/bin/R
@@ -8,15 +10,18 @@ RSERVE_CONF ?= $(realpath .)/Rserv_nodaemon.conf
 R_FLAGS ?= -O2 -march=native
 
 $(R_SOURCE):
-	curl -f $(R_MIRROR)/src/base/R-3/$@.tar.gz | tar xzf -
+	curl -f $(R_MIRROR)/src/base/R-3/$@.tar.gz | $(TAR_COMMAND) xzf -
 
 build/Makefile: $(R_SOURCE)
 	mkdir -p build && cd build && \
 		CFLAGS="$(R_FLAGS)" \
 		CXXFLAGS="$(R_FLAGS)" \
 		FFLAGS="$(R_FLAGS)" \
+		LIBnn=lib \
+		LDFLAGS="-Wl,-rpath=$(R_PREFIX)/lib/R/lib,--enable-new-dtags" \
 		../$(R_SOURCE)/configure --prefix=$(R_PREFIX) \
-		--enable-R-shlib --without-readline \
+		--enable-R-shlib --with-readline \
+		--enable-R-profiling --enable-memory-profiling \
 		--with-libpng --without-jpeglib --without-libtiff \
 		--without-system-xz --without-ICU \
 		--without-recommended-packages

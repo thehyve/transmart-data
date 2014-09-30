@@ -32,20 +32,21 @@ LOAD_CLINICAL_TARGETS := $(shell php ../studies/enumerate.php load_targets clini
 LOAD_ANNOTATION_TARGETS := $(shell php ../studies/enumerate.php load_targets annotation)
 LOAD_REF_ANNOTATION_TARGETS := $(shell php ../studies/enumerate.php load_targets ref_annotation)
 LOAD_EXPRESSION_PARAMS_TARGETS := $(shell php ../studies/enumerate.php load_targets expression)
-LOAD_ANALYSIS_PARAMS_TARGETS := $(shell php ../studies/enumerate.php load_targets analysis)
 LOAD_ACGH_PARAMS_TARGETS := $(shell php ../studies/enumerate.php load_targets acgh)
 LOAD_PROTEOMICS_PARAMS_TARGETS := $(shell php ../studies/enumerate.php load_targets proteomics)
 LOAD_MIRNA_PARAMS_TARGETS := $(shell php ../studies/enumerate.php load_targets mirna)
+LOAD_VCF_PARAMS_TARGETS := $(patsubst ../studies/%/vcf.params,load_vcf_%, $(VCF_PARAMS_FILES))
 
-KETTLE_TARGETS := $(LOAD_CLINICAL_TARGETS) $(LOAD_EXPRESSION_PARAMS_TARGETS) $(LOAD_ANALYSIS_PARAMS_TARGETS) $(LOAD_ACGH_PARAMS_TARGETS) $(LOAD_PROTEOMICS_PARAMS_TARGETS) $(LOAD_MIRNA_PARAMS_TARGETS)
+KETTLE_TARGETS := $(LOAD_CLINICAL_TARGETS) $(LOAD_EXPRESSION_PARAMS_TARGETS) $(LOAD_ACGH_PARAMS_TARGETS) $(LOAD_PROTEOMICS_PARAMS_TARGETS) $(LOAD_MIRNA_PARAMS_TARGETS)
 
-$(KETTLE_TARGETS): write_kettle_properties
+$(KETTLE_TARGETS): kettle-home/kettle.properties
 #these ones are here just for autocompletion:
 $(LOAD_ANNOTATION_TARGETS):
 $(LOAD_REF_ANNOTATION_TARGETS):
+$(LOAD_VCF_PARAMS_TARGETS):
 
-write_kettle_properties: gen_kettle_properties.php
-	php -d variables_order=E $< > kettle-home/kettle.properties
+kettle-home/kettle.properties: gen_kettle_properties.php ../../vars
+	php -d variables_order=E $< > $@
 
 ../studies/%:
 	$(MAKE) -C ../studies $*
@@ -68,11 +69,6 @@ load_expression_%: ../studies/%/expression.params ../studies/%/expression
 			KETTLE_HOME="$(realpath kettle-home)" \
 			./load_expression.sh $<
 
-load_analysis_%: ../studies/%/analysis.params ../studies/%/analysis
-	STUDY_ID=$* DATA_LOCATION="$(realpath ../studies/$*/analysis)" \
-			KETTLE_HOME="$(realpath kettle-home)" \
-			./load_analysis.sh $<
-
 load_acgh_%: ../studies/%/acgh.params ../studies/%/acgh
 	STUDY_ID=$* DATA_LOCATION="$(realpath ../studies/$*/acgh)" \
 			PSQL_COMMAND="$(PSQL_COMMAND)" \
@@ -86,13 +82,13 @@ PROTEOMICS_DATA_FILE    ?= $(PROTEOMICS_DATA_PREFIX).txt
 PROTEOMICS_ANNOT_PREFIX ?= proteomics
 PROTEOMICS_ANNOT_FILE   ?= $(PROTEOMICS_ANNOT_PREFIX)_annotation.txt
 
-load_proteomics_annotation_%: ../studies/%/proteomics.params ../studies/%/proteomics/$(PROTEOMICS_ANNOT_FILE)
-	GPL_ID=$*_proteomics \
-	DATA_LOCATION="$(realpath ../studies/$*/proteomics)" \
+load_proteomics_annotation_%: ../studies/%/proteomics_annotation/$(PROTEOMICS_ANNOT_FILE)
+	GPL_ID=$* \
+	DATA_LOCATION="$(realpath ../studies/$*/proteomics_annotation)" \
 	KETTLE_HOME="$(realpath kettle-home)" \
 	./load_proteomics_annotation.sh $< \
 
-load_proteomics_%: ../studies/%/proteomics.params load_proteomics_annotation_% ../studies/%/proteomics/$(PROTEOMICS_SSM_FILE) ../studies/%/proteomics/$(PROTEOMICS_CM_FILE)
+load_proteomics_%: ../studies/%/proteomics.params ../studies/%/proteomics/$(PROTEOMICS_SSM_FILE) ../studies/%/proteomics/$(PROTEOMICS_CM_FILE)
 	MAP_FILENAME=$(PROTEOMICS_SSM_FILE) \
 	COLUMN_MAPPING_FILE=$(PROTEOMICS_CM_FILE) \
 	DATA_FILE_PREFIX=$(PROTEOMICS_DATA_PREFIX) \
@@ -134,7 +130,7 @@ load_mirna_%: ../studies/%/mirna.params ../studies/%/mirna load_mirna_annotation
 	DATA_FILE=$(MIRNA_DATA_FILE) \
 	STUDY_ID=$* \
 	DATA_LOCATION="$(realpath ../studies/$*/mirna)" \
-	KETTLE_HOME="$(realpath kettle-home)" \
+        KETTLE_HOME="$(realpath kettle-home)" \
 	./load_mirna.sh $<
 
 ../studies/%/mirna:
@@ -149,9 +145,26 @@ load_mirna_%: ../studies/%/mirna.params ../studies/%/mirna load_mirna_annotation
 .PHONY: load_mirna_annotation_% load_mirna_%
 .PRECIOUS: ../studies/%/mirna/$(MIRNA_DATA_FILE) ../studies/%/mirna/$(MIRNA_ANNOT_FILE) ../studies/%/mirna/$(MIRNA_SSM_FILE)
 
+parse_vcf_%: ../studies/%/vcf.params ../studies/%/vcf
+	STUDY_ID=$* DATA_LOCATION="$(realpath ../studies/$*/vcf)" \
+			../common/_scripts/vcf/parse_vcf.sh $<
+
+load_vcf_%: ../studies/%/vcf.params parse_vcf_%
+	STUDY_ID=$* PSQL='$(PSQL_COMMAND) -d $(PGDATABASE)' \
+			DATA_LOCATION="$(realpath ../studies/$*/vcf)" \
+			./load_vcf.sh $<
+
 clean:
 	rm -f logs/*.log kettle-home/kettle.properties
 
-.PHONY: write_kettle_properties clean
+.PHONY: clean
+
+.PHONY: parse_vcf
+../common/parse_vcf:
+	perl ../common/_scripts/vcf/parseVCFintoTextFiles.pl "$(VCF_FILE)" "$(VCF_TEMP_DIR)" "$(DATASOURCE)" \
+			"$(DATASET_ID)" "$(GPL_ID)" "$(GENOME_BUILD)" "$(ETL_USER)"
+	perl ../common/_scripts/vcf/convertMappingIntoSQLFiles.pl "$(SUBJECT_SAMPLE_MAPPING_FILE)" "$(VCF_TEMP_DIR)" \
+			"$(STUDY_ID)" "$(DATASET_ID)" "$(CONCEPT_PATH)"
+
 
 # vim: ft=make :
