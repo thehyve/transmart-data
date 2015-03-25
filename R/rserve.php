@@ -1,59 +1,84 @@
 <?php
 $r = "$_ENV[R_PREFIX]/bin/R";
-$c = $_ENV['RSERVE_CONF'];
 ?>
-#!/bin/bash
 
+#!/bin/sh
 ### BEGIN INIT INFO
-# Provides:             rserve
+# Provides:             R/Rserve sysV service
 # Required-Start:       $local_fs $remote_fs $network
 # Required-Stop:        $local_fs $remote_fs $network
 # Default-Start:        2 3 4 5
 # Default-Stop:         0 1 6
-# Short-Description:    rserve
+# Short-Description:    Start/stop Rserve
+# Author:               Leslie-Alexandre D. :]
 ### END INIT INFO
 
-# for when user is a variable
-if [[ -f /etc/default/rserve ]]; then
+. /lib/lsb/init-functions
+
+# conf
+
+pid_file="/var/run/rserve.pid"
+
+# user env
+
+if [ -f /etc/default/rserve ]; then
         . /etc/default/rserve
 fi
-if [[ -z $USER ]]; then
+if [ -z "$USER" ]; then
         echo '$USER not defined' >&2
         exit 1
 fi
 
-function do_start {
-        # Rserve does not daemonize properly. We need to reopen stdout
-        # as /dev/null, otherwise we get all kinds of output
-        # The standard way to do it is to connect /dev/null to file
-        # descriptors 0, 1 and 2 only in the child (daemonized) process
-        # but obviously we are unable to do that
-        exec 7>&1
-        exec 1>/dev/null
-        su - -c "<?= $r ?> CMD Rserve --quiet --vanilla" "$USER" >&7
-        EXIT_VAL=$?
-        exec 1>&7 7>&-
-        if [ $EXIT_VAL -eq 0 ]; then
-                echo "Rserve started"
-        else
-                echo "Failed starting Rserve"
-        fi
+# R env
+r_path="$r"
+r_pattern="/opt/R/lib/R/bin/Rserve"
+
+# Rserve options
+rserve_cmd="CMD Rserve --slave --vanilla --RS-conf /etc/Rserve.conf"
+# functions
+
+do_start() {
+	rserve_status=$(pgrep -u "$USER" -cf "$r_pattern")
+	if [ $rserve_status != 0 ]; then
+		echo "Rserve is already running"
+	else
+       		echo "Rserve is starting..."
+        	start-stop-daemon --start --quiet --oknodo --chuid $USER --exec $r_path -- $rserve_cmd
+		get_pid
+	fi
 }
 
-function do_stop {
-        if pgrep -u "$USER" -f Rserve  > /dev/null
-        then
-                kill `pgrep -u "$USER" -f Rserve`
-                if [ $? -eq 0 ]; then
-                        echo "Rserve killed"
-                else
-                        echo "Failed killing Rserve"
-                fi
+do_stop() {
+        rserve_status=$(pgrep -u "$USER" -cf "$r_pattern")
+	if [ $rserve_status != 0 ]; then
+		kill `pgrep -u "$USER" -f "$r_pattern"` > /dev/null
+		if [ $? = 0 ]; then
+          		echo "Rserve is now stopped"
+			if [ -f $pid_file ]; then rm $pid_file;fi;
+        	else
+          		echo "Rserve failed to stop"
+        	fi
         else
-                echo "nothing to stop; Rserve is not running"
+		echo "Rserve is not running"
                 exit 0
         fi
 }
+
+get_pid() {
+	echo $(pgrep -u "$USER" -f "$r_pattern") > $pid_file
+}
+
+get_status() {
+	if [ $(pgrep -u "$USER" -cf "$r_pattern") != 0 ] && [ -f $pid_file ]
+        	then
+                	echo "Rserve service running as PID: " $(tail $pid_file)
+                        exit 0
+                else
+                        echo "Rserve is not running"
+                        exit 1
+                fi
+}
+# appel
 
 case "$1" in
         start)
@@ -70,14 +95,7 @@ case "$1" in
         ;;
 
         status)
-                if pgrep -u "$USER" -f Rserve > /dev/null
-                then
-                        echo "Rserve service running."
-                        exit 0
-                else
-                        echo "Rserve is not running"
-                        exit 1
-                fi
+		get_status
         ;;
 
         *)
@@ -85,3 +103,5 @@ case "$1" in
                 exit 1
         ;;
 esac
+
+exit 0
