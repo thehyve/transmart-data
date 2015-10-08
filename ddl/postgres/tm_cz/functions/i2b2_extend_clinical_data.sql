@@ -62,7 +62,7 @@ Declare
 	delNodes CURSOR is
 	select distinct c_fullname 
 	from  i2b2metadata.i2b2
-	where c_fullname like topNode || '%' escape '`'
+	where c_fullname like topNode || '%' escape E'\b'
       and substr(c_visualattributes,2,1) = 'H';
 	  
 	--	cursor to determine if any leaf nodes exist in i2b2 that are not used in this reload (node changes from text to numeric or numeric to text)
@@ -71,7 +71,7 @@ Declare
 	select l.c_fullname
 	from i2b2metadata.i2b2 l
 	where l.c_visualattributes like 'L%'
-	  and l.c_fullname like topNode || '%' escape '`'
+	  and l.c_fullname like topNode || '%' escape E'\b'
 	  and l.c_fullname not in
 		 (select t.leaf_node 
 		  from tm_wz.wt_trial_nodes t
@@ -1059,7 +1059,7 @@ select count(*) into pExists from i2b2demodata.observation_fact of where (of.pat
 	  and t.leaf_node = i.c_fullname
 	  and not exists		-- don't insert if lower level node exists
 		 (select 1 from tm_wz.wt_trial_nodes x
-		  where x.leaf_node like t.leaf_node || '%_' escape '`')
+		  where x.leaf_node like t.leaf_node || '%_' escape E'\b')
 	  and a.data_value is not null;
 	get diagnostics rowCt := ROW_COUNT; 
 	exception

@@ -53,7 +53,7 @@ BEGIN
   
 	begin
 	delete from i2b2demodata.concept_counts
-	where concept_path like path || '%' escape '`';
+	where concept_path like path || '%' escape E'\b';
 	get diagnostics rowCt := ROW_COUNT;
 	exception
 	when others then
@@ -83,9 +83,9 @@ BEGIN
 	    ,i2b2metadata.i2b2 la
 		,i2b2demodata.observation_fact tpm
 		,i2b2demodata.patient_dimension p
-	where fa.c_fullname like path || '%' escape '`'
+	where fa.c_fullname like path || '%' escape E'\b'
 	  and substr(fa.c_visualattributes,2,1) != 'H'
-	  and la.c_fullname like fa.c_fullname || '%' escape '`'
+	  and la.c_fullname like fa.c_fullname || '%' escape E'\b'
 	  and la.c_visualattributes like 'L%'
 	  and tpm.patient_num = p.patient_num
 	  and la.c_basecode = tpm.concept_cd   -- outer join in oracle ???
@@ -110,7 +110,7 @@ BEGIN
 	begin
 	update i2b2metadata.i2b2
 	set c_visualattributes = substr(c_visualattributes,1,1) || 'H' || substr(c_visualattributes,3,1)
-	where c_fullname like path || '%' escape '`'
+	where c_fullname like path || '%' escape E'\b'
 	  and (not exists
 			 (select 1 from concept_counts nc
 				  where c_fullname = nc.concept_path)

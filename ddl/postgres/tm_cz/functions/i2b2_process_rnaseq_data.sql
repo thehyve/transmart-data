@@ -76,7 +76,7 @@ Declare
 	delNodes CURSOR is
 	select distinct c_fullname
 	from  i2b2metadata.i2b2
-	where c_fullname like topNode || '%' escape '`'
+	where c_fullname like topNode || '%' escape E'\b'
       and substr(c_visualattributes,2,1) = 'H';
 
 BEGIN

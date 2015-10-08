@@ -55,7 +55,7 @@ Declare
 	delNodes CURSOR is
 	select distinct c_fullname 
 	from  i2b2metadata.i2b2
-	where c_fullname like topNode || '%' escape '`'
+	where c_fullname like topNode || '%' escape E'\b'
       and substr(c_visualattributes,2,1) = 'H';
 	  
 	--	cursor to determine if any leaf nodes exist in i2b2 that are not used in this reload (node changes from text to numeric or numeric to text)
@@ -64,7 +64,7 @@ Declare
 	select l.c_fullname
 	from i2b2metadata.i2b2 l
 	where l.c_visualattributes like 'L%'
-	  and l.c_fullname like topNode || '%' escape '`'
+	  and l.c_fullname like topNode || '%' escape E'\b'
 	  and l.c_fullname not in
 		 (select t.leaf_node 
 		  from tm_wz.wt_trial_nodes t
@@ -512,11 +512,13 @@ BEGIN
 	select tm_cz.cz_write_audit(jobId,databaseName,procedureName,'Set visit_name to null when only DATALABE in category_cd',rowCt,stepCt,'Done') into rtnCd;
 	
 	--	change any % to Pct and & and + to ' and ' and _ to space in data_label only
+	--	change any % to Pct and & and + to ' and ' and \ to space in data_value only
+        --      -- changing \ to space is to prevent data value to be interpreteted as a (sub)path
 	
 	begin
 	update tm_wz.wrk_clinical_data
 	set data_label=replace(replace(replace(replace(data_label,'%',' Pct'),'&',' and '),'+',' and '),'_',' ')
-	   ,data_value=replace(replace(replace(data_value,'%',' Pct'),'&',' and '),'+',' and ')
+	   ,data_value=replace(replace(replace(replace(data_value,'%',' Pct'),'&',' and '),'+',' and '),'\',' ')
 	   ,category_cd=replace(replace(category_cd,'%',' Pct'),'&',' and ')
 	   ,category_path=replace(replace(category_path,'%',' Pct'),'&',' and ');
 	   exception
@@ -1136,7 +1138,7 @@ BEGIN
 	  and t.leaf_node = i.c_fullname
 	  and not exists		-- don't insert if lower level node exists
 		 (select 1 from tm_wz.wt_trial_nodes x
-		  where x.leaf_node like t.leaf_node || '%_' escape '`')
+		  where x.leaf_node like t.leaf_node || '%_' escape E'\b')
 	  and a.data_value is not null;
 	get diagnostics rowCt := ROW_COUNT; 
 	exception
@@ -1158,8 +1160,8 @@ BEGIN
 	with upd as (select p.c_fullname, count(*) as nbr_children 
 				 from i2b2metadata.i2b2 p
 					 ,i2b2metadata.i2b2 c
-				 where p.c_fullname like topNode || '%' escape '`'
-				   and c.c_fullname like p.c_fullname || '%' escape '`'
+				 where p.c_fullname like topNode || '%' escape E'\b'
+				   and c.c_fullname like p.c_fullname || '%' escape E'\b'
 				 group by p.c_fullname)
 	update i2b2metadata.i2b2 b
 	set c_visualattributes=case when upd.nbr_children = 1 
@@ -1173,7 +1175,7 @@ BEGIN
 	where b.c_fullname = upd.c_fullname
 	  and b.c_fullname in
 		 (select x.c_fullname from i2b2 x
-		  where x.c_fullname like topNode || '%' escape '`');
+		  where x.c_fullname like topNode || '%' escape E'\b');
   	get diagnostics rowCt := ROW_COUNT;
 	exception
 	when others then
