@@ -29,5 +29,7 @@
 \i tm_wz/wt_subject_proteomics_med.sql
 \i tm_wz/wt_subject_proteomics_probeset.sql
 \i tm_wz/wt_subject_rnaseq_region.sql
+\i tm_wz/wt_subject_rnaseq_calcs.sql
+\i tm_wz/wt_subject_rnaseq_logs.sql
 \i tm_wz/wt_trial_nodes.sql
 \i tm_wz/wt_xtrial_nodes.sql

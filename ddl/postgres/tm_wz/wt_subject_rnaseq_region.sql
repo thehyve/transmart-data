@@ -6,6 +6,7 @@ CREATE TABLE tm_wz.wt_subject_rnaseq_region
   region_id bigint,
   expr_id character varying(500),
   readcount bigint,
+  normalizedreadcount double precision,
   assay_id bigint,
   patient_id bigint,
   sample_id bigint,
