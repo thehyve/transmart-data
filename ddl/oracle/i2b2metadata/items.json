@@ -91,6 +91,64 @@
       "owner" : "I2B2METADATA",
       "name" : "I2B2_TAGS"
     },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_OPTIONS"
+    } ]
+  }, {
+    "child" : {
+      "type" : "REF_CONSTRAINT",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAGS_OPTION_ID_FK"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAGS"
+    } ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_OPTIONS"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_TYPES"
+    } ]
+  }, {
+    "child" : {
+      "type" : "SEQUENCE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_OPTIONS_ID_SEQ"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "REF_CONSTRAINT",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_OPTIONS_TAG_TYPE_FK"
+    },
+    "parents" : [ {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_OPTIONS"
+    } ]
+  }, {
+    "child" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_TYPES"
+    },
+    "parents" : [ ]
+  }, {
+    "child" : {
+      "type" : "SEQUENCE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_TYPES_TAG_TYPE_ID_SEQ"
+    },
     "parents" : [ ]
   }, {
     "child" : {
@@ -354,6 +412,48 @@
       "name" : "I2B2_TAGS"
     },
     "file" : "i2b2metadata/i2b2_tags.sql"
+  }, {
+    "item" : {
+      "type" : "REF_CONSTRAINT",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAGS_OPTION_ID_FK"
+    },
+    "file" : "i2b2metadata/i2b2_tags.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_OPTIONS"
+    },
+    "file" : "i2b2metadata/i2b2_tag_options.sql"
+  }, {
+    "item" : {
+      "type" : "SEQUENCE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_OPTIONS_ID_SEQ"
+    },
+    "file" : "i2b2metadata/_misc.sql"
+  }, {
+    "item" : {
+      "type" : "REF_CONSTRAINT",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_OPTIONS_TAG_TYPE_FK"
+    },
+    "file" : "i2b2metadata/i2b2_tag_options.sql"
+  }, {
+    "item" : {
+      "type" : "TABLE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_TYPES"
+    },
+    "file" : "i2b2metadata/i2b2_tag_types.sql"
+  }, {
+    "item" : {
+      "type" : "SEQUENCE",
+      "owner" : "I2B2METADATA",
+      "name" : "I2B2_TAG_TYPES_TAG_TYPE_ID_SEQ"
+    },
+    "file" : "i2b2metadata/_misc.sql"
   }, {
     "item" : {
       "type" : "VIEW",
