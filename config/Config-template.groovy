@@ -428,6 +428,9 @@ grails { plugin { springsecurity {
                 '/studies/**': securedResourcesFilters,
                 '/observations/**': securedResourcesFilters,
                 '/patient_sets/**': securedResourcesFilters,
+                '/RSession/**': securedResourcesFilters,
+                '/ScriptExecution/**': securedResourcesFilters,
+                '/SmartR/**': securedResourcesFilters,
                 '/oauth/inspectToken': securedResourcesFilters,
                 '/**': [
                         'JOINED_FILTERS',
