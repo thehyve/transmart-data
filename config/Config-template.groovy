@@ -431,6 +431,7 @@ grails { plugin { springsecurity {
                 '/RSession/**': securedResourcesFilters,
                 '/ScriptExecution/**': securedResourcesFilters,
                 '/SmartR/**': securedResourcesFilters,
+                '/search/**': securedResourcesFilters,
                 '/oauth/inspectToken': securedResourcesFilters,
                 '/**': [
                         'JOINED_FILTERS',
