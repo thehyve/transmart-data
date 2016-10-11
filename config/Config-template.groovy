@@ -130,7 +130,7 @@ environments {
 /* }}} */
 
 /* {{{ Data Upload Configuration - see GWAS plugin Data Upload page */
-// This is the value that will appear in the To: entry of the e-mail popup 
+// This is the value that will appear in the To: entry of the e-mail popup
 // that is displayed when the user clicks the Email administrator button,
 // on the GWAS plugin Data Upload page
 com.recomdata.dataUpload.adminEmail = 'No data upload adminEmail value set - contact site administrator'
@@ -372,29 +372,26 @@ grails { plugin { springsecurity {
         ]
 
         interceptUrlMap = [
-            '/login/**'                   : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-            '/css/**'                     : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-            '/js/**'                      : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-            '/grails-errorhandler'        : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-            '/images/analysisFiles/**'    : ['IS_AUTHENTICATED_REMEMBERED'],
-            '/images/**'                  : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-            '/static/**'                  : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-            '/search/loadAJAX**'          : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-            '/analysis/getGenePatternFile': ['IS_AUTHENTICATED_ANONYMOUSLY'],
-            '/analysis/getTestFile'       : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-            '/requestmap/**'              : ['ROLE_ADMIN'],
-            '/role/**'                    : ['ROLE_ADMIN'],
-            '/authUser/**'                : ['ROLE_ADMIN'],
-            '/secureObject/**'            : ['ROLE_ADMIN'],
-            '/accessLog/**'               : ['ROLE_ADMIN'],
-            '/authUserSecureAccess/**'    : ['ROLE_ADMIN'],
-            '/secureObjectPath/**'        : ['ROLE_ADMIN'],
-            '/userGroup/**'               : ['ROLE_ADMIN'],
-            '/secureObjectAccess/**'      : ['ROLE_ADMIN'],
-            '/oauthAdmin/**'              : ['ROLE_ADMIN'],
-            *                             : (oauthEnabled ?  oauthEndpoints : [:]),
-            *                             : (gwavaEnabled ?  gwavaMappings : [:]),
-            '/**'                         : ['IS_AUTHENTICATED_REMEMBERED'], // must be last
+            [pattern: '/login/**',         access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/css/**',                     access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/js/**',                      access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/assets/**',                  access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/grails-errorhandler',        access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/images/analysisFiles/**',    access: ['IS_AUTHENTICATED_REMEMBERED']],
+            [pattern: '/images/**',                  access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/static/**',                  access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/search/loadAJAX**',          access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/analysis/getGenePatternFile',access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/analysis/getTestFile',       access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
+            [pattern: '/requestmap/**',              access: ['ROLE_ADMIN']],
+            [pattern: '/role/**',                    access: ['ROLE_ADMIN']],
+            [pattern: '/authUser/**',                access: ['ROLE_ADMIN']],
+            [pattern: '/secureObject/**',            access: ['ROLE_ADMIN']],
+            [pattern: '/accessLog/**',               access: ['ROLE_ADMIN']],
+            [pattern: '/authUserSecureAccess/**',    access: ['ROLE_ADMIN']],
+            [pattern: '/secureObjectPath/**',        access: ['ROLE_ADMIN']],
+            [pattern: '/userGroup/**',               access: ['ROLE_ADMIN']],
+            [pattern: '/secureObjectAccess/**',      access: ['ROLE_ADMIN']]
         ]
         rejectIfNoRule = true
     }
@@ -444,7 +441,9 @@ grails { plugin { springsecurity {
                         '-basicAuthenticationFilter',
                         '-oauth2ExceptionTranslationFilter'
                 ].join(','),
-        ]
+        ].collect { k, v ->
+            [pattern: k, filters: v]
+        }
 
         grails.exceptionresolver.params.exclude = ['password', 'client_secret']
 
