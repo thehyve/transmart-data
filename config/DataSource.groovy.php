@@ -1,31 +1,35 @@
 <?php require __DIR__ . '/../lib/php/env_helper.inc.php'; ?>
+dataSources {
+
+
 dataSource {
 <?php if (isset($_ENV['ORACLE'])) { ?>
-    driverClassName = 'oracle.jdbc.driver.OracleDriver'
-    url             = 'jdbc:oracle:thin:@<?= $_ENV['ORAHOST'] ?>:<?= $_ENV['ORAPORT'] ?>:<?= $_ENV['ORASID'] ?>'
-    dialect         = 'org.hibernate.dialect.Oracle10gDialect'
+        driverClassName = 'oracle.jdbc.driver.OracleDriver'
+        url             = 'jdbc:oracle:thin:@<?= $_ENV['ORAHOST'] ?>:<?= $_ENV['ORAPORT'] ?>:<?= $_ENV['ORASID'] ?>'
+        dialect         = 'org.hibernate.dialect.Oracle10gDialect'
 <?php } else { ?>
-    driverClassName = 'org.postgresql.Driver'
-    url             = 'jdbc:postgresql://<?= $host ?>:<?= $_ENV['PGPORT'] ?>/<?= $_ENV['PGDATABASE'] ?>'
-    dialect         = 'org.hibernate.dialect.PostgreSQLDialect'
+        driverClassName = 'org.postgresql.Driver'
+        url             = 'jdbc:postgresql://<?= $host ?>:<?= $_ENV['PGPORT'] ?>/<?= $_ENV['PGDATABASE'] ?>'
+        dialect         = 'org.hibernate.dialect.PostgreSQLDialect'
 <?php } ?>
-    username        = 'biomart_user'
-    password        = '<?= $biomart_user_pwd ?>'
-    dbCreate        = 'none'
-    
-    properties {
-      numTestsPerEvictionRun = 3
-      maxWait = 10000
+        username        = 'biomart_user'
+        password        = '<?= $biomart_user_pwd ?>'
+        dbCreate        = 'none'
 
-      testOnBorrow = true
-      testWhileIdle = true
-      testOnReturn = true
+        properties {
+        numTestsPerEvictionRun = 3
+        maxWait = 10000
 
-      validationQuery = "select 1<?php if (isset($_ENV['ORACLE'])) { ?> from dual<?php } ?>"
+        testOnBorrow = true
+        testWhileIdle = true
+        testOnReturn = true
 
-      minEvictableIdleTimeMillis = 1000 * 60 * 5
-      timeBetweenEvictionRunsMillis = 1000 * 60 * 5
-   }
+        validationQuery = "select 1<?php if (isset($_ENV['ORACLE'])) { ?> from dual<?php } ?>"
+
+        minEvictableIdleTimeMillis = 1000 * 60 * 5
+        timeBetweenEvictionRunsMillis = 1000 * 60 * 5
+        }
+    }
 }
 
 environments {
