@@ -30,6 +30,16 @@ dataSource {
         timeBetweenEvictionRunsMillis = 1000 * 60 * 5
         }
     }
+    oauth2 {
+        driverClassName = 'org.h2.Driver'
+        url = "jdbc:h2:~/.grails/oauth2db;MVCC=TRUE"
+        dialect = 'org.hibernate.dialect.H2Dialect'
+        username = 'sa'
+        password = ''
+        dbCreate = 'update'
+        logSql = true
+        formatSql = true
+    }
 }
 
 environments {
