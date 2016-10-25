@@ -109,7 +109,7 @@ com.recomdata.contactUs = "transmart-discuss@googlegroups.com"
 com.recomdata.adminEmail = "transmart-discuss@googlegroups.com"
 
 // application title
-com.recomdata.appTitle = "tranSMART v" + org.transmart.originalConfigBinding.appVersion
+com.recomdata.appTitle = "tranSMART v" + grails.util.Metadata.current.getApplicationVersion()
 
 // Location of the help pages. Should be an absolute URL.
 // Currently, these are distribution with transmart,
