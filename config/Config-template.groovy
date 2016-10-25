@@ -72,47 +72,6 @@ environments { production {
     }
 } }
 
-/* {{{ Log4J Configuration */
-log4j = {
-    environments {
-        development {
-            root {
-                info 'stdout'
-            }
-
-            // for a less verbose startup & shutdown
-            warn  'org.codehaus.groovy.grails.commons.spring'
-            warn  'org.codehaus.groovy.grails.orm.hibernate.cfg'
-            warn  'org.codehaus.groovy.grails.domain.GrailsDomainClassCleaner'
-
-            debug 'org.transmartproject'
-            debug 'com.recomdata'
-            debug 'grails.app.services.com.recomdata'
-            debug 'grails.app.services.org.transmartproject'
-            debug 'grails.app.controllers.com.recomdata'
-            debug 'grails.app.controllers.org.transmartproject'
-            debug 'grails.app.domain.com.recomdata'
-            debug 'grails.app.domain.org.transmartproject'
-            // debug 'org.springframework.security'
-            // (very verbose) debug  'org.grails.plugin.resource'
-        }
-
-        production {
-            def logDirectory = "${catalinaBase}/logs".toString()
-            appenders {
-                rollingFile(name: 'transmart',
-                            file: "${logDirectory}/transmart.log",
-                            layout: pattern(conversionPattern: '%d{dd-MM-yyyy HH:mm:ss,SSS} %5p %c{1} - %m%n'),
-                            maxFileSize: '100MB')
-            }
-            root {
-                warn 'transmart'
-            }
-        }
-    }
-}
-/* }}} */
-
 /* {{{ Faceted Search Configuration */
 environments {
     development {
@@ -361,14 +320,14 @@ grails { plugin { springsecurity {
     } else {
         securityConfigType = 'InterceptUrlMap'
         def oauthEndpoints = [
-              '/oauth/authorize.dispatch': ["isFullyAuthenticated() and (request.getMethod().equals('GET') or request.getMethod().equals('POST'))"],
-              '/oauth/token.dispatch':     ["isFullyAuthenticated() and request.getMethod().equals('POST')"],
+              [pattern: '/oauth/authorize.dispatch', access: ["isFullyAuthenticated() and (request.getMethod().equals('GET') or request.getMethod().equals('POST'))"]],
+              [pattern: '/oauth/token.dispatch', access: ["isFullyAuthenticated() and request.getMethod().equals('POST')"]],
         ]
 
         // This looks dangerous and it possibly is (would need to check), but
         // reflects the instructions I got from the developer.
         def gwavaMappings = [
-             '/gwasWeb/**'                : ['IS_AUTHENTICATED_ANONYMOUSLY'],
+            [pattern: '/gwasWeb/**', access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
         ]
 
         interceptUrlMap = [
@@ -392,6 +351,11 @@ grails { plugin { springsecurity {
             [pattern: '/secureObjectPath/**',        access: ['ROLE_ADMIN']],
             [pattern: '/userGroup/**',               access: ['ROLE_ADMIN']],
             [pattern: '/secureObjectAccess/**',      access: ['ROLE_ADMIN']]
+        ] +
+        (oauthEnabled ?  oauthEndpoints : []) +
+        (gwavaEnabled ?  gwavaMappings : []) +
+        [
+            [pattern: '/**',                         access: ['IS_AUTHENTICATED_REMEMBERED']], // must be last
         ]
         rejectIfNoRule = true
     }
