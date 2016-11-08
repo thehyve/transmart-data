@@ -394,6 +394,7 @@ grails { plugin { springsecurity {
                 ].join(','),
                 '/studies/**': securedResourcesFilters,
                 '/observations/**': securedResourcesFilters,
+                '/query/**': securedResourcesFilters,
                 '/patient_sets/**': securedResourcesFilters,
                 '/oauth/inspectToken': securedResourcesFilters,
                 '/transmart-rest-api-version': 'none',
