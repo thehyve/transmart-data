@@ -11,25 +11,25 @@
 # and you running it under your user. If you installed it from a package
 # manager, like apt-get/dpkg in debian/ubuntu, this won't work.
 # See the template in env/vars-ubuntu.php
-PGHOST=/tmp
+PGHOST=
 PGPORT=5432
 PGDATABASE=transmart
-PGUSER=$USER
+PGUSER=postgres
 PGPASSWORD=
 
 # This directory must exist. If you are running PostgreSQL under your own user,
 # you just have to make sure the directory is owned by you.
 # Otherwise, you must create some directories under it and assign ownership to
 # them to the postgres user. For instance:
-#     mkdir -p $TABLESPACES/{biomart,deapp,indx,search_app,transmart}
-#     chown -R postgres:postgres $TABLESPACES
+#     sudo mkdir -p $TABLESPACES/{indx,transmart}
+#     sudo chown -R postgres:postgres $TABLESPACES
 # end with /
-TABLESPACES=$HOME/pg/tablespaces/
+TABLESPACES=/var/lib/postgresql/tablespaces/
 
 # The directory where the postgres client utilities are
 # If using a package manager, probably /usr/bin/
 # end with /
-PGSQL_BIN=/usr/bin/
+PGSQL_BIN="sudo -E -u postgres /usr/bin/"
 # }}}
 
 # {{{ Oracle
