@@ -17,7 +17,7 @@ general_db_dump.sql:
 
 roles.sql: cluster_dump.sql
 	php ../_scripts/filter_type.php $< "Roles" | \
-			egrep 'ROLE (biomart_user|deapp|i2b2metadata|i2b2demodata|tm_cz|tm_lz|tm_wz|biomart|searchapp|amapp|fmapp|galaxy|gwas_plink|ts_batch)\b' \
+			egrep 'ROLE (biomart_user|deapp|i2b2metadata|i2b2demodata|tm_cz|tm_lz|tm_wz|biomart|searchapp|amapp|fmapp|galaxy|gwas_plink|ts_batch|tm_dataloader)\b' \
 			> $@
 
 extensions.sql: general_db_dump.sql

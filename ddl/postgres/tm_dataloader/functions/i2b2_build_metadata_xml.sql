@@ -1,0 +1,72 @@
+--
+-- Name: i2b2_build_metadata_xml(character varying, character varying, character varying); Type: FUNCTION; Schema: tm_dataloader; Owner: -
+--
+CREATE FUNCTION i2b2_build_metadata_xml(display_name character varying, data_type character varying, valuetype_cd character varying) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$
+DECLARE
+	series_value     VARCHAR(200) := NULL;
+	series_unit_name VARCHAR(200) := NULL;
+	regTable					text[];
+BEGIN
+	IF valuetype_cd = 'TIMEPOINT'
+	THEN
+		IF display_name = 'Baseline'
+		THEN
+			series_value := '0';
+			series_unit_name := 'minutes';
+		ELSIF lower(display_name) ~ '^[a-zA-Z]+ -?\d+' THEN
+			series_value := substring(display_name from '-?[0-9]+');
+			series_unit_name := lower(substring(display_name from '[a-zA-Z]+'));
+			IF series_unit_name = 'minute'
+			THEN
+				series_unit_name := 'minutes';
+			ELSIF series_unit_name IN ('hour', 'hours')
+				THEN
+					series_unit_name := 'minutes';
+					series_value := (series_value::FLOAT * 60)::VARCHAR;
+			ELSIF series_unit_name IN ('day', 'days')
+				THEN
+					series_unit_name := 'minutes';
+					series_value := (series_value::FLOAT * 60 * 24)::VARCHAR;
+			ELSIF series_unit_name IN ('week', 'weeks')
+				THEN
+					series_unit_name := 'minutes';
+					series_value := (series_value::FLOAT * 60 * 24 * 7)::VARCHAR;
+			ELSIF series_unit_name IN ('month', 'months')
+				THEN
+					series_unit_name := 'minutes';
+					series_value := (series_value::FLOAT * 60 * 24 * 30)::VARCHAR;
+			ELSIF series_unit_name IN ('year', 'years')
+				THEN
+					series_unit_name := 'minutes';
+					series_value := (series_value::FLOAT * 60 * 24 * 30 * 12)::VARCHAR;
+			END IF;
+		ELSE
+			regTable := regexp_matches(lower(display_name), '^(-?[0-9]{1,4} (week|weeks|minute|minutes|hour|hours|day|days|year|years|month|months))+');
+			IF array_length(regTable, 1) > 0 THEN
+        select EXTRACT(epoch FROM trim(display_name)::INTERVAL) / 60 into series_value;
+        series_unit_name := 'minutes';
+      ELSE
+				RAISE EXCEPTION  'Check date format';
+      END IF;
+		END IF;
+	END IF;
+
+	RETURN
+	CASE
+	WHEN series_unit_name IS NOT NULL
+		THEN
+			'<?xml version="1.0"?><ValueMetadata><Version>3.02</Version><CreationDateTime>08/14/2008 01:22:59</CreationDateTime><TestID></TestID><TestName></TestName><DataType>PosFloat</DataType><CodeType></CodeType><Loinc></Loinc><Flagstouse></Flagstouse><Oktousevalues>Y</Oktousevalues><MaxStringLength></MaxStringLength><LowofLowValue>0</LowofLowValue><HighofLowValue>0</HighofLowValue><LowofHighValue>100</LowofHighValue>100<HighofHighValue>100</HighofHighValue><LowofToxicValue></LowofToxicValue><HighofToxicValue></HighofToxicValue><EnumValues></EnumValues><CommentsDeterminingExclusion><Com></Com></CommentsDeterminingExclusion><UnitValues><NormalUnits>ratio</NormalUnits><EqualUnits></EqualUnits><ExcludingUnits></ExcludingUnits><ConvertingUnits><Units></Units><MultiplyingFactor></MultiplyingFactor></ConvertingUnits></UnitValues><Analysis><Enums /><Counts /><New /></Analysis>'
+			|| '<SeriesMeta><Value>' || series_value || '</Value>'
+			|| '<Unit>' || series_unit_name || '</Unit>'
+			|| '<DisplayName>' || display_name || '</DisplayName></SeriesMeta>'
+			|| '</ValueMetadata>'
+	WHEN data_type = 'N'
+		THEN
+			'<?xml version="1.0"?><ValueMetadata><Version>3.02</Version><CreationDateTime>08/14/2008 01:22:59</CreationDateTime><TestID></TestID><TestName></TestName><DataType>PosFloat</DataType><CodeType></CodeType><Loinc></Loinc><Flagstouse></Flagstouse><Oktousevalues>Y</Oktousevalues><MaxStringLength></MaxStringLength><LowofLowValue>0</LowofLowValue><HighofLowValue>0</HighofLowValue><LowofHighValue>100</LowofHighValue>100<HighofHighValue>100</HighofHighValue><LowofToxicValue></LowofToxicValue><HighofToxicValue></HighofToxicValue><EnumValues></EnumValues><CommentsDeterminingExclusion><Com></Com></CommentsDeterminingExclusion><UnitValues><NormalUnits>ratio</NormalUnits><EqualUnits></EqualUnits><ExcludingUnits></ExcludingUnits><ConvertingUnits><Units></Units><MultiplyingFactor></MultiplyingFactor></ConvertingUnits></UnitValues><Analysis><Enums /><Counts /><New /></Analysis></ValueMetadata>'
+	ELSE NULL
+	END;
+END;
+$$;
+
