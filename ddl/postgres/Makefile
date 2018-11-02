@@ -14,7 +14,8 @@ SCHEMAS = \
 		  fmapp \
 		  galaxy \
 		  gwas_plink \
-		  ts_batch
+		  ts_batch \
+		  tm_dataloader
 
 FULL_SCHEMA_DUMPS = $(foreach schema, $(SCHEMAS), _dumps/$(schema).sql)
 

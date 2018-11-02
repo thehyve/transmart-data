@@ -164,7 +164,7 @@ class PGTableGrouper { /* {{{ */
 				$group = 'prelude';
 				break;
 			case 'TABLE':
-				$regex = '/^CREATE TABLE "?(?P<group>[^"\s]+)"?/m';
+				$regex = '/^CREATE (?:UNLOGGED )?TABLE "?(?P<group>[^"\s]+)"?/m';
 				break;
 			case 'VIEW':
 				$hasCrossDep = false;
@@ -336,8 +336,8 @@ class PGDumpFilter extends PGDumpReaderWriter { /* {{{ */
 		 * always the same set of identical objects, not just equal objects */
 		$this->items = $this->filterItems();
 	}
-	public function writeItems() {
-		return $this->inner->writeItems();
+	public function writeItems($stream) {
+		return $this->inner->writeItems($stream);
 	}
 	public function getItems() {
 		return $this->items;
